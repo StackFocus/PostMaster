@@ -1,0 +1,10 @@
+haproxy:
+    image: tutum/haproxy
+    links:
+        - web
+    ports:
+        - 80:80
+web:
+    build: .
+    expose:
+        - 8080
