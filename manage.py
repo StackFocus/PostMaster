@@ -26,14 +26,6 @@ def createdb():
     os.system('python manage.py db upgrade')
 
 
-@manager.command
-def createalldbs():
-    '''Runs the db init --multidb, db migrate, db upgrade commands automatically'''
-    os.system('python manage.py db init --multidb')
-    os.system('python manage.py db migrate')
-    os.system('python manage.py db upgrade')
-
-
 @manager.shell
 def make_shell_context():
     ''' Returns app, db, models to the shell '''

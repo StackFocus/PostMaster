@@ -5,12 +5,11 @@ Purpose: database definitions for SQLAlchemy
 """
 from swagmail import db
 
-class virtual_domains(db.Model):
+class VirtualDomains(db.Model):
     """
     A table to house the email domains
     """
     __table_name__ = 'virtual_domains'
-    __bind_key__ = 'maildb'
     __table_args__ = {
         'mysql_engine':'InnoDB',
         'mysql_charset':'utf8'
@@ -26,12 +25,11 @@ class virtual_domains(db.Model):
         return '<virtual_domains(name=\'%s\')>' % (self.name)
 
 
-class virtual_users(db.Model):
+class VirtualUsers(db.Model):
     """
     A table to house the email user accounts
     """
     __table_name__ = 'virtual_users'
-    __bind_key__ = 'maildb'
     __table_args__ = {
         'mysql_engine':'InnoDB',
         'mysql_charset':'utf8'
@@ -50,12 +48,11 @@ class virtual_users(db.Model):
     def __repr__(self):
         return '<virtual_users(email=\'%s\')>' % (self.email)
 
-class virtual_aliases(db.Model):
+class VirtualAliases(db.Model):
     """
     A table to house the email aliases
     """
     __table_name__ = 'virtual_aliases'
-    __bind_key__ = 'maildb'
     __table_args__ = {
         'mysql_engine':'InnoDB',
         'mysql_charset':'utf8'

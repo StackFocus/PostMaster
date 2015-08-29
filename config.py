@@ -10,19 +10,11 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'swagmail.db')
-# This is referring to the binding of the databse with all the mail users
-SQLALCHEMY_BINDS = {
-    'db' : SQLALCHEMY_DATABASE_URI,
-    'maildb': ('sqlite:///' + os.path.join(basedir, 'mailusers.db'))
-}
-
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 # Make this random (used to generate session keys)
 SECRET_KEY = '73Sjkadas%hASDe45@1238Due12jdodjfFDweq82348*(#89asdasdas'
 
-"""
-Dev
-"""
+""" Dev """
 HOST = '0.0.0.0'
 DEBUG = True
