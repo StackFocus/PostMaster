@@ -24,7 +24,12 @@ def createdb():
     os.system('python manage.py db init')
     os.system('python manage.py db migrate')
     os.system('python manage.py db upgrade')
-
+    user = models.Admins(
+        'Default User', 'user@swagmail.com',
+        '$2a$12$OihMM.ogbjvUZWPLqHfBZOU4vzSjbhvypuGxef4NjbERRc839LKOy',
+        False, True)
+    db.session.add(user)
+    db.session.commit()
 
 @manager.shell
 def make_shell_context():
@@ -38,14 +43,13 @@ def clean():
 
     if os.name == 'nt':
         commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"",
-                    "powershell.exe -Command \"@('swagmail.db', 'mailusers.db', 'migrations') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]
+                    "powershell.exe -Command \"@('swagmail.db', 'migrations') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]
     else:
         commands = ["find . -name '*.pyc' -exec rm -f {} \;",
                     "find . -name '*.pyo' -exec rm -f {} \;",
                     "find . -name '*~' -exec rm -f {} \;",
                     "find . -name '__pycache__' -exec rmdir {} \;",
-                    "rm -f swagmail.db",
-                    "rm -f mailusers.db"]
+                    "rm -f swagmail.db"]
     for command in commands:
         os.system(command)
 

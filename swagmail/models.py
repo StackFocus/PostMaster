@@ -48,6 +48,7 @@ class VirtualUsers(db.Model):
     def __repr__(self):
         return '<virtual_users(email=\'%s\')>' % (self.email)
 
+
 class VirtualAliases(db.Model):
     """
     A table to house the email aliases
@@ -70,3 +71,39 @@ class VirtualAliases(db.Model):
 
     def __repr__(self):
         return '<virtual_aliases(source=\'%s\')>' % (self.source)
+
+
+class Admins(db.Model):
+    """
+    A table to house the admin users
+    """
+    __tablename__ = 'swagmail_admins'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    email = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(64))
+    authenticated = db.Column(db.Boolean, default=False)
+    active = db.Column(db.Boolean, default=True)
+
+    def __init__(self, name, email, password, authenticated, active):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.authenticated = authenticated
+        self.active = active
+
+    def is_active(self):
+        return self.active
+
+    def get_id(self):
+        return self.id
+
+    def is_authenticated(self):
+        return self.authenticated
+
+    def is_anonymous(self):
+        # Anonymous users are not supported
+        return False
+
+    def __repr__(self):
+        return '<swagmail_admins(email=\'%s\')>' % (self.email)
