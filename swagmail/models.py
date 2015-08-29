@@ -6,7 +6,7 @@ Purpose: database definitions for SQLAlchemy
 from swagmail import db
 
 
-class virtual_domains(db.Model):
+class VirtualDomains(db.Model):
     """
     A table to house the email domains
     """
