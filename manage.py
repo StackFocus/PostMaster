@@ -18,6 +18,7 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
+
 @manager.command
 def createdb():
     '''Runs the db init, db migrate, db upgrade commands automatically'''
