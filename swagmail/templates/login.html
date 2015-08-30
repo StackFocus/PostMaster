@@ -1,0 +1,11 @@
+﻿{% extends "base.html" %}
+    {% block content %}
+    <div class="row">
+        <form action='/login' method='POST'>
+            {{ loginForm.hidden_tag() }}
+            {{ loginForm.username(class_='form-control',placeholder='Enter a username') }}<br />
+            {{ loginForm.password(class_='form-control',placeholder='Enter a password') }}<br />
+            <input class="btn btn-success" type="submit" value="Login" />
+        </form>
+    </div>
+    {% endblock %}
