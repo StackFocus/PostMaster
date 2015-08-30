@@ -28,7 +28,9 @@ def createdb():
     user = models.Admins(
         'Default User', 'user@swagmail.com',
         '$2a$12$OihMM.ogbjvUZWPLqHfBZOU4vzSjbhvypuGxef4NjbERRc839LKOy',
-        False, True)
+        False,
+        True
+    )
     db.session.add(user)
     db.session.commit()
 

@@ -47,7 +47,7 @@ def login():
                 user = models.Admins.query.filter_by(
                     email=loginForm.username.data).first()
 
-                if (bcrypt.check_password_hash(user.password, loginForm.password.data)):
+                if (user and (bcrypt.check_password_hash(user.password, loginForm.password.data))):
                     user.authenticated = True
                     db.session.commit()
                     login_user(user, remember=False)
