@@ -6,12 +6,14 @@ Purpose: routes for the app
 
 from flask import render_template, redirect, url_for, request, flash
 from flask_login import login_required, login_user, logout_user, current_user
-from swagmail import app, db, forms, models, login_manager, bcrypt
+from swagmail import app, forms, models, login_manager, bcrypt
 
 
 @login_manager.user_loader
 def user_loader(user_id):
-    if models.Admins.query.filter_by(id=user_id).count() == 1:
+    """ Function to return user for login
+    """
+    if models.Admins.query.filter_by(id=user_id).first() is not None:
         return models.Admins.query.filter_by(id=user_id).first()
     else:
         return None
@@ -19,6 +21,8 @@ def user_loader(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
+    """ Function to redirect after loggin in when prompted for login
+    """
     return redirect('/login?next=' + request.path)
 
 
@@ -31,25 +35,28 @@ def index():
     return render_template('index.html', authenticated=(current_user).is_authenticated())
 
 
-@app.route('/login', methods=['Get', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    This is the login route and processing of information
+    """
     loginForm = forms.LoginForm()
 
-    if (current_user).is_authenticated():
+    if current_user.is_authenticated():
         return redirect(url_for('index'))
     else:
         if request.method == 'GET':
-            return render_template('login.html', title='Flask Reminders Login', loginForm=loginForm)
+            return render_template('login.html',
+                                   title='SwagMail Management Login',
+                                   loginForm=loginForm)
 
         elif loginForm.validate_on_submit():
 
-            if (models.Admins.query.filter_by(email=loginForm.username.data).count()) == 1:
+            if models.Admins.query.filter_by(email=loginForm.username.data).first() is not None:
                 user = models.Admins.query.filter_by(
                     email=loginForm.username.data).first()
 
-                if (user and (bcrypt.check_password_hash(user.password, loginForm.password.data))):
-                    user.authenticated = True
-                    db.session.commit()
+                if user and (bcrypt.check_password_hash(user.password, loginForm.password.data)):
                     login_user(user, remember=False)
                     return redirect(request.args.get('next') or url_for('index'))
 
@@ -62,13 +69,11 @@ def login():
 
 @app.route('/logout')
 def logout():
-    if (current_user).is_authenticated():
-        user = current_user
-        user.authenticated = False
-        db.session.add(user)
-        db.session.commit()
+    """
+    Logs current user out
+    """
+    if current_user.is_authenticated():
         logout_user()
         flash('Successfully logged out', 'success')
-        
-    return redirect(url_for('login'))
 
+    return redirect(url_for('login'))

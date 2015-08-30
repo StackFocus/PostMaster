@@ -34,6 +34,7 @@ def createdb():
     db.session.add(user)
     db.session.commit()
 
+
 @manager.shell
 def make_shell_context():
     ''' Returns app, db, models to the shell '''
@@ -45,13 +46,13 @@ def clean():
     '''Cleans the codebase'''
 
     if os.name == 'nt':
-        commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"",
-                    "powershell.exe -Command \"@('swagmail.db', 'migrations') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]
+        commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"", # pylint: disable=anomalous-backslash-in-string, line-too-long
+                    "powershell.exe -Command \"@('swagmail.db', 'migrations') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""] # pylint: disable=anomalous-backslash-in-string, line-too-long
     else:
-        commands = ["find . -name '*.pyc' -exec rm -f {} \;",
-                    "find . -name '*.pyo' -exec rm -f {} \;",
-                    "find . -name '*~' -exec rm -f {} \;",
-                    "find . -name '__pycache__' -exec rmdir {} \;",
+        commands = ["find . -name '*.pyc' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
+                    "find . -name '*.pyo' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
+                    "find . -name '*~' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
+                    "find . -name '__pycache__' -exec rmdir {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "rm -f swagmail.db"]
     for command in commands:
         os.system(command)

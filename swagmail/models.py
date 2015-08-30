@@ -70,10 +70,10 @@ class VirtualAliases(db.Model):
     source = db.Column(db.String(100), unique=True, nullable=False)
     destination = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, source, destination):
+    def __init__(self, domain_id, source, destination):
         self.domain_id = domain_id
-        self.source = password
-        self.destination = email
+        self.source = source
+        self.destination = destination
 
     def __repr__(self):
         return '<virtual_aliases(source=\'%s\')>' % (self.source)
@@ -88,26 +88,34 @@ class Admins(db.Model):
     name = db.Column(db.String(50))
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(64))
-    authenticated = db.Column(db.Boolean, default=False)
     active = db.Column(db.Boolean, default=True)
 
     def __init__(self, name, email, password, authenticated, active):
         self.name = name
         self.email = email
         self.password = password
-        self.authenticated = authenticated
         self.active = active
 
     def is_active(self):
+        """Returns if user is active
+        """
         return self.active
 
     def get_id(self):
+        """Returns id of user
+        """
         return self.id
 
     def is_authenticated(self):
-        return self.authenticated
+        """Returns if user is authenticated
+        This is hooked by flask-login.
+        query using current_user.is_authenticated()
+        """
+        return True
 
     def is_anonymous(self):
+        """ Returns if guest
+        """
         # Anonymous users are not supported
         return False
 
