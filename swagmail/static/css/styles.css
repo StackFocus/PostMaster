@@ -1,0 +1,65 @@
+nav a:hover {
+    color: #D0D0D0 !important;
+}
+
+#loginRow .panel-body {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.loginInput {
+    width: 75%;
+    margin: auto;
+    margin-top: 2em;
+}
+
+#loginButton {
+    padding: 0.75em 2em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.loginAlert {
+    width: 60%;
+    margin: auto;
+    margin-bottom: 4.5em;
+    text-align: center;
+}
+
+@media(max-width:767px) {
+    #loginRow {
+        margin: auto;
+    }
+
+    .loginInput {
+        width: 95%;
+    }
+
+    .loginAlert {
+        margin-bottom: 3em;
+    }
+}
+
+@media(min-width:768px) {
+    #loginRow .panel-body {
+        margin-top: 4em;
+        margin-bottom: 3em;
+    }
+
+    .loginInput {
+        width: 75%;
+    }
+
+    #loginButton {
+        margin-top: 4em;
+    }
+}
+
+@media(min-width:992px) {}
+
+@media(min-width:1200px) {
+    #loginRow {
+        width: 75%;
+        margin: auto;
+    }
+}
