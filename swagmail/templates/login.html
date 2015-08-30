@@ -1,11 +1,41 @@
 ﻿{% extends "base.html" %}
     {% block content %}
-    <div class="row">
-        <form action='/login' method='POST'>
-            {{ loginForm.hidden_tag() }}
-            {{ loginForm.username(class_='form-control',placeholder='Enter a username') }}<br />
-            {{ loginForm.password(class_='form-control',placeholder='Enter a password') }}<br />
-            <input class="btn btn-success" type="submit" value="Login" />
-        </form>
+    <div class="row" id="loginRow">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title text-center">Login In</div>
+            </div> 
+            <div class="panel-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == "success" %}
+                                <div class="alert alert-success alert-dismissible loginAlert" role="alert">
+                            {% else %}
+                                <div class="alert alert-danger alert-dismissible loginAlert" role="alert">
+                            {% endif %}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    {{ message }}
+                                </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                <form action="/login" method="POST" class="form-horizontal">
+                    {{ loginForm.hidden_tag() }}
+                    <div class="input-group loginInput">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        {{ loginForm.username(class_='form-control',placeholder='Enter a username') }}
+                    </div>
+                    <div class="input-group loginInput">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        {{ loginForm.password(class_='form-control',placeholder='Enter a password') }}
+                    </div>
+                    <div class="input-group text-center" style="margin: auto">
+                        <input class="btn btn-primary" id="loginButton" type="submit" value="Login" />
+                        <input class="btn btn-default" style="margin-left: 1.5em" id="loginButton" type="reset" value="Reset" />
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
     {% endblock %}

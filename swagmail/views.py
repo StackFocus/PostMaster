@@ -28,7 +28,7 @@ def index():
     """ Function to return index page
     """
 
-    return render_template('index.html')
+    return render_template('index.html', authenticated=(current_user).is_authenticated())
 
 
 @app.route('/login', methods=['Get', 'POST'])
@@ -51,24 +51,24 @@ def login():
                     user.authenticated = True
                     db.session.commit()
                     login_user(user, remember=False)
-                    flash('Login successful', 'success')
                     return redirect(request.args.get('next') or url_for('index'))
 
-            flash('Login is incorrect', 'error')
+            flash('The username or password was incorrect', 'error')
             return redirect(url_for('login'))
         else:
-            flash('Please fill in all required fields', 'error')
+            flash('All fields in the login form are required', 'error')
             return redirect(url_for('login'))
 
 
 @app.route('/logout')
-@login_required
 def logout():
-    user = current_user
-    print(user.name)
-    user.authenticated = False
-    db.session.add(user)
-    db.session.commit()
-    logout_user()
-    flash('Logout successful', 'success')
+    if (current_user).is_authenticated():
+        user = current_user
+        user.authenticated = False
+        db.session.add(user)
+        db.session.commit()
+        logout_user()
+        flash('Successfully logged out', 'success')
+        
     return redirect(url_for('login'))
+

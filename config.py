@@ -16,5 +16,4 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SECRET_KEY = '73Sjkadas%hASDe45@1238Due12jdodjfFDweq82348*(#89asdasdas'
 
 """ Dev """
-HOST = '0.0.0.0'
 DEBUG = True
