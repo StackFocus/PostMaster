@@ -21,7 +21,7 @@ def user_loader(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
-    """ Function to redirect after loggin in when prompted for login
+    """ Function to redirect after logging in when prompted for login
     """
     return redirect('/login?next=' + request.path)
 
