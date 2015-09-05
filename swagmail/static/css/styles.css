@@ -1,7 +1,38 @@
+a {
+    color: #2C3E50;
+    text-decoration: none !important;
+}
+
+a:hover {
+    color: #2C3E50;
+    text-decoration: underline !important;
+}
+
 nav a:hover {
     color: #D0D0D0 !important;
 }
 
+h2.textHeading {
+    text-align: center;
+    margin-bottom: 2.5em;
+}
+
+/* Dashboard CSS */
+div.panel {
+    margin-bottom: 6em;
+}
+
+div.panel-heading {
+    font-size: 110%;
+}
+
+div.panel-heading i {
+    margin-right: 0.75em;
+}
+/* End of Dashboard CSS */
+
+
+/* Login Page CSS */
 #loginRow .panel-body {
     margin-top: 2em;
     margin-bottom: 2em;
@@ -25,8 +56,16 @@ nav a:hover {
     margin-bottom: 4.5em;
     text-align: center;
 }
+/* End of Login Page CSS */
+
+/* Manage Page CSS */
+#newDomainInput {
+    height: 40px;
+}
+/* End of Manage Page CSS */
 
 @media(max-width:767px) {
+    /* Login Page CSS */
     #loginRow {
         margin: auto;
     }
@@ -38,9 +77,20 @@ nav a:hover {
     .loginAlert {
         margin-bottom: 3em;
     }
+    /* End of Login Page CSS */
 }
 
 @media(min-width:768px) {
+    ul.dropdown-menu li a {
+		height: 50px;
+		padding-top: 14px !important;
+	}
+
+	ul.dropdown-menu {
+		border: none !important;
+	}
+
+    /* Login Page CSS */
     #loginRow .panel-body {
         margin-top: 4em;
         margin-bottom: 3em;
@@ -53,13 +103,23 @@ nav a:hover {
     #loginButton {
         margin-top: 4em;
     }
+    /* End of Login Page CSS */
+    
 }
 
-@media(min-width:992px) {}
+@media(min-width:992px) {
+    /* Manage Page CSS */
+    #newDomainInput {
+        width: 75%;
+    }
+    /* End of Manage Page CSS */
+}
 
 @media(min-width:1200px) {
+    /* Login Page CSS */
     #loginRow {
         width: 75%;
         margin: auto;
     }
+    /* End of Login Page CSS */
 }
