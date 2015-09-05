@@ -77,3 +77,12 @@ def logout():
         flash('Successfully logged out', 'success')
 
     return redirect(url_for('login'))
+
+
+@login_required
+@app.route('/domains')
+def domains():
+    """
+    Manages domains in the database
+    """
+    return render_template('domains.html', authenticated=(current_user).is_authenticated())

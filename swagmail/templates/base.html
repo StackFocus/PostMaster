@@ -1,10 +1,11 @@
-<html>
+﻿<html>
 <head>
     {% if title %}<title>{{ title }}</title>{% endif %}
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -32,6 +33,14 @@
                 <!-- Right links on the navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     {% if authenticated %}
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">Manage <b class="caret"></b></a>
+                            <ul role="menu" class="dropdown-menu">
+                                <li><a href="/domains">Domains</a></li>
+                                <li><a href="#">Users</a></li>
+                                <li><a href="#">Aliases</a></li>
+                            </ul>
+                        </li>
                         <li><a href="/logout">Logout</a></li>
                     {% else %}
                         <li><a href="/login">Login</a></li>
