@@ -46,16 +46,6 @@ class MailDb(object):
         return None
 
 
-    def addDomain(self, domain): # pylint: disable=no-self-use
-        """ Adds a domain to VirtualDomains
-        """
-
-        db.session.add(models.VirtualDomains(domain))
-        db.session.commit()
-
-        return True
-
-
     def getDomain(self, domain): # pylint: disable=no-self-use
         """ Returns a domain from VirtualDomains
         """
@@ -75,31 +65,21 @@ class MailDb(object):
         return self.getAllFromTable('VirtualDomains')
 
 
-    def addUser(self, email, password):
-        """ Adds a user to VirtualUsers
+    def addDomain(self, domain): # pylint: disable=no-self-use
+        """ Adds a domain to VirtualDomains
         """
 
-        domain = search('(?<=@).*$', email).group(0)
-        domainRow = self.getDomain(domain)
+        if not self.getDomain(domain):
 
-        if domainRow and 'id' in domainRow:
-
-            # Check to see if the email is at least somewhat in the right format
-            if match('.*@.*[.].*[a-z]$', email):
-                salt = (sha1(urandom(16)).hexdigest())[:16]
-                passwordAndSalt = sha512.encrypt(password, rounds=5000,
-                                                 salt=salt, implicit_rounds=True)
-
-                newUser = models.VirtualUsers(domainRow['id'], passwordAndSalt, email)
-                db.session.add(newUser)
-
+            try:
+                db.session.add(models.VirtualDomains(domain))
                 db.session.commit()
                 return True
-
-            else:
-                raise ValidationError('"%s" is not a valid email address' % domain)
+            except:
+                db.session.rollback()
+                raise
         else:
-            raise ValidationError('The domain "%s" is not managed by this database' % domain)
+            raise ValidationError('The domain "%s" already exists' % domain)
 
         return False
 
@@ -126,37 +106,36 @@ class MailDb(object):
         return self.getAllFromTable('VirtualUsers')
 
 
-    def addAlias(self, source, destination):
-        """ Adds an alias to VirtualAliases
+    def addUser(self, email, password):
+        """ Adds a user to VirtualUsers
         """
 
-        sourceDomain = search('(?<=@).*$', source).group(0)
-        destinationDomain = search('(?<=@).*$', destination).group(0)
+        if not self.getUser(email):
 
-        if sourceDomain == destinationDomain:
+            # Check to see if the domain can be extracted and if the email is at least somewhat in the right format
+            if search('(?<=@).*$', email) and match('[a-z].*@.*[.].*[a-z]$', email):
+                domain = search('(?<=@).*$', email).group(0)
+                domainRow = self.getDomain(domain)
 
-            if match('.*@.*[.].*[a-z]$', source):
-
-                if self.getUser(destination):
-                    domainRow = self.getDomain(destinationDomain)
-
-                    if domainRow and 'id' in domainRow:
-                        alias = models.VirtualAliases(domainRow['id'], source, destination)
-                        db.session.add(alias)
+                if domainRow and 'id' in domainRow:
+                    salt = (sha1(urandom(16)).hexdigest())[:16]
+                    passwordAndSalt = sha512.encrypt(password, rounds=5000,
+                                                        salt=salt, implicit_rounds=True)
+                    try:
+                        newUser = models.VirtualUsers(domainRow['id'], passwordAndSalt, email)
+                        db.session.add(newUser)
                         db.session.commit()
                         return True
 
-                    else:
-                        raise ValidationError \
-                            ('The domain "%s" is not managed by this database' % sourceDomain)
-
+                    except:
+                        db.session.rollback()
+                        raise
                 else:
-                    raise ValidationError \
-                        ('The destination "%s" is not a current email address' % destination)
+                    raise ValidationError('The domain "%s" is not managed by this database' % domain)
             else:
-                raise ValidationError('The source "%s" is not in a valid email format' % source)
+                raise ValidationError('"%s" is not a valid email address' % email)
         else:
-            raise ValidationError('The domains from the source and destination alias do not match')
+            raise ValidationError('The user "%s" already exists' % email)
 
         return False
 
@@ -180,3 +159,49 @@ class MailDb(object):
         """ Returns all aliases from VirtualAliases
         """
         return self.getAllFromTable('VirtualAliases')
+
+
+    def addAlias(self, source, destination):
+        """ Adds an alias to VirtualAliases
+        """
+
+        if not self.getAlias(source):
+
+            sourceDomain = search('(?<=@).*$', source).group(0)
+            destinationDomain = search('(?<=@).*$', destination).group(0)
+
+            if sourceDomain == destinationDomain:
+
+                if match('.*@.*[.].*[a-z]$', source):
+
+                    if self.getUser(destination):
+                        domainRow = self.getDomain(destinationDomain)
+
+                        if domainRow and 'id' in domainRow:
+                        
+                            try:
+                                alias = models.VirtualAliases(domainRow['id'], source, destination)
+                                db.session.add(alias)
+                                db.session.commit()
+                                return True
+                        
+                            except:
+                                db.session.rollback()
+                                raise
+
+                        else:
+                            raise ValidationError \
+                                ('The domain "%s" is not managed by this database' % sourceDomain)
+
+                    else:
+                        raise ValidationError \
+                            ('The destination "%s" is not a current email address' % destination)
+                else:
+                    raise ValidationError('The source "%s" is not in a valid email format' % source)
+            else:
+                raise ValidationError('The domains from the source and destination alias do not match')
+        else:
+            raise ValidationError('The alias "%s" already exists' % source)
+
+        return False
+
