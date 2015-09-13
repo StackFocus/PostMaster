@@ -7,8 +7,7 @@ from swagmail import db
 
 
 class VirtualDomains(db.Model):
-    """
-    A table to house the email domains
+    """ A table to house the email domains
     """
     __table_name__ = 'virtual_domains'
     __table_args__ = {
@@ -28,8 +27,7 @@ class VirtualDomains(db.Model):
 
 
 class VirtualUsers(db.Model):
-    """
-    A table to house the email user accounts
+    """ A table to house the email user accounts
     """
     __table_name__ = 'virtual_users'
     __table_args__ = {
@@ -54,8 +52,7 @@ class VirtualUsers(db.Model):
 
 
 class VirtualAliases(db.Model):
-    """
-    A table to house the email aliases
+    """ A table to house the email aliases
     """
     __table_name__ = 'virtual_aliases'
     __table_args__ = {
@@ -80,8 +77,7 @@ class VirtualAliases(db.Model):
 
 
 class Admins(db.Model):
-    """
-    A table to house the admin users
+    """ A table to house the admin users
     """
     __tablename__ = 'swagmail_admins'
     id = db.Column(db.Integer, primary_key=True)
@@ -97,17 +93,17 @@ class Admins(db.Model):
         self.active = active
 
     def is_active(self):
-        """Returns if user is active
+        """ Returns if user is active
         """
         return self.active
 
     def get_id(self):
-        """Returns id of user
+        """ Returns id of user
         """
         return self.id
 
     def is_authenticated(self):
-        """Returns if user is authenticated
+        """ Returns if user is authenticated
         This is hooked by flask-login.
         query using current_user.is_authenticated()
         """

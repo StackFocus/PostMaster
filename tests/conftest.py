@@ -15,12 +15,31 @@ def initialize():
             True
         )
 
-        db.session.add(user)
-        if db.session.commit():
-            return True
+        domain = models.VirtualDomains('swagmail.com')
+        domain2 = models.VirtualDomains('swagmail.org')
 
-    except:
-        print "Unexpected error: ", sys.exc_info()[0]
+        emailUser = models.VirtualUsers(1, '$6$d1afb4750462a67c$QfGLHzTb5tn5B2uooNisQnKm3KzhMk7cmC/eKgu9TujDPsy4YAngQ5bk08jFNSuFenH2lRseeSJPArfl60bNq.', 'email@swagmail.com')
+        emailUser2 = models.VirtualUsers(1, '$6$9969cb876b2432ed$HoJIK2EoFyI4YN3n5vc1pPHf6NXjGwpdmfIpvFCLNv1ZsJnsL0K50/NLUBdaEhACOnbNKQjoX2VAEJTkuR4W//', 'email2@swagmail.com')
+
+        alias = models.VirtualAliases(1, 'aliasemail@swagmail.com', 'email@swagmail.com')
+        alias2 = models.VirtualAliases(1, 'aliasemail2@swagmail.com', 'email2@swagmail.com')
+
+        db.session.add(user)
+        db.session.add(domain)
+        db.session.add(domain2)
+        db.session.add(emailUser)
+        db.session.add(emailUser2)
+        db.session.add(alias)
+        db.session.add(alias2)
+
+        try:
+            db.session.commit()
+            return True
+        except:
+            return False
+
+    except Exception as e:
+        print "Unexpected error: %s" % e.message
         return False
 
     return False
