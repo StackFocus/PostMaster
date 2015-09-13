@@ -49,6 +49,8 @@ def getDomain(domain):
         queriedDomainDict.pop('_sa_instance_state', None)
         return queriedDomainDict
 
+    return None
+
 
 def getDomains():
     """ Returns all domains from VirtualDomains
@@ -159,38 +161,43 @@ def addAlias(source, destination):
 
     if not getAlias(source):
 
-        sourceDomain = search('(?<=@).*$', source).group(0)
-        destinationDomain = search('(?<=@).*$', destination).group(0)
+        if match('.*@.*[.].*[a-z]$', source):
 
-        if sourceDomain == destinationDomain:
+            if match('.*@.*[.].*[a-z]$', destination):
 
-            if match('.*@.*[.].*[a-z]$', source):
+                sourceDomain = search('(?<=@).*$', source).group(0)
 
-                if getUser(destination):
+                if getDomain(sourceDomain):
+
+                    destinationDomain = search('(?<=@).*$', destination).group(0)
                     domainRow = getDomain(destinationDomain)
 
-                    if domainRow and 'id' in domainRow:
-                        try:
-                            alias = models.VirtualAliases(domainRow['id'], source, destination)
-                            db.session.add(alias)
-                            db.session.commit()
-                            return True
+                    if domainRow and ('id' in domainRow):
 
-                        except:
-                            db.session.rollback()
-                            raise
+                        if getUser(destination):
+                            try:
+                                alias = models.VirtualAliases(domainRow['id'], source, destination)
+                                db.session.add(alias)
+                                db.session.commit()
+                                return True
 
+                            except:
+                                db.session.rollback()
+                                raise
+
+                        else:
+                            raise ValidationError \
+                                ('The destination "%s" is not a current email address' % destination)
                     else:
                         raise ValidationError \
-                            ('The domain "%s" is not managed by this database' % sourceDomain)
-
+                            ('The domain "%s" is not managed by this database' % destinationDomain)
                 else:
                     raise ValidationError \
-                        ('The destination "%s" is not a current email address' % destination)
+                        ('The domain "%s" is not managed by this database' % destinationDomain)
             else:
-                raise ValidationError('The source "%s" is not in a valid email format' % source)
+                raise ValidationError('The destination "%s" is not in a valid email format' % destination)
         else:
-            raise ValidationError('The domains from the source and destination alias do not match')
+            raise ValidationError('The source "%s" is not in a valid email format' % source)
     else:
         raise ValidationError('The alias "%s" already exists' % source)
 
