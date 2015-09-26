@@ -4,6 +4,11 @@ File: models.py
 Purpose: database definitions for SQLAlchemy
 """
 from swagmail import db
+from .errors import ValidationError
+from re import search, match
+from os import urandom
+from passlib.hash import sha512_crypt as sha512  # pylint: disable=no-name-in-module
+from hashlib import sha1
 
 
 class VirtualDomains(db.Model):
@@ -19,11 +24,30 @@ class VirtualDomains(db.Model):
                    nullable=False, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, name):
-        self.name = name
-
     def __repr__(self):
         return '<virtual_domains(name=\'%s\')>' % (self.name)
+
+    def from_json(self, json):
+        try:
+            self.name = json['domain']
+        except KeyError as e:
+            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        return self
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
+
+    def from_json(self, json):
+        if json.get('name', None) is None:
+            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if self.query.filter_by(name=json['name']).first() is None:
+            self.name = json['name']
+        else:
+            raise ValidationError('The domain "%s" already exists' % json['name'])
+        return self
 
 
 class VirtualUsers(db.Model):
@@ -42,13 +66,42 @@ class VirtualUsers(db.Model):
     password = db.Column(db.String(106), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
 
-    def __init__(self, domain_id, password, email):
-        self.domain_id = domain_id
-        self.password = password
-        self.email = email
-
     def __repr__(self):
         return '<virtual_users(email=\'%s\')>' % (self.email)
+
+    def to_json(self):
+        """ Leaving password out
+        """
+        return {
+            'id': self.id,
+            'domain_id': self.domain_id,
+            'email': self.email
+        }
+
+    def from_json(self, json):
+        if json.get('email', None) is None:
+            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if self.query.filter_by(email=json['email']).first() is not None:
+            raise ValidationError('"%s" already exists!' % json['email'])
+        self.email = json['email']
+        # Checks if the domain can be extracted and if the email is at least
+        # somewhat in the right format
+        if search('(?<=@).*$', json['email']) and match('[a-z].*@.*[.].*[a-z]$', json['email']):
+            domain = search('(?<=@).*$', json['email']).group(0)
+            if VirtualDomains.query.filter_by(name=domain).first() is not None:
+                self.domain_id = VirtualDomains.query.filter_by(
+                    name=domain).first().id
+                salt = (sha1(urandom(16)).hexdigest())[:16]
+                passwordAndSalt = sha512.encrypt(json['password'], rounds=5000,
+                                                 salt=salt, implicit_rounds=True)
+                self.password = passwordAndSalt
+            else:
+                raise ValidationError(
+                    'The domain "%s" is not managed by this database' % domain)
+        else:
+            raise ValidationError(
+                '"%s" is not a valid email address' % json['email'])
+        return self
 
 
 class VirtualAliases(db.Model):
@@ -67,13 +120,49 @@ class VirtualAliases(db.Model):
     source = db.Column(db.String(100), unique=True, nullable=False)
     destination = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, domain_id, source, destination):
-        self.domain_id = domain_id
-        self.source = source
-        self.destination = destination
-
     def __repr__(self):
         return '<virtual_aliases(source=\'%s\')>' % (self.source)
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'domain_id': self.domain_id,
+            'source': self.source,
+            'destination': self.destination
+        }
+
+    def from_json(self, json):
+        if json.get('domain_id', None) is None or json.get('source', None) is None or json.get('destination', None) is None:
+            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
+            raise ValidationError('"%s" to "%s" already exists!' % (
+                json['source'], json['destination']))
+        if match('.*@.*[.].*[a-z]$', json['source']):
+            if match('.*@.*[.].*[a-z]$', json['destination']):
+                sourceDomain = search('(?<=@).*$', json['source']).group(0)
+                destinationDomain = search(
+                    '(?<=@).*$', json['destination']).group(0)
+                if VirtualDomains.query.filter_by(name=sourceDomain).first() is None:
+                    raise ValidationError(
+                        'The domain "%s" is not managed by this database' % sourceDomain)
+                if VirtualDomains.query.filter_by(name=destinationDomain).first() is None:
+                    raise ValidationError(
+                        'The domain "%s" is not managed by this database' % destinationDomain)
+                self.source = json['source']
+                self.destination = json['destination']
+                if VirtualUsers.query.filter_by(email=json['destination']).first() is not None:
+                    self.domain_id = json['domain_id']
+                else:
+                    raise ValidationError \
+                        ('The destination "%s" is not a current email address' %
+                         json['destination'])
+            else:
+                raise ValidationError(
+                    'The destination "%s" is not in a valid email format' % json['destination'])
+        else:
+            raise ValidationError(
+                'The source "%s" is not in a valid email format' % json['source'])
+        return self
 
 
 class Admins(db.Model):
