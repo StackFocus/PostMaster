@@ -27,13 +27,6 @@ class VirtualDomains(db.Model):
     def __repr__(self):
         return '<virtual_domains(name=\'%s\')>' % (self.name)
 
-    def from_json(self, json):
-        try:
-            self.name = json['domain']
-        except KeyError as e:
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
-        return self
-
     def to_json(self):
         return {
             'id': self.id,
