@@ -35,9 +35,9 @@ def paginate(max_per_page=10):
             pages = {'page': page, 'per_page': per_page,
                      'total': p.total, 'pages': p.pages}
             if p.has_prev:
-                pagurl_for(request.endpoint, page=p.prev_num,
-                           per_page=per_page,
-                           _external=True, **kwargs)
+                pages['prev'] = url_for(request.endpoint, page=p.prev_num,
+                                        per_page=per_page,
+                                        _external=True, **kwargs)
             else:
                 pages['prev'] = None
             if p.has_next:
