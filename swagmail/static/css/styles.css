@@ -1,4 +1,4 @@
-a {
+a, a:focus {
     color: #2C3E50;
     text-decoration: none !important;
 }
@@ -8,6 +8,10 @@ a:hover {
     text-decoration: underline !important;
 }
 
+nav a:focus {
+    color: #FFFFFF !important;
+}
+
 nav a:hover {
     color: #D0D0D0 !important;
 }
@@ -15,6 +19,37 @@ nav a:hover {
 h2.textHeading {
     text-align: center;
     margin-bottom: 2.5em;
+}
+
+ul.pagination li a,
+ul.pagination li a:focus {
+	background-color: #95a5a6;
+	border-color: #95a5a6;
+}
+
+ul.pagination li.active a,
+ul.pagination li.active a:focus {
+	background-color: #2c3e50;
+	border-color: #2c3e50;
+}
+
+ul.pagination li a:hover,
+ul.pagination li.active a:hover {
+	background-color: #2c3e50;
+	border-color: #2c3e50;
+	color:#b4bcc2;
+}
+
+ul.pagination li.disabled a,
+ul.pagination li.disabled a:visited {
+	background-color: #95a5a6;
+	border-color: #95a5a6;
+}
+
+ul.pagination li.disabled a:hover {
+	background-color: #95a5a6;
+	border-color: #95a5a6;
+	color:#b4bcc2;
 }
 
 /* Dashboard CSS */
