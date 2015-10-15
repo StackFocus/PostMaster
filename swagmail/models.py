@@ -43,6 +43,16 @@ class VirtualDomains(db.Model):
         return self
 
 
+    def query_from_json(self, json):
+        if json.get('name', None) is None:
+            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if self.query.filter_by(name=json['name']).first() is not None:
+            return self.query.filter_by(name=json['name']).first()
+        else:
+            raise ValidationError('The domain "%s" does not exist' % json['name'])
+        return self
+
+
 class VirtualUsers(db.Model):
     """ A table to house the email user accounts
     """

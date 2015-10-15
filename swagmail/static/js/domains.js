@@ -1,11 +1,37 @@
-﻿function addDomainToTable(name) {
+﻿// Read a page's GET URL variables and return them as an associative array.
+// Inspired from http://www.drupalden.co.uk/get-values-from-url-query-string-jquery
+function getUrlVars() {
+    var vars = [], hash;
+    if (window.location.href.indexOf('?') != -1) {
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+    }
+
+    return vars;
+}
+
+
+function addDomainToTable(name) {
 
     $('#newDomainRow').before('\
         <tr>\
-            <td>' + name + '</td>\
-            <td><a href="#" class="deleteDomain">Delete</a></td>\
+            <td class="domainName">' + name + '</td>\
+            <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this)">Delete</a></td>\
         </tr>\
     ');
+}
+
+
+function deleteDomainFromTable(name) {
+
+    $('#domainTable tr td').filter(function () {
+        return $(this).text() == name;
+    }).parent().remove();
 }
 
 
@@ -42,12 +68,65 @@ function newDomain(name) {
 }
 
 
+function deleteDomain(name) {
+
+    $.ajax({
+        url: '/api/v1/domains',
+        type: 'delete',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({ 'name': name }),
+
+        success: function (data) {
+            deleteDomainFromTable(name);
+            addStatusMessage('success', 'The domain was successfully removed.');
+        },
+
+        error: function (data) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        }
+    });
+}
+
+
+function deleteDomainClick(e) {
+
+    deleteDomain($(e).closest('tr').find('td.domainName').text());
+}
+
+
+function setPagination(numPages, currentPage) {
+
+    for (var i = 1; i <= numPages; i++) {
+
+        $('#domainPagination').hide()
+        $('#domainPagination').append('\
+            <li' + ((currentPage == i) ? ' class="active"' : '') + '><a href="' + '/domains?page=' + i + '">' + i + '</a></li>\
+        ');
+    }
+}
+
+
 $(document).ready(function () {
 
-    $.getJSON('/api/v1/domains', function (result) {
+    var domainsUrl = '/api/v1/domains';
+    var urlVars = getUrlVars();
+
+    if ('page' in urlVars) {
+        domainsUrl += '?page=' + urlVars['page'];
+    }
+
+    $.getJSON(domainsUrl, function (result) {
+
         $.each(result['items'], function (i, domain) {
             addDomainToTable(domain.name);
         });
+
+        setPagination(result['meta']['pages'], result['meta']['page']);
+
+        $('#domainTable').removeClass('hidden').hide().fadeIn('fast');
+        $('#domainPagination').fadeIn('fast')
     });
 
 

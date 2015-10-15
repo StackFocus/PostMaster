@@ -1,4 +1,4 @@
-from flask import jsonify, request
+﻿from flask import jsonify, request
 from flask_login import login_required
 from swagmail import db
 from swagmail.models import VirtualDomains
@@ -26,5 +26,15 @@ def get_domain(domain_id):
 def new_domain():
     domain = VirtualDomains().from_json(request.json)
     db.session.add(domain)
+    db.session.commit()
+    return {}, 201
+
+
+@apiv1.route('/domains', methods=['DELETE'])
+@login_required
+@json_wrap
+def delete_domain():
+    domain = VirtualDomains().query_from_json(request.json)
+    db.session.delete(domain)
     db.session.commit()
     return {}, 201
