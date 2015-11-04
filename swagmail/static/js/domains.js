@@ -56,7 +56,7 @@ function newDomain(name) {
         data: JSON.stringify({'name': name}),
 
         success: function (data) {
-            addDomainToTable(name);
+            //addDomainToTable(name);
             addStatusMessage('success', 'The domain was added successfully.');
         },
 
@@ -93,45 +93,16 @@ function deleteDomain(name) {
 function deleteDomainClick(e) {
 
     deleteDomain($(e).closest('tr').find('td.domainName').text());
+    fillInTable();
 }
 
 
-function setPagination(numPages, currentPage) {
-
-    for (var i = 1; i <= numPages; i++) {
-
-        $('#domainPagination').hide()
-        $('#domainPagination').append('\
-            <li' + ((currentPage == i) ? ' class="active"' : '') + '><a href="' + '/domains?page=' + i + '">' + i + '</a></li>\
-        ');
-    }
-}
-
-
-$(document).ready(function () {
-
-    var domainsUrl = '/api/v1/domains';
-    var urlVars = getUrlVars();
-
-    if ('page' in urlVars) {
-        domainsUrl += '?page=' + urlVars['page'];
-    }
-
-    $.getJSON(domainsUrl, function (result) {
-
-        $.each(result['items'], function (i, domain) {
-            addDomainToTable(domain.name);
-        });
-
-        setPagination(result['meta']['pages'], result['meta']['page']);
-
-        $('#domainTable').removeClass('hidden').hide().fadeIn('fast');
-        $('#domainPagination').fadeIn('fast')
-    });
-
+function createEventListeners() {
+    // When the table is recreated the listeners must be set again
 
     // This has the enter key when in the #newDomainInput trigger a click on the Add button
     $('#newDomainInput').keyup(function (e) {
+
         var key = e.which;
         if (key == 13) {
             $('#newDomainAnchor').trigger('click');
@@ -139,10 +110,82 @@ $(document).ready(function () {
         }
     });
 
-
+    // When the Add button is clicked, it will POST to the API
     $('#newDomainAnchor').on('click', function () {
+
         $('#statusMessage div.alert button').trigger('click');
         newDomain($('#newDomainInput').val());
-        e.preventDefault();
+        $('#newDomainInput').val('');
+        fillInTable();
     });
+}
+
+
+function fillInTable() {
+    // Fills in the Domain table with the results from the API
+    // and fills in the pagination buttons
+
+    // Hide the table and pagination
+    $('#domainTable').addClass('hidden')
+    $('#domainPagination').addClass('hidden')
+
+    // Set the table to only have the add domain row
+    $('#domainTable tbody').html('\
+        <tr id="newDomainRow">\
+            <td><input id="newDomainInput" class="form-control" type="text" placeholder="Enter a new domain"/></td>\
+            <td style="vertical-align: middle"><a href="#" id="newDomainAnchor">Add</a></td>\
+        </tr>\
+    ');
+
+    var domainsUrl = '/api/v1/domains';
+    var urlVars = getUrlVars();
+
+    // If the page was specified in the URL, then add it to the API url
+    if ('page' in urlVars) {
+        domainsUrl += '?page=' + urlVars['page'];
+    }
+
+    // Query the API
+    $.getJSON(domainsUrl, function (result) {
+
+        // For each domain, add it to the table
+        $.each(result['items'], function (i, domain) {
+            addDomainToTable(domain.name);
+        });
+
+        var numPages = result['meta']['pages'];
+        var currPage = result['meta']['page'];
+
+        // Clear the pagination
+        $('#domainPagination').html('');
+
+        // Set the pagination
+        for (var i = 1; i <= numPages; i++) {
+
+            $('#domainPagination').hide()
+            $('#domainPagination').append('\
+                <li' + ((currPage == i) ? ' class="active"' : '') + '><a href="' + '/domains?page=' + i + '">' + i + '</a></li>\
+            ');
+        }
+
+        // Fade in the table and pagination
+        $('#domainTable').removeClass('hidden').hide().fadeIn('fast');
+        $('#domainPagination').removeClass('hidden').hide().fadeIn('fast');
+    })
+    .fail(function (jqxhr, textStatus, error) {
+        
+        // If the resource is not found, then redirect to the first domains page
+        if (error == 'NOT FOUND') {
+            window.location.href = '/domains';
+        }
+    })
+    ;
+
+    createEventListeners();
+}
+
+
+$(document).ready(function () {
+
+    fillInTable();
 });
