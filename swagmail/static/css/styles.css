@@ -52,6 +52,23 @@ ul.pagination li.disabled a:hover {
 	color:#b4bcc2;
 }
 
+#dynamicTable {
+    position: relative;
+}
+
+#domainTable tr {
+    height: 39px;
+}
+
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7) url('/static/img/loader.gif') no-repeat 50%;
+}
+
 /* Dashboard CSS */
 div.panel {
     margin-bottom: 6em;

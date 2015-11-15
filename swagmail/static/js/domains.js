@@ -16,25 +16,6 @@ function getUrlVars() {
 }
 
 
-function addDomainToTable(name) {
-
-    $('#newDomainRow').before('\
-        <tr>\
-            <td class="domainName">' + name + '</td>\
-            <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this)">Delete</a></td>\
-        </tr>\
-    ');
-}
-
-
-function deleteDomainFromTable(name) {
-
-    $('#domainTable tr td').filter(function () {
-        return $(this).text() == name;
-    }).parent().remove();
-}
-
-
 function addStatusMessage(category, message) {
 
     $('#statusMessage').html('\
@@ -56,8 +37,8 @@ function newDomain(name) {
         data: JSON.stringify({'name': name}),
 
         success: function (data) {
-            //addDomainToTable(name);
             addStatusMessage('success', 'The domain was added successfully.');
+            fillInTable();
         },
 
         error: function (data) {
@@ -78,8 +59,8 @@ function deleteDomain(name) {
         data: JSON.stringify({ 'name': name }),
 
         success: function (data) {
-            deleteDomainFromTable(name);
             addStatusMessage('success', 'The domain was successfully removed.');
+            fillInTable();
         },
 
         error: function (data) {
@@ -93,12 +74,116 @@ function deleteDomain(name) {
 function deleteDomainClick(e) {
 
     deleteDomain($(e).closest('tr').find('td.domainName').text());
-    fillInTable();
 }
 
 
-function createEventListeners() {
-    // When the table is recreated the listeners must be set again
+function fillInTable() {
+    var domainsUrl = '/api/v1/domains';
+    var urlVars = getUrlVars();
+
+    // Set the loading spinner
+    if ($('div.loader').length == 0) {
+        $('#dynamicTable').prepend('<div class="loader"></div>');
+    }
+
+    // If the page was specified in the URL, then add it to the API url
+    if ('page' in urlVars) {
+        domainsUrl += '?page=' + urlVars['page'];
+    }
+
+    // Query the API
+    $.getJSON(domainsUrl, function (result) {
+
+        var i = 1
+        // For each domain, add/change the value in the table
+        $.each(result['items'], function (j, domain) {
+
+            var tableRow = $('#domainRow' + String(i));
+
+            // If the row exists, then change it
+            if (tableRow.length != 0) {
+                tableRow.html('\
+                    <td class="domainName">' + domain.name + '</td>\
+                    <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this)">Delete</a></td>\
+                ');
+            }
+            // If the row doesn't exist, then add it
+            else {
+                $('#newDomainRow').before('\
+                    <tr id="domainRow' + String(i) + '">\
+                        <td class="domainName">' + domain.name + '</td>\
+                        <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this)">Delete</a></td>\
+                    </tr>\
+                ');
+            }
+
+            i++;
+        });
+
+        // If there are some rows remaining after looping through the API results, remove them
+        var numTotalRows = $('#domainTable tr').size();
+        while (i < numTotalRows) {
+
+            if ($('#domainRow' + String(i)).length != 0) {
+                $('#domainRow' + String(i)).remove();
+            }
+            i++;
+        }
+
+        var numPages = result['meta']['pages'];
+        var currPage = result['meta']['page'];
+
+        // Set the pagination
+        for (var i = 1; i <= numPages; i++) {
+
+            if ($('#domainPage' + String(i)).length == 0) {
+                $('#domainPagination').append('\
+                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('domainPage' + String(i)) + '"><a href="' + '/domains?page=' + i + '">' + i + '</a></li>\
+                ');
+            }
+        }
+
+        var i = numPages + 1;
+        // If there are some pagination buttons remaining after looping through the API results, remove them
+        var numTotalPaginationButtons = $('#domainPagination li').size();
+        while (i <= numTotalPaginationButtons) {
+
+            if ($('#domainPage' + String(i)).length != 0) {
+                $('#domainPage' + String(i)).remove();
+            }
+            i++;
+        }
+
+        // Fade in the pagination on first load
+        if ($('#domainPagination').hasClass('hidden')) {
+            $('#domainPagination').removeClass('hidden').hide().fadeIn('fast');
+        }
+
+        setTimeout(function () {
+            $('div.loader').remove();
+        }, 500);
+    })
+    .fail(function (jqxhr, textStatus, error) {
+        
+        // If the resource is not found, then redirect to the first domains page
+        if (error == 'NOT FOUND') {
+            window.location.href = '/domains';
+        }
+    });
+}
+
+
+$(document).ready(function () {
+
+    fillInTable();
+
+    // When the Add button is clicked, it will POST to the API
+    $('#newDomainAnchor').on('click', function () {
+
+        $('#statusMessage div.alert button').trigger('click');
+        newDomain($('#newDomainInput').val());
+        $('#newDomainInput').val('');
+    });
 
     // This has the enter key when in the #newDomainInput trigger a click on the Add button
     $('#newDomainInput').keyup(function (e) {
@@ -109,83 +194,4 @@ function createEventListeners() {
             return false;
         }
     });
-
-    // When the Add button is clicked, it will POST to the API
-    $('#newDomainAnchor').on('click', function () {
-
-        $('#statusMessage div.alert button').trigger('click');
-        newDomain($('#newDomainInput').val());
-        $('#newDomainInput').val('');
-        fillInTable();
-    });
-}
-
-
-function fillInTable() {
-    // Fills in the Domain table with the results from the API
-    // and fills in the pagination buttons
-
-    // Hide the table and pagination
-    $('#domainTable').addClass('hidden')
-    $('#domainPagination').addClass('hidden')
-
-    // Set the table to only have the add domain row
-    $('#domainTable tbody').html('\
-        <tr id="newDomainRow">\
-            <td><input id="newDomainInput" class="form-control" type="text" placeholder="Enter a new domain"/></td>\
-            <td style="vertical-align: middle"><a href="#" id="newDomainAnchor">Add</a></td>\
-        </tr>\
-    ');
-
-    var domainsUrl = '/api/v1/domains';
-    var urlVars = getUrlVars();
-
-    // If the page was specified in the URL, then add it to the API url
-    if ('page' in urlVars) {
-        domainsUrl += '?page=' + urlVars['page'];
-    }
-
-    // Query the API
-    $.getJSON(domainsUrl, function (result) {
-
-        // For each domain, add it to the table
-        $.each(result['items'], function (i, domain) {
-            addDomainToTable(domain.name);
-        });
-
-        var numPages = result['meta']['pages'];
-        var currPage = result['meta']['page'];
-
-        // Clear the pagination
-        $('#domainPagination').html('');
-
-        // Set the pagination
-        for (var i = 1; i <= numPages; i++) {
-
-            $('#domainPagination').hide()
-            $('#domainPagination').append('\
-                <li' + ((currPage == i) ? ' class="active"' : '') + '><a href="' + '/domains?page=' + i + '">' + i + '</a></li>\
-            ');
-        }
-
-        // Fade in the table and pagination
-        $('#domainTable').removeClass('hidden').hide().fadeIn('fast');
-        $('#domainPagination').removeClass('hidden').hide().fadeIn('fast');
-    })
-    .fail(function (jqxhr, textStatus, error) {
-        
-        // If the resource is not found, then redirect to the first domains page
-        if (error == 'NOT FOUND') {
-            window.location.href = '/domains';
-        }
-    })
-    ;
-
-    createEventListeners();
-}
-
-
-$(document).ready(function () {
-
-    fillInTable();
 });
