@@ -71,9 +71,23 @@ function deleteDomain(name) {
 }
 
 
-function deleteDomainClick(e) {
+function deleteDomainClick(obj, e) {
 
-    deleteDomain($(e).closest('tr').find('td.domainName').text());
+    deleteDomain($(obj).closest('tr').find('td.domainName').text());
+    e.preventDefault();
+}
+
+
+function changePage(obj, e) {
+
+    if (history.pushState) {
+
+        history.pushState(null, null, $(obj).attr('href'));
+        fillInTable();
+        e.preventDefault();
+    }
+    
+    return true;
 }
 
 
@@ -104,7 +118,7 @@ function fillInTable() {
             if (tableRow.length != 0) {
                 tableRow.html('\
                     <td class="domainName">' + domain.name + '</td>\
-                    <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this)">Delete</a></td>\
+                    <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this, event)">Delete</a></td>\
                 ');
             }
             // If the row doesn't exist, then add it
@@ -112,7 +126,7 @@ function fillInTable() {
                 $('#newDomainRow').before('\
                     <tr id="domainRow' + String(i) + '">\
                         <td class="domainName">' + domain.name + '</td>\
-                        <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this)">Delete</a></td>\
+                        <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this, event)">Delete</a></td>\
                     </tr>\
                 ');
             }
@@ -136,10 +150,21 @@ function fillInTable() {
         // Set the pagination
         for (var i = 1; i <= numPages; i++) {
 
-            if ($('#domainPage' + String(i)).length == 0) {
+            var domainPageButton = $('#domainPage' + String(i));
+
+            if (domainPageButton.length == 0) {
                 $('#domainPagination').append('\
-                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('domainPage' + String(i)) + '"><a href="' + '/domains?page=' + i + '">' + i + '</a></li>\
+                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('domainPage' + String(i)) + '"><a href="' + '/domains?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>\
                 ');
+            }
+            else {
+                if ((currPage == i) && !(domainPageButton.hasClass('active'))) {
+                    domainPageButton.addClass('active');
+                }
+                else if ((currPage != i) && (domainPageButton.hasClass('active'))) {
+
+                    domainPageButton.removeClass('active');
+                }
             }
         }
 
@@ -165,9 +190,22 @@ function fillInTable() {
     })
     .fail(function (jqxhr, textStatus, error) {
         
-        // If the resource is not found, then redirect to the first domains page
+        // If the resource is not found, then redirect to the previous domains page
         if (error == 'NOT FOUND') {
-            window.location.href = '/domains';
+
+            $.getJSON('/api/v1/domains', function (result) {
+
+                var url = ('/domains?page=' + String(result['meta']['pages']));
+
+                if (history.pushState) {
+
+                    history.pushState(null, null, url);
+                    fillInTable();
+                }
+                else {
+                    window.location.href = url;
+                }
+            });
         }
     });
 }
@@ -176,6 +214,10 @@ function fillInTable() {
 $(document).ready(function () {
 
     fillInTable();
+
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
 
     // When the Add button is clicked, it will POST to the API
     $('#newDomainAnchor').on('click', function () {
