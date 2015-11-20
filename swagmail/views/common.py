@@ -6,6 +6,7 @@ Purpose: routes for the app
 
 from flask import render_template, redirect, url_for, request, flash, Blueprint
 from flask_login import login_required, login_user, logout_user, current_user
+from swagmail.utils import getAllFromTable
 from swagmail import app, forms, models, login_manager, bcrypt
 
 common = Blueprint('common', __name__)
@@ -69,7 +70,7 @@ def login():
             return redirect(url_for('login'))
 
 
-@app.route('/logout')
+@app.route('/logout', methods=["GET"])
 def logout():
     """
     Logs current user out
@@ -81,10 +82,11 @@ def logout():
     return redirect(url_for('login'))
 
 
+@app.route('/domains', methods=["GET"])
 @login_required
-@app.route('/domains')
 def domains():
     """
     Manages domains in the database
     """
+
     return render_template('domains.html', authenticated=(current_user).is_authenticated())
