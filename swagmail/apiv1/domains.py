@@ -37,4 +37,4 @@ def delete_domain():
     domain = VirtualDomains().query_from_json(request.json)
     db.session.delete(domain)
     db.session.commit()
-    return {}, 201
+    return {}, 204
