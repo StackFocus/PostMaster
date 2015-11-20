@@ -82,8 +82,8 @@ def logout():
     return redirect(url_for('login'))
 
 
-@login_required
 @app.route('/domains', methods=["GET"])
+@login_required
 def domains():
     """
     Manages domains in the database
