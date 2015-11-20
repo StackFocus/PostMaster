@@ -89,4 +89,4 @@ def domains():
     Manages domains in the database
     """
 
-    return render_template('domains.html')
+    return render_template('domains.html', authenticated=(current_user).is_authenticated())

@@ -18,7 +18,63 @@ nav a:hover {
 
 h2.textHeading {
     text-align: center;
-    margin-bottom: 2.5em;
+    margin-bottom: 3em;
+}
+
+/* Dashboard CSS */
+div.panel {
+    margin-bottom: 6em;
+}
+
+div.panel-heading {
+    font-size: 110%;
+}
+
+div.panel-heading i {
+    margin-right: 0.75em;
+}
+/* End of Dashboard CSS */
+
+
+/* Login Page CSS */
+#loginRow .panel-body {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.loginInput {
+    width: 75%;
+    margin: auto;
+    margin-top: 2em;
+}
+
+#loginButton {
+    padding: 0.75em 2em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.loginAlert {
+    width: 60%;
+    margin: auto;
+    margin-bottom: 4.5em;
+    text-align: center;
+}
+/* End of Login Page CSS */
+
+/* Manage Page CSS */
+h2.textHeadingManage {
+    text-align: center;
+    margin-bottom: 0.75em;
+}
+
+#newDomainInput {
+    height: 40px;
+}
+
+#statusMessage {
+    height: 53px;
+    margin-bottom: 2em;
 }
 
 ul.pagination li a,
@@ -67,52 +123,6 @@ ul.pagination li.disabled a:hover {
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.7) url('/static/img/loader.gif') no-repeat 50%;
-}
-
-/* Dashboard CSS */
-div.panel {
-    margin-bottom: 6em;
-}
-
-div.panel-heading {
-    font-size: 110%;
-}
-
-div.panel-heading i {
-    margin-right: 0.75em;
-}
-/* End of Dashboard CSS */
-
-
-/* Login Page CSS */
-#loginRow .panel-body {
-    margin-top: 2em;
-    margin-bottom: 2em;
-}
-
-.loginInput {
-    width: 75%;
-    margin: auto;
-    margin-top: 2em;
-}
-
-#loginButton {
-    padding: 0.75em 2em;
-    margin-top: 2em;
-    margin-bottom: 2em;
-}
-
-.loginAlert {
-    width: 60%;
-    margin: auto;
-    margin-bottom: 4.5em;
-    text-align: center;
-}
-/* End of Login Page CSS */
-
-/* Manage Page CSS */
-#newDomainInput {
-    height: 40px;
 }
 /* End of Manage Page CSS */
 
