@@ -42,7 +42,7 @@ def getDomain(name):
     """
     queriedDomain = models.VirtualDomains.query.filter_by(name=name).first()
     if queriedDomain:
-        row2dict(queriedDomain)
+        return row2dict(queriedDomain)
     return None
 
 
@@ -53,7 +53,7 @@ def getUser(email):
     queriedUser = models.VirtualUsers.query.filter_by(email=email).first()
 
     if queriedUser:
-        row2dict(queriedUser)
+        return row2dict(queriedUser)
     return None
 
 
