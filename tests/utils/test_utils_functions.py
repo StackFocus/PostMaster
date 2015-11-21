@@ -14,8 +14,7 @@ class TestUtilsFunctions:
         """ Tests the getUser function
         """
         result = getUser('email@swagmail.com')
-        assert (result['email'] == 'email@swagmail.com') and ('id' in result) and ('password' in result) and \
-            (result['password'] == '$6$d1afb4750462a67c$QfGLHzTb5tn5B2uooNisQnKm3KzhMk7cmC/eKgu9TujDPsy4YAngQ5bk08jFNSuFenH2lRseeSJPArfl60bNq.')
+        assert (result['email'] == 'email@swagmail.com') and ('id' in result) and ('password' in result)
 
 
     def test_getAlias(self):

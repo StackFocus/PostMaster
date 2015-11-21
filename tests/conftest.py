@@ -15,28 +15,43 @@ def initialize():
             True
         )
 
-        domain = models.VirtualDomains('swagmail.com')
-        domain2 = models.VirtualDomains('swagmail.org')
-
-        emailUser = models.VirtualUsers(1, '$6$d1afb4750462a67c$QfGLHzTb5tn5B2uooNisQnKm3KzhMk7cmC/eKgu9TujDPsy4YAngQ5bk08jFNSuFenH2lRseeSJPArfl60bNq.', 'email@swagmail.com')
-        emailUser2 = models.VirtualUsers(1, '$6$9969cb876b2432ed$HoJIK2EoFyI4YN3n5vc1pPHf6NXjGwpdmfIpvFCLNv1ZsJnsL0K50/NLUBdaEhACOnbNKQjoX2VAEJTkuR4W//', 'email2@swagmail.com')
-
-        alias = models.VirtualAliases(1, 'aliasemail@swagmail.com', 'email@swagmail.com')
-        alias2 = models.VirtualAliases(1, 'aliasemail2@swagmail.com', 'email2@swagmail.com')
-
-        db.session.add(user)
-        db.session.add(domain)
-        db.session.add(domain2)
-        db.session.add(emailUser)
-        db.session.add(emailUser2)
-        db.session.add(alias)
-        db.session.add(alias2)
-
         try:
+            db.session.add(user)
             db.session.commit()
-            return True
         except:
             return False
+
+        domain = models.VirtualDomains().from_json({'name':'swagmail.com'})
+        domain2 = models.VirtualDomains().from_json({'name':'swagmail.org'})
+
+        try:
+            db.session.add(domain)
+            db.session.add(domain2)
+            db.session.commit()
+        except:
+            return False
+
+        emailUser = models.VirtualUsers().from_json({'email': 'email@swagmail.com', 'password': 'password'})
+        emailUser2 = models.VirtualUsers().from_json({'email': 'email2@swagmail.com', 'password': 'password'})
+
+        try:
+            db.session.add(emailUser)
+            db.session.add(emailUser2)
+            db.session.commit()
+        except:
+            return False
+
+        alias = models.VirtualAliases().from_json({'domain_id': 1, 'source': 'aliasemail@swagmail.com', 'destination': 'email@swagmail.com'})
+        alias2 = models.VirtualAliases().from_json({'domain_id': 1, 'source': 'aliasemail2@swagmail.com', 'destination': 'email2@swagmail.com'})
+
+        try:
+            db.session.add(alias)
+            db.session.add(alias2)
+            db.session.commit()
+        except:
+            return False
+        
+        return True
 
     except Exception as e:
         print "Unexpected error: %s" % e.message

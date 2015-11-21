@@ -3,13 +3,7 @@ Author: Swagger.pro
 File: utils.py
 Purpose: General helper utils
 """
-from re import search, match
-from os import urandom
-from passlib.hash import sha512_crypt as sha512  # pylint: disable=no-name-in-module
-from hashlib import sha1
-from swagmail import db, models, app
-from flask import abort, jsonify, jsonify
-import json
+from swagmail import models
 
 
 def row2dict(row):
