@@ -213,6 +213,9 @@ function fillInTable() {
 
 $(document).ready(function () {
 
+    // IE was caching the AJAX request and causing the table not to update
+    $.ajaxSetup({ cache: false });
+
     fillInTable();
 
     $(window).bind("popstate", function () {

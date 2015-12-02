@@ -83,7 +83,9 @@ class VirtualUsers(db.Model):
 
     def from_json(self, json):
         if json.get('email', None) is None:
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
+            raise ValidationError('Invalid user: missing ' + e.args[0])
+        if json.get('password', None) is None:
+            raise ValidationError('Invalid user: missing ' + e.args[0])
         if self.query.filter_by(email=json['email']).first() is not None:
             raise ValidationError('"%s" already exists!' % json['email'])
         self.email = json['email']
