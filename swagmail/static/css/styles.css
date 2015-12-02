@@ -68,7 +68,8 @@ h2.textHeadingManage {
     margin-bottom: 0.75em;
 }
 
-#newDomainInput {
+#newDomainInput, #newUserInput,
+#newPasswordInput {
     height: 40px;
 }
 
@@ -108,11 +109,11 @@ ul.pagination li.disabled a:hover {
 	color:#b4bcc2;
 }
 
-#dynamicTable {
+#dynamicTableDiv {
     position: relative;
 }
 
-#domainTable tr {
+#dynamicTable tr {
     height: 39px;
 }
 
@@ -171,7 +172,8 @@ ul.pagination li.disabled a:hover {
 
 @media(min-width:992px) {
     /* Manage Page CSS */
-    #newDomainInput {
+    #newDomainInput, #newUserInput,
+    #newPasswordInput {
         width: 75%;
     }
     /* End of Manage Page CSS */

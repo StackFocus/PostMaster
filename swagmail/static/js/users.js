@@ -40,59 +40,26 @@ function addStatusMessage(category, message) {
 }
 
 
-function newDomain(name) {
+function newUser(email) {
 
-    $.ajax({
-        url: '/api/v1/domains',
-        type: 'post',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({'name': name}),
+    //stub
+}
 
-        success: function (data) {
-            addStatusMessage('success', 'The domain was added successfully.');
-            fillInTable();
-        },
+function deleteUser(email) {
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
-        }
-    });
+    //stub
 }
 
 
-function deleteDomain(name) {
+function deleteUserClick(obj, e) {
 
-    $.ajax({
-        url: '/api/v1/domains',
-        type: 'delete',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({ 'name': name }),
-
-        success: function (data) {
-            addStatusMessage('success', 'The domain was successfully removed.');
-            fillInTable();
-        },
-
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
-        }
-    });
-}
-
-
-function deleteDomainClick(obj, e) {
-
-    deleteDomain($(obj).closest('tr').find('td.domainName').text());
+    deleteUser($(obj).closest('tr').find('td.userEmail').text());
     e.preventDefault();
 }
 
 
 function fillInTable() {
-    var apiURL = '/api/v1/domains';
+    var apiURL = '/api/v1/users';
     var urlVars = getUrlVars();
 
     // Set the loading spinner
@@ -117,16 +84,18 @@ function fillInTable() {
             // If the row exists, then change it
             if (tableRow.length != 0) {
                 tableRow.html('\
-                    <td class="domainName">' + item.name + '</td>\
-                    <td><a href="#" onclick="deleteDomainClick(this, event)">Delete</a></td>\
+                    <td class="userEmail">' + item.email + '</td>\
+                    <td class="userPassword">●●●●●●●●●●●●</td>\
+                    <td><a href="#" onclick="deleteUserClick(this, event)">Delete</a></td>\
                 ');
             }
-            // If the row doesn't exist, then add it
+                // If the row doesn't exist, then add it
             else {
                 $('#addItemRow').before('\
                     <tr id="dynamicTableRow' + String(i) + '">\
-                        <td class="domainName">' + item.name + '</td>\
-                        <td><a href="#" onclick="deleteDomainClick(this, event)">Delete</a></td>\
+                        <td class="userEmail">' + item.email + '</td>\
+                        <td class="userPassword">●●●●●●●●●●●●</td>\
+                        <td><a href="#" onclick="deleteUserClick(this, event)">Delete</a></td>\
                     </tr>\
                 ');
             }
@@ -154,7 +123,7 @@ function fillInTable() {
 
             if (pageButton.length == 0) {
                 $('#pagination').append('\
-                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '"><a href="' + '/domains?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>\
+                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '"><a href="' + '/users?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>\
                 ');
             }
             else {
@@ -189,13 +158,13 @@ function fillInTable() {
         }, 500);
     })
     .fail(function (jqxhr, textStatus, error) {
-        
+
         // If the resource is not found, then redirect to the last page
         if (error == 'NOT FOUND') {
 
-            $.getJSON('/api/v1/domains', function (result) {
+            $.getJSON('/api/v1/users', function (result) {
 
-                var url = ('/domains?page=' + String(result['meta']['pages']));
+                var url = ('/users?page=' + String(result['meta']['pages']));
 
                 if (history.pushState) {
 
@@ -226,12 +195,12 @@ $(document).ready(function () {
     $('#newItemAnchor').on('click', function () {
 
         $('#statusMessage div.alert button').trigger('click');
-        newDomain($('#newDomainInput').val());
-        $('#newDomainInput').val('');
+        newUser($('#newUserInput').val());
+        $('#newUserInput').val('');
     });
 
     // This has the enter key when in the add field trigger a click on the Add button
-    $('#newDomainInput').keyup(function (e) {
+    $('#newUserInput').keyup(function (e) {
 
         var key = e.which;
         if (key == 13) {
