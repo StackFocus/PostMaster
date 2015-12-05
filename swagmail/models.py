@@ -137,7 +137,7 @@ class VirtualAliases(db.Model):
         }
 
     def from_json(self, json):
-        if json.get('domain_id', None) is None or json.get('source', None) is None or json.get('destination', None) is None:
+        if json.get('source', None) is None or json.get('destination', None) is None:
             raise ValidationError('Invalid domain: missing ' + e.args[0])
         if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
             raise ValidationError('"%s" to "%s" already exists!' % (
