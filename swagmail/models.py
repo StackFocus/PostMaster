@@ -35,7 +35,7 @@ class VirtualDomains(db.Model):
 
     def from_json(self, json):
         if json.get('name', None) is None:
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
+            raise ValidationError('The domain name was not specified')
         if self.query.filter_by(name=json['name']).first() is None:
             self.name = json['name']
         else:
@@ -83,9 +83,9 @@ class VirtualUsers(db.Model):
 
     def from_json(self, json):
         if json.get('email', None) is None:
-            raise ValidationError('Invalid user: missing ' + e.args[0])
+            raise ValidationError('The email address was not specified')
         if json.get('password', None) is None:
-            raise ValidationError('Invalid user: missing ' + e.args[0])
+            raise ValidationError('The password was not specified')
         if self.query.filter_by(email=json['email']).first() is not None:
             raise ValidationError('"%s" already exists!' % json['email'])
         self.email = json['email']
@@ -137,8 +137,10 @@ class VirtualAliases(db.Model):
         }
 
     def from_json(self, json):
-        if json.get('domain_id', None) is None or json.get('source', None) is None or json.get('destination', None) is None:
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if json.get('source', None) is None:
+            raise ValidationError('The source email was not specified')
+        if json.get('destination', None) is None:
+            raise ValidationError('The destination email was not specified')
         if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
             raise ValidationError('"%s" to "%s" already exists!' % (
                 json['source'], json['destination']))

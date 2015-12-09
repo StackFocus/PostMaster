@@ -40,9 +40,28 @@ function addStatusMessage(category, message) {
 }
 
 
-function newUser(email) {
+function newUser(email, password) {
 
-    //stub
+    $.ajax({
+        url: '/api/v1/users',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            'email': email,
+            'password': password
+        }),
+
+        success: function (data) {
+            addStatusMessage('success', 'The user was added successfully.');
+            fillInTable();
+        },
+
+        error: function (data) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        }
+    });
 }
 
 function deleteUser(email) {
@@ -195,12 +214,13 @@ $(document).ready(function () {
     $('#newItemAnchor').on('click', function () {
 
         $('#statusMessage div.alert button').trigger('click');
-        newUser($('#newUserInput').val());
+        newUser($('#newUserInput').val(), $('#newPasswordInput').val());
         $('#newUserInput').val('');
+        $('#newPasswordInput').val('');
     });
 
     // This has the enter key when in the add field trigger a click on the Add button
-    $('#newUserInput').keyup(function (e) {
+    $('#newUserInput, #newPasswordInput').keyup(function (e) {
 
         var key = e.which;
         if (key == 13) {
