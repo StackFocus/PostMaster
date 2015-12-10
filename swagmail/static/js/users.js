@@ -64,15 +64,28 @@ function newUser(email, password) {
     });
 }
 
-function deleteUser(email) {
+function deleteUser(id) {
 
-    //stub
+    $.ajax({
+        url: '/api/v1/users/' + id,
+        type: 'delete',
+
+        success: function (data) {
+            addStatusMessage('success', 'The user was successfully removed.');
+            fillInTable();
+        },
+
+        error: function (data) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        }
+    });
 }
 
 
 function deleteUserClick(obj, e) {
 
-    deleteUser($(obj).closest('tr').find('td.userEmail').text());
+    deleteUser($(obj).attr('data-pk'));
     e.preventDefault();
 }
 
@@ -103,9 +116,9 @@ function fillInTable() {
             // If the row exists, then change it
             if (tableRow.length != 0) {
                 tableRow.html('\
-                    <td class="userEmail">' + item.email + '</td>\
+                    <td class="userEmail" data-pk="' + item.id + '">' + item.email + '</td>\
                     <td class="userPassword">●●●●●●●●●●●●</td>\
-                    <td><a href="#" onclick="deleteUserClick(this, event)">Delete</a></td>\
+                    <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                 ');
             }
                 // If the row doesn't exist, then add it
@@ -114,7 +127,7 @@ function fillInTable() {
                     <tr id="dynamicTableRow' + String(i) + '">\
                         <td class="userEmail">' + item.email + '</td>\
                         <td class="userPassword">●●●●●●●●●●●●</td>\
-                        <td><a href="#" onclick="deleteUserClick(this, event)">Delete</a></td>\
+                        <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                     </tr>\
                 ');
             }

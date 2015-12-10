@@ -1,4 +1,4 @@
-from flask import jsonify, request
+﻿from flask import jsonify, request
 from flask_login import login_required
 from swagmail import db
 from swagmail.models import VirtualUsers
@@ -28,3 +28,13 @@ def new_user():
     db.session.add(user)
     db.session.commit()
     return {}, 201
+
+
+@apiv1.route('/users/<int:user_id>', methods=['DELETE'])
+@login_required
+@json_wrap
+def delete_user(user_id):
+    user = VirtualUsers.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return {}, 204
