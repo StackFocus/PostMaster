@@ -62,14 +62,12 @@ function newDomain(name) {
 }
 
 
-function deleteDomain(name) {
+function deleteDomain(id) {
 
     $.ajax({
-        url: '/api/v1/domains',
+        url: '/api/v1/domains/' + id,
         type: 'delete',
-        dataType: 'json',
         contentType: 'application/json',
-        data: JSON.stringify({ 'name': name }),
 
         success: function (data) {
             addStatusMessage('success', 'The domain was successfully removed.');
@@ -86,7 +84,7 @@ function deleteDomain(name) {
 
 function deleteDomainClick(obj, e) {
 
-    deleteDomain($(obj).closest('tr').find('td.domainName').text());
+    deleteDomain($(obj).attr('data-pk'));
     e.preventDefault();
 }
 
@@ -117,8 +115,8 @@ function fillInTable() {
             // If the row exists, then change it
             if (tableRow.length != 0) {
                 tableRow.html('\
-                    <td class="domainName">' + item.name + '</td>\
-                    <td><a href="#" onclick="deleteDomainClick(this, event)">Delete</a></td>\
+                    <td class="domainName" data-pk="' + item.id + '">' + item.name + '</td>\
+                    <td><a href="#" onclick="deleteDomainClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                 ');
             }
             // If the row doesn't exist, then add it
@@ -126,7 +124,7 @@ function fillInTable() {
                 $('#addItemRow').before('\
                     <tr id="dynamicTableRow' + String(i) + '">\
                         <td class="domainName">' + item.name + '</td>\
-                        <td><a href="#" onclick="deleteDomainClick(this, event)">Delete</a></td>\
+                        <td><a href="#" onclick="deleteDomainClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                     </tr>\
                 ');
             }
