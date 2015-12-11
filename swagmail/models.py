@@ -158,7 +158,7 @@ class VirtualAliases(db.Model):
                 self.source = json['source']
                 self.destination = json['destination']
                 if VirtualUsers.query.filter_by(email=json['destination']).first() is not None:
-                    self.domain_id = json['domain_id']
+                    self.domain_id = VirtualDomains.query.filter_by(name=destinationDomain).first().id
                 else:
                     raise ValidationError \
                         ('The destination "%s" is not a current email address' %

@@ -24,7 +24,7 @@ def get_domain(domain_id):
 @login_required
 @json_wrap
 def new_domain():
-    domain = VirtualDomains().from_json(request.json)
+    domain = VirtualDomains().from_json(request.get_json(force=True))
     db.session.add(domain)
     db.session.commit()
     return {}, 201

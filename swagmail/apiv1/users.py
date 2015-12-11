@@ -24,7 +24,7 @@ def get_user(user_id):
 @login_required
 @json_wrap
 def new_user():
-    user = VirtualUsers().from_json(request.json)
+    user = VirtualUsers().from_json(request.get_json(force=True))
     db.session.add(user)
     db.session.commit()
     return {}, 201
