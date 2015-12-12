@@ -34,7 +34,7 @@ class VirtualDomains(db.Model):
         }
 
     def from_json(self, json):
-        if json.get('name', None) is None:
+        if json.get('name', None) in [None, ""]:
             raise ValidationError('The domain name was not specified')
         if self.query.filter_by(name=json['name']).first() is None:
             self.name = json['name']

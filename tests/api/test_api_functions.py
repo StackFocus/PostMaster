@@ -118,7 +118,7 @@ class TestUserFunctions:
 
     def test_domains_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/domains", data=json.dumps(
-            {"name": "".join((random.choice(string.ascii_uppercase + string.digits) + ".com" for _ in range(6)))}))
+            {"name": "".join((random.choice(string.ascii_uppercase + string.digits) for _ in range(6)))+ ".com"}))
         try:
             json.loads(rv.data)
         except:
