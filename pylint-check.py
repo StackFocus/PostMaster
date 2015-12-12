@@ -1,24 +1,18 @@
-﻿#! /usr/bin/env python
+#! /usr/bin/env python
 '''
 Module that runs pylint on all python scripts found in a directory tree..
 '''
-
 import os
 import re
 import sys
-
 total = 0.0
 count = 0
-
-
 def check(module):
     '''
     apply pylint to the file specified if it is a *.py file
     '''
     global total, count
-
     if module[-3:] == ".py":
-
         print "CHECKING ", module
         pout = os.popen('pylint --rcfile=.pylintrc "%s"' % module, 'r')
         for line in pout:
@@ -29,7 +23,6 @@ def check(module):
                 score = re.findall("\d+.\d\d", line)[0]
                 total += float(score)
                 count += 1
-
 if __name__ == "__main__":
     try:
         print sys.argv
@@ -37,7 +30,6 @@ if __name__ == "__main__":
     except IndexError:
         print "no directory specified, defaulting to current working directory"
         BASE_DIRECTORY = os.getcwd()
-
     print "looking for *.py scripts in subdirectories of ", BASE_DIRECTORY
     for root, dirs, files in os.walk(BASE_DIRECTORY):
         if "env" in root:
@@ -51,7 +43,6 @@ if __name__ == "__main__":
             if "pylint-check.py" in filepath:
                 continue
             check(filepath)
-
     print "==" * 50
     print "%d modules found" % count
     print "AVERAGE SCORE = %.02f" % (total / count)
