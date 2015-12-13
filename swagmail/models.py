@@ -96,10 +96,7 @@ class VirtualUsers(db.Model):
             if VirtualDomains.query.filter_by(name=domain).first() is not None:
                 self.domain_id = VirtualDomains.query.filter_by(
                     name=domain).first().id
-                salt = (sha1(urandom(16)).hexdigest())[:16]
-                passwordAndSalt = sha512.encrypt(json['password'], rounds=5000,
-                                                 salt=salt, implicit_rounds=True)
-                self.password = passwordAndSalt
+                self.password = self.encrypt_password(json['password'])
             else:
                 raise ValidationError(
                     'The domain "%s" is not managed by this database' % domain)
@@ -107,6 +104,12 @@ class VirtualUsers(db.Model):
             raise ValidationError(
                 '"%s" is not a valid email address' % json['email'])
         return self
+
+    def encrypt_password(self, password):
+        salt = (sha1(urandom(16)).hexdigest())[:16]
+        protectedPassword = sha512.encrypt(password, rounds=5000,
+                                    salt=salt, implicit_rounds=True)
+        return protectedPassword
 
 
 class VirtualAliases(db.Model):
