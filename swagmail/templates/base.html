@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.5/flatly/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='libraries/bootstrap/flatly/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='libraries/font-awesome/css/font-awesome.min.css') }}">
+    <script src="{{ url_for('static', filename='libraries/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libraries/bootstrap/js/bootstrap.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='libraries/bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='libraries/bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
