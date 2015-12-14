@@ -21,6 +21,15 @@ h2.textHeading {
     margin-bottom: 3em;
 }
 
+table.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+button.editable-submit,
+button.editable-cancel {
+    margin-top: 3px;
+}
+
 /* Dashboard CSS */
 div.panel {
     margin-bottom: 6em;
@@ -113,8 +122,13 @@ ul.pagination li.disabled a:hover {
     position: relative;
 }
 
-#dynamicTable tr {
-    height: 39px;
+#dynamicTable td {
+    height: 46px;
+    padding: 5px 8px;
+}
+
+#actionHeader {
+    width: 15%;
 }
 
 .loader {
@@ -126,6 +140,22 @@ ul.pagination li.disabled a:hover {
     background: rgba(255, 255, 255, 0.7) url('/static/img/loader.gif') no-repeat 50%;
 }
 /* End of Manage Page CSS */
+
+/* Only Domains Page CSS */
+#domainHeader {
+    width: 85%;
+}
+
+#newDomainInput {
+    max-width: 500px;
+}
+/* End of Only Domains Page CSS */
+
+/* Only Users Page CSS */
+#emailHeader, #passwordHeader {
+    width: 42.5%;
+}
+/* End of Only Users Page CSS */
 
 @media(max-width:767px) {
     /* Login Page CSS */

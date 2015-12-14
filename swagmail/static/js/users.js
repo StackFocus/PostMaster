@@ -96,6 +96,7 @@ function userPasswordEventListeners() {
     $('a.userPassword').editable({
 
         mode: 'inline',
+        anim: 100,
 
         ajaxOptions: {
             type: 'PUT',
@@ -115,6 +116,8 @@ function userPasswordEventListeners() {
             addStatusMessage('success', 'The user\'s password was changed successfully');
         }
     });
+
+    $('a.userPassword').tooltip();
 }
 
 
@@ -145,7 +148,7 @@ function fillInTable() {
             if (tableRow.length != 0) {
                 tableRow.html('\
                     <td class="userEmail" data-pk="' + item.id + '">' + item.email + '</td>\
-                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password">●●●●●●●●●●●●</a></td>\
+                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password" title="Click to change the password">●●●●●●●●</a></td>\
                     <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                 ');
             }
@@ -154,7 +157,7 @@ function fillInTable() {
                 $('#addItemRow').before('\
                     <tr id="dynamicTableRow' + String(i) + '">\
                         <td class="userEmail">' + item.email + '</td>\
-                        <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password">●●●●●●●●●●●●</a></td>\
+                        <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password" title="Click to change the password">●●●●●●●●</a></td>\
                         <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                     </tr>\
                 ');
