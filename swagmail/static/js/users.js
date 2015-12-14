@@ -53,7 +53,7 @@ function newUser(email, password) {
         }),
 
         success: function (data) {
-            addStatusMessage('success', 'The user was added successfully.');
+            addStatusMessage('success', 'The user was added successfully');
             fillInTable();
         },
 
@@ -71,7 +71,7 @@ function deleteUser(id) {
         type: 'delete',
 
         success: function (data) {
-            addStatusMessage('success', 'The user was successfully removed.');
+            addStatusMessage('success', 'The user was successfully removed');
             fillInTable();
         },
 
@@ -87,6 +87,34 @@ function deleteUserClick(obj, e) {
 
     deleteUser($(obj).attr('data-pk'));
     e.preventDefault();
+}
+
+
+function userPasswordEventListeners() {
+
+    $('a.userPassword').unbind();
+    $('a.userPassword').editable({
+
+        mode: 'inline',
+
+        ajaxOptions: {
+            type: 'PUT',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        },
+
+        params: function(params) {
+            return JSON.stringify({'password': params.value})
+        },
+
+        display: function() {
+            $(this).html('●●●●●●●●');
+        },
+
+        success: function() {
+            addStatusMessage('success', 'The user\'s password was changed successfully');
+        }
+    });
 }
 
 
@@ -117,7 +145,7 @@ function fillInTable() {
             if (tableRow.length != 0) {
                 tableRow.html('\
                     <td class="userEmail" data-pk="' + item.id + '">' + item.email + '</td>\
-                    <td class="userPassword">●●●●●●●●●●●●</td>\
+                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password">●●●●●●●●●●●●</a></td>\
                     <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                 ');
             }
@@ -126,7 +154,7 @@ function fillInTable() {
                 $('#addItemRow').before('\
                     <tr id="dynamicTableRow' + String(i) + '">\
                         <td class="userEmail">' + item.email + '</td>\
-                        <td class="userPassword">●●●●●●●●●●●●</td>\
+                        <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password">●●●●●●●●●●●●</a></td>\
                         <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
                     </tr>\
                 ');
@@ -185,6 +213,9 @@ function fillInTable() {
             $('#pagination').removeClass('hidden').hide().fadeIn('fast');
         }
 
+        //Activate x-editable on new elements
+        userPasswordEventListeners();
+
         setTimeout(function () {
             $('div.loader').remove();
         }, 500);
@@ -218,6 +249,7 @@ $(document).ready(function () {
     $.ajaxSetup({ cache: false });
 
     fillInTable();
+
 
     $(window).bind("popstate", function () {
         fillInTable();

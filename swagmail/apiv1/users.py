@@ -54,4 +54,4 @@ def update_user(user_id):
         raise ValidationError('The password was not supplied in the request')
 
     db.session.commit()
-    return {}, 204
+    return {}, 200
