@@ -4,7 +4,7 @@ import random
 import json
 
 
-class TestUserFunctions:
+class TestMailDbFunctions:
 
     def test_aliases_get(self, loggedin_client):
         rv = loggedin_client.get("/api/v1/aliases", follow_redirects=True)
@@ -75,6 +75,18 @@ class TestUserFunctions:
         assert rv.status_code == 400
         assert "not managed" in rv.data
 
+    def test_users_update_fail_password_not_supplied(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/users/2", data=json.dumps(
+            {"someotherdata": "pickles"}))
+        
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        
+        assert rv.status_code == 400
+        assert "The password was not supplied in the request" in rv.data
+
     def test_users_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/users", data=json.dumps(
             {"email": "pickles@swagmail.com", "password": "som3passw0rd"}))
@@ -83,6 +95,11 @@ class TestUserFunctions:
         except:
             assert False, "Not json"
         assert rv.status_code == 201
+
+    def test_users_update_pass(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/users/2", data=json.dumps(
+            {"password": "som3passw0rd123"}))
+        assert rv.status_code == 200
 
     def test_users_delete_pass(self, loggedin_client):
         rv = loggedin_client.delete("/api/v1/users/2", follow_redirects=True)
