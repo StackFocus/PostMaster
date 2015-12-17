@@ -112,6 +112,8 @@ function fillInTable() {
 
             var tableRow = $('#dynamicTableRow' + String(i));
 
+            //((tableRow.length != 0) ? 2 : 3);
+
             // If the row exists, then change it
             if (tableRow.length != 0) {
                 tableRow.html('\
