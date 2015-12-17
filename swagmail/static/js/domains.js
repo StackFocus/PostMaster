@@ -217,15 +217,33 @@ $(document).ready(function () {
     fillInTable();
 
     $(window).bind("popstate", function () {
+        console.log('boom');
         fillInTable();
     });
 
     // When the Add button is clicked, it will POST to the API
-    $('#newItemAnchor').on('click', function () {
+    $('#newItemAnchor').on('click', function (e) {
 
+        // Close any status messages
         $('#statusMessage div.alert button').trigger('click');
-        newDomain($('#newDomainInput').val());
-        $('#newDomainInput').val('');
+
+        var domainInput = $('#newDomainInput');
+
+        // If the domainInput is empty, display a red border around it
+        if (!domainInput.val()) {
+            domainInput.parent().addClass('has-error');
+            domainInput.focus();
+        }
+        else {
+            newDomain(domainInput.val());
+            domainInput.val('');
+        }
+
+        e.preventDefault();
+    });
+
+    $('#newDomainInput').blur(function () {
+        $('#newDomainInput').parent().removeClass('has-error');
     });
 
     // This has the enter key when in the add field trigger a click on the Add button

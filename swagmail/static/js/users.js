@@ -259,17 +259,41 @@ $(document).ready(function () {
     });
 
     // When the Add button is clicked, it will POST to the API
-    $('#newItemAnchor').on('click', function () {
+    $('#newItemAnchor').on('click', function (e) {
 
+        // Close any status messages
         $('#statusMessage div.alert button').trigger('click');
-        newUser($('#newUserInput').val(), $('#newPasswordInput').val());
-        $('#newUserInput').val('');
-        $('#newPasswordInput').val('');
+
+        var userInput = $('#newUserInput');
+        var passwordInput = $('#newPasswordInput');
+
+        // If userInput is empty, highlight it in red
+        if (!userInput.val()) {
+            userInput.parent().addClass('has-error');
+            userInput.focus();
+        }
+        // If passwordInput is empty, highlight it in red
+        else if (!passwordInput.val()) {
+            passwordInput.parent().addClass('has-error');
+            passwordInput.focus();
+        }
+        else {
+            // Create the new user
+            newUser(userInput.val(), passwordInput.val());
+            userInput.val('');
+            passwordInput.val('');
+        }
+
+        e.preventDefault();
+    });
+
+    $('#newUserInput, #newPasswordInput').blur(function () {
+        $('#newUserInput').parent().removeClass('has-error');
+        $('#newPasswordInput').parent().removeClass('has-error');
     });
 
     // This has the enter key when in the add field trigger a click on the Add button
     $('#newUserInput, #newPasswordInput').keyup(function (e) {
-
         var key = e.which;
         if (key == 13) {
             $('#newItemAnchor').trigger('click');
