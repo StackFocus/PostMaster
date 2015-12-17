@@ -1,45 +1,4 @@
-﻿// Read a page's GET URL variables and return them as an associative array.
-// Inspired from http://www.drupalden.co.uk/get-values-from-url-query-string-jquery
-function getUrlVars() {
-    var vars = [], hash;
-    if (window.location.href.indexOf('?') != -1) {
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-
-        for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-    }
-
-    return vars;
-}
-
-
-function changePage(obj, e) {
-
-    if (history.pushState) {
-
-        history.pushState(null, null, $(obj).attr('href'));
-        fillInTable();
-        e.preventDefault();
-    }
-
-    return true;
-}
-
-
-function addStatusMessage(category, message) {
-
-    $('#statusMessage').html('\
-        <div class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible loginAlert fade in" role="alert">\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                ' + message + '\
-        </div>\
-    ').hide().fadeIn('fast');
-}
-
-
+﻿// Creates a new user via the API
 function newUser(email, password) {
 
     $.ajax({
@@ -64,7 +23,9 @@ function newUser(email, password) {
     });
 }
 
-function deleteUser(id) {
+
+// Deletes a user via the API
+function deleteUser (id) {
 
     $.ajax({
         url: '/api/v1/users/' + id,
@@ -83,18 +44,17 @@ function deleteUser(id) {
 }
 
 
-function deleteUserClick(obj, e) {
+// Sets the event listeners in the dynamic table
+function userEventListeners () {
 
-    deleteUser($(obj).attr('data-pk'));
-    e.preventDefault();
-}
+    var userPassword = $('a.userPassword');
+    var deleteAnchor = $('a.deleteAnchor');
+    var newItemAnchor = $('#newItemAnchor');
+    userPassword.unbind();
+    userPassword.tooltip();
 
-
-function userPasswordEventListeners() {
-
-    $('a.userPassword').unbind();
-    $('a.userPassword').editable({
-
+    userPassword.editable({
+        type: 'password',
         mode: 'inline',
         anim: 100,
 
@@ -104,162 +64,29 @@ function userPasswordEventListeners() {
             contentType: 'application/json'
         },
 
-        params: function(params) {
+        params: function (params) {
             return JSON.stringify({'password': params.value})
         },
 
-        display: function() {
+        display: function () {
             $(this).html('●●●●●●●●');
         },
 
-        success: function() {
+        success: function () {
             addStatusMessage('success', 'The user\'s password was changed successfully');
         }
     });
 
-    $('a.userPassword').tooltip();
-}
 
-
-function fillInTable() {
-    var apiURL = '/api/v1/users';
-    var urlVars = getUrlVars();
-
-    // Set the loading spinner
-    if ($('div.loader').length == 0) {
-        $('#dynamicTableDiv').prepend('<div class="loader"></div>');
-    }
-
-    // If the page was specified in the URL, then add it to the API url
-    if ('page' in urlVars) {
-        apiURL += '?page=' + urlVars['page'];
-    }
-
-    // Query the API
-    $.getJSON(apiURL, function (result) {
-
-        var i = 1
-        // For each item, add/change the value in the table
-        $.each(result['items'], function (j, item) {
-
-            var tableRow = $('#dynamicTableRow' + String(i));
-
-            // If the row exists, then change it
-            if (tableRow.length != 0) {
-                tableRow.html('\
-                    <td class="userEmail" data-pk="' + item.id + '">' + item.email + '</td>\
-                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
-                ');
-            }
-                // If the row doesn't exist, then add it
-            else {
-                $('#addItemRow').before('\
-                    <tr id="dynamicTableRow' + String(i) + '">\
-                        <td class="userEmail">' + item.email + '</td>\
-                        <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" data-type="password" data-title="Enter password" title="Click to change the password">●●●●●●●●</a></td>\
-                        <td><a href="#" onclick="deleteUserClick(this, event)" data-pk="' + item.id + '">Delete</a></td>\
-                    </tr>\
-                ');
-            }
-
-            i++;
-        });
-
-        // If there are some rows remaining after looping through the API results, remove them
-        var numTotalRows = $('#dynamicTable tr').size();
-        while (i < numTotalRows) {
-
-            if ($('#dynamicTableRow' + String(i)).length != 0) {
-                $('#dynamicTableRow' + String(i)).remove();
-            }
-            i++;
-        }
-
-        var numPages = result['meta']['pages'];
-        var currPage = result['meta']['page'];
-
-        // Set the pagination
-        for (var i = 1; i <= numPages; i++) {
-
-            var pageButton = $('#itemPage' + String(i));
-
-            if (pageButton.length == 0) {
-                $('#pagination').append('\
-                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '"><a href="' + '/users?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>\
-                ');
-            }
-            else {
-                if ((currPage == i) && !(pageButton.hasClass('active'))) {
-                    pageButton.addClass('active');
-                }
-                else if ((currPage != i) && (pageButton.hasClass('active'))) {
-
-                    pageButton.removeClass('active');
-                }
-            }
-        }
-
-        var i = numPages + 1;
-        // If there are some pagination buttons remaining after looping through the API results, remove them
-        var numTotalPaginationButtons = $('#pagination li').size();
-        while (i <= numTotalPaginationButtons) {
-
-            if ($('#itemPage' + String(i)).length != 0) {
-                $('#itemPage' + String(i)).remove();
-            }
-            i++;
-        }
-
-        // Fade in the pagination on first load
-        if ($('#pagination').hasClass('hidden')) {
-            $('#pagination').removeClass('hidden').hide().fadeIn('fast');
-        }
-
-        //Activate x-editable on new elements
-        userPasswordEventListeners();
-
-        setTimeout(function () {
-            $('div.loader').remove();
-        }, 500);
-    })
-    .fail(function (jqxhr, textStatus, error) {
-
-        // If the resource is not found, then redirect to the last page
-        if (error == 'NOT FOUND') {
-
-            $.getJSON('/api/v1/users', function (result) {
-
-                var url = ('/users?page=' + String(result['meta']['pages']));
-
-                if (history.pushState) {
-
-                    history.pushState(null, null, url);
-                    fillInTable();
-                }
-                else {
-                    window.location.href = url;
-                }
-            });
-        }
-    });
-}
-
-
-$(document).ready(function () {
-
-    // IE was caching the AJAX request and causing the table not to update
-    $.ajaxSetup({ cache: false });
-
-    fillInTable();
-
-
-    $(window).bind("popstate", function () {
-        fillInTable();
+    deleteAnchor.unbind();
+    deleteAnchor.on('click', function (e) {
+        deleteUser($(this).attr('data-pk'));
+        e.preventDefault();
     });
 
     // When the Add button is clicked, it will POST to the API
-    $('#newItemAnchor').on('click', function (e) {
+    newItemAnchor.unbind();
+    newItemAnchor.on('click', function (e) {
 
         // Close any status messages
         $('#statusMessage div.alert button').trigger('click');
@@ -272,12 +99,15 @@ $(document).ready(function () {
             userInput.parent().addClass('has-error');
             userInput.focus();
         }
-        // If passwordInput is empty, highlight it in red
+            // If passwordInput is empty, highlight it in red
         else if (!passwordInput.val()) {
             passwordInput.parent().addClass('has-error');
             passwordInput.focus();
         }
         else {
+            // Remove any error bordering on the input fields
+            $('#newUserInput').parent().removeClass('has-error');
+            $('#newPasswordInput').parent().removeClass('has-error');
             // Create the new user
             newUser(userInput.val(), passwordInput.val());
             userInput.val('');
@@ -287,17 +117,80 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
+    // When the user clicks out of the errored input field, the red border disappears
     $('#newUserInput, #newPasswordInput').blur(function () {
         $('#newUserInput').parent().removeClass('has-error');
         $('#newPasswordInput').parent().removeClass('has-error');
     });
 
-    // This has the enter key when in the add field trigger a click on the Add button
+    // When in the input field, this triggers the newItemAnchor when pressing enter
     $('#newUserInput, #newPasswordInput').keyup(function (e) {
         var key = e.which;
         if (key == 13) {
             $('#newItemAnchor').trigger('click');
-            return false;
         }
     });
+}
+
+
+// Loads the dynamic table and pagination
+function fillInTable () {
+    // Set the loading spinner
+    manageSpinner(true);
+
+    // If the page was specified in the URL, then add it to the API url
+    var urlVars = getUrlVars();
+    'page' in urlVars ? apiURL = '/api/v1/users?page=' + urlVars['page'] : apiURL = '/api/v1/users';
+
+    // Query the API
+    $.getJSON(apiURL, function (result) {
+
+        var i = 1
+        // For each item, add a row, but if the row exists, just change the value
+        $.each(result['items'], function (j, item) {
+            var tableRow = $('#dynamicTableRow' + String(i));
+            var html = '';
+
+            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
+            html += '<td class="userEmail">' + item.email + '</td>\
+                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
+                    <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
+            tableRow.length == 0 ? html += '</tr>' : null;
+            tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
+
+            i++;
+        });
+
+        // Clean up the table
+        removeEmptyTableRows(i);
+        // Set the pagination
+        setPagination(result['meta']['page'], result['meta']['pages'], 'users');
+        //Activate x-editable on new elements and other events
+        userEventListeners();
+        // Remove the loading spinner
+        manageSpinner(false);
+    })
+    .fail(function (jqxhr, textStatus, error) {
+
+        // If the resource is not found, then redirect to the last page
+        if (error == 'NOT FOUND') {
+            redirectToLastPage('domains');
+        }
+    });
+}
+
+
+$(document).ready(function () {
+    // This stops the browser from caching AJAX (fixes IE)
+    $.ajaxSetup({ cache: false });
+
+    // Populate the table
+    fillInTable();
+
+    // When hitting the back/forward buttons, reload the table
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
+
+    userEventListeners();
 });
