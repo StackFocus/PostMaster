@@ -78,7 +78,8 @@ h2.textHeadingManage {
 }
 
 #newDomainInput, #newUserInput,
-#newPasswordInput {
+#newPasswordInput, #newAliasSourceInput,
+#newAliasDestinationInput {
     height: 40px;
 }
 
@@ -157,6 +158,12 @@ ul.pagination li.disabled a:hover {
 }
 /* End of Only Users Page CSS */
 
+/* Only Alias Page CSS */
+#sourceAliasHeader, #destinationAliasHeader {
+    width: 42.5%;
+}
+/* End of Only Alias Page CSS */
+
 @media(max-width:767px) {
     /* Login Page CSS */
     #loginRow {
@@ -203,7 +210,8 @@ ul.pagination li.disabled a:hover {
 @media(min-width:992px) {
     /* Manage Page CSS */
     #newDomainInput, #newUserInput,
-    #newPasswordInput {
+    #newPasswordInput, #newAliasSourceInput,
+    #newAliasDestinationInput {
         width: 75%;
     }
     /* End of Manage Page CSS */
