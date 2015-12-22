@@ -72,6 +72,11 @@ function userEventListeners () {
             $(this).html('●●●●●●●●');
         },
 
+        error: function (response) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+        },
+
         success: function () {
             addStatusMessage('success', 'The user\'s password was changed successfully');
         }
@@ -106,8 +111,8 @@ function userEventListeners () {
         }
         else {
             // Remove any error bordering on the input fields
-            $('#newUserInput').parent().removeClass('has-error');
-            $('#newPasswordInput').parent().removeClass('has-error');
+            userInput.parent().removeClass('has-error');
+            passwordInput.parent().removeClass('has-error');
             // Create the new user
             newUser(userInput.val(), passwordInput.val());
             userInput.val('');
@@ -117,6 +122,7 @@ function userEventListeners () {
         e.preventDefault();
     });
 
+    $('#newUserInput, #newPasswordInput').unbind();
     // When the user clicks out of the errored input field, the red border disappears
     $('#newUserInput, #newPasswordInput').blur(function () {
         $('#newUserInput').parent().removeClass('has-error');
@@ -152,7 +158,7 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td class="userEmail">' + item.email + '</td>\
+            html += '<td>' + item.email + '</td>\
                     <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
                     <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
