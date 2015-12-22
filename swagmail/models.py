@@ -91,7 +91,7 @@ class VirtualUsers(db.Model):
         self.email = json['email']
         # Checks if the domain can be extracted and if the email is at least
         # somewhat in the right format
-        if search('(?<=@).*$', json['email']) and match('[a-z].*@.*[.].*[a-z]$', json['email']):
+        if search('(?<=@).*$', json['email']) and match('.*@.*[.].*$', json['email']):
             domain = search('(?<=@).*$', json['email']).group(0)
             if VirtualDomains.query.filter_by(name=domain).first() is not None:
                 self.domain_id = VirtualDomains.query.filter_by(
@@ -147,32 +147,46 @@ class VirtualAliases(db.Model):
         if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
             raise ValidationError('"%s" to "%s" already exists!' % (
                 json['source'], json['destination']))
-        if match('.*@.*[.].*[a-z]$', json['source']):
-            if match('.*@.*[.].*[a-z]$', json['destination']):
-                sourceDomain = search('(?<=@).*$', json['source']).group(0)
-                destinationDomain = search(
-                    '(?<=@).*$', json['destination']).group(0)
-                if VirtualDomains.query.filter_by(name=sourceDomain).first() is None:
-                    raise ValidationError(
-                        'The domain "%s" is not managed by this database' % sourceDomain)
-                if VirtualDomains.query.filter_by(name=destinationDomain).first() is None:
-                    raise ValidationError(
-                        'The domain "%s" is not managed by this database' % destinationDomain)
-                self.source = json['source']
-                self.destination = json['destination']
-                if VirtualUsers.query.filter_by(email=json['destination']).first() is not None:
-                    self.domain_id = VirtualDomains.query.filter_by(name=destinationDomain).first().id
-                else:
-                    raise ValidationError \
-                        ('The destination "%s" is not a current email address' %
-                         json['destination'])
-            else:
+        if self.validate_source(json['source']):
+            self.source = json['source']
+        if self.validate_destination(json['destination']):
+            self.destination = json['destination']
+            self.domain_id = VirtualDomains.query.filter_by(name=search(
+                    '(?<=@).*$', json['destination']).group(0)).first().id
+        return self
+
+    def validate_source(self, source):
+        if match('.*@.*[.].*$', source):
+            sourceDomain = search('(?<=@).*$', source).group(0)
+            if VirtualAliases.query.filter_by(source=source).first() is not None:
                 raise ValidationError(
-                    'The destination "%s" is not in a valid email format' % json['destination'])
+                    'The source alias "%s" already exists' % source)
+            if VirtualUsers.query.filter_by(email=source).first() is not None:
+                raise ValidationError(
+                    'The source alias "%s" is an existing email address' % source)
+            if VirtualDomains.query.filter_by(name=sourceDomain).first() is None:
+                raise ValidationError(
+                    'The domain "%s" is not managed by this database' % sourceDomain)
+            return True
         else:
             raise ValidationError(
-                'The source "%s" is not in a valid email format' % json['source'])
-        return self
+                'The source "%s" is not in a valid email format' % source)
+
+    def validate_destination(self, destination):
+        if match('.*@.*[.].*$', destination):
+            destinationDomain = search(
+                '(?<=@).*$', destination).group(0)
+            if VirtualDomains.query.filter_by(name=destinationDomain).first() is None:
+                raise ValidationError(
+                    'The domain "%s" is not managed by this database' % destinationDomain)
+            if VirtualUsers.query.filter_by(email=destination).first() is not None:
+                return True
+            else:
+                raise ValidationError \
+                    ('The destination "%s" is not a current email address' % destination)
+        else:
+            raise ValidationError(
+                'The destination "%s" is not in a valid email format' % destination)
 
 
 class Admins(db.Model):
