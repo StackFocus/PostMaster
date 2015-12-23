@@ -1,0 +1,196 @@
+﻿// Creates a new user via the API
+function newUser(email, password) {
+
+    $.ajax({
+        url: '/api/v1/users',
+        type: 'post',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            'email': email,
+            'password': password
+        }),
+
+        success: function (data) {
+            addStatusMessage('success', 'The user was added successfully');
+            fillInTable();
+        },
+
+        error: function (data) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        }
+    });
+}
+
+
+// Deletes a user via the API
+function deleteUser (id) {
+
+    $.ajax({
+        url: '/api/v1/users/' + id,
+        type: 'delete',
+
+        success: function (data) {
+            addStatusMessage('success', 'The user was successfully removed');
+            fillInTable();
+        },
+
+        error: function (data) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        }
+    });
+}
+
+
+// Sets the event listeners in the dynamic table
+function userEventListeners () {
+
+    var userPassword = $('a.userPassword');
+    var deleteAnchor = $('a.deleteAnchor');
+    var newItemAnchor = $('#newItemAnchor');
+    userPassword.unbind();
+    userPassword.tooltip();
+
+    userPassword.editable({
+        type: 'password',
+        mode: 'inline',
+        anim: 100,
+
+        ajaxOptions: {
+            type: 'PUT',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        },
+
+        params: function (params) {
+            return JSON.stringify({'password': params.value})
+        },
+
+        display: function () {
+            $(this).html('●●●●●●●●');
+        },
+
+        success: function () {
+            addStatusMessage('success', 'The user\'s password was changed successfully');
+        }
+    });
+
+
+    deleteAnchor.unbind();
+    deleteAnchor.on('click', function (e) {
+        deleteUser($(this).attr('data-pk'));
+        e.preventDefault();
+    });
+
+    // When the Add button is clicked, it will POST to the API
+    newItemAnchor.unbind();
+    newItemAnchor.on('click', function (e) {
+
+        // Close any status messages
+        $('#statusMessage div.alert button').trigger('click');
+
+        var userInput = $('#newUserInput');
+        var passwordInput = $('#newPasswordInput');
+
+        // If userInput is empty, highlight it in red
+        if (!userInput.val()) {
+            userInput.parent().addClass('has-error');
+            userInput.focus();
+        }
+            // If passwordInput is empty, highlight it in red
+        else if (!passwordInput.val()) {
+            passwordInput.parent().addClass('has-error');
+            passwordInput.focus();
+        }
+        else {
+            // Remove any error bordering on the input fields
+            $('#newUserInput').parent().removeClass('has-error');
+            $('#newPasswordInput').parent().removeClass('has-error');
+            // Create the new user
+            newUser(userInput.val(), passwordInput.val());
+            userInput.val('');
+            passwordInput.val('');
+        }
+
+        e.preventDefault();
+    });
+
+    // When the user clicks out of the errored input field, the red border disappears
+    $('#newUserInput, #newPasswordInput').blur(function () {
+        $('#newUserInput').parent().removeClass('has-error');
+        $('#newPasswordInput').parent().removeClass('has-error');
+    });
+
+    // When in the input field, this triggers the newItemAnchor when pressing enter
+    $('#newUserInput, #newPasswordInput').keyup(function (e) {
+        var key = e.which;
+        if (key == 13) {
+            $('#newItemAnchor').trigger('click');
+        }
+    });
+}
+
+
+// Loads the dynamic table and pagination
+function fillInTable () {
+    // Set the loading spinner
+    manageSpinner(true);
+
+    // If the page was specified in the URL, then add it to the API url
+    var urlVars = getUrlVars();
+    'page' in urlVars ? apiURL = '/api/v1/users?page=' + urlVars['page'] : apiURL = '/api/v1/users';
+
+    // Query the API
+    $.getJSON(apiURL, function (result) {
+
+        var i = 1
+        // For each item, add a row, but if the row exists, just change the value
+        $.each(result['items'], function (j, item) {
+            var tableRow = $('#dynamicTableRow' + String(i));
+            var html = '';
+
+            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
+            html += '<td class="userEmail">' + item.email + '</td>\
+                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
+                    <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
+            tableRow.length == 0 ? html += '</tr>' : null;
+            tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
+
+            i++;
+        });
+
+        // Clean up the table
+        removeEmptyTableRows(i);
+        // Set the pagination
+        setPagination(result['meta']['page'], result['meta']['pages'], 'users');
+        //Activate x-editable on new elements and other events
+        userEventListeners();
+        // Remove the loading spinner
+        manageSpinner(false);
+    })
+    .fail(function (jqxhr, textStatus, error) {
+
+        // If the resource is not found, then redirect to the last page
+        if (error == 'NOT FOUND') {
+            redirectToLastPage('domains');
+        }
+    });
+}
+
+
+$(document).ready(function () {
+    // This stops the browser from caching AJAX (fixes IE)
+    $.ajaxSetup({ cache: false });
+
+    // Populate the table
+    fillInTable();
+
+    // When hitting the back/forward buttons, reload the table
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
+
+    userEventListeners();
+});

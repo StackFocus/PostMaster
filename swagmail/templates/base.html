@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     {% block head %}{% endblock %}
 </head>
 <body style="background-color:#FEFEFE; height:100%" id="body">
@@ -36,7 +38,7 @@
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">Manage <b class="caret"></b></a>
                             <ul role="menu" class="dropdown-menu">
                                 <li><a href="/domains">Domains</a></li>
-                                <li><a href="#">Users</a></li>
+                                <li><a href="/users">Users</a></li>
                                 <li><a href="#">Aliases</a></li>
                             </ul>
                         </li>

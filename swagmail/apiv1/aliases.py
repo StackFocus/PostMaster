@@ -24,7 +24,17 @@ def get_alias(alias_id):
 @login_required
 @json_wrap
 def new_alias():
-    alias = VirtualAliases().from_json(request.json)
+    alias = VirtualAliases().from_json(request.get_json(force=True))
     db.session.add(alias)
     db.session.commit()
     return {}, 201
+
+
+@apiv1.route('/aliases/<int:alias_id>', methods=['DELETE'])
+@login_required
+@json_wrap
+def delete_alias(alias_id):
+    alias = VirtualAliases.query.get_or_404(alias_id)
+    db.session.delete(alias)
+    db.session.commit()
+    return {}, 204

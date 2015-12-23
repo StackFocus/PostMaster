@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='js/users.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h2 class="textHeadingManage">Users</h2>
+    <div id="statusMessage">
+    </div>
+    <div id="dynamicTableDiv">
+        <div class="loader"></div>
+        <table class="table table-striped table-bordered" id="dynamicTable">
+            <thead>
+                <tr>
+                    <th id="emailHeader">Email:</th>
+                    <th id="passwordHeader">Password:</th>
+                    <th id="actionHeader">Action:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(5) %}
+                <tr id="dynamicTableRow{{i + 1}}">
+                    <td class="userEmail"></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+                <tr id="addItemRow">
+                    <td><div><input id="newUserInput" class="form-control" type="text" placeholder="Enter a new user's email address" /></div></td>
+                    <td><div><input id="newPasswordInput" class="form-control" type="password" placeholder="Enter the new user's password" /></div></td>
+                    <td style="vertical-align: middle"><a href="#" id="newItemAnchor">Add</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <ul class="pagination hidden" id="pagination"></ul>
+</div>
+{% endblock %}
+

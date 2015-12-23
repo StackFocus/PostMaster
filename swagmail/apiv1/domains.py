@@ -24,17 +24,17 @@ def get_domain(domain_id):
 @login_required
 @json_wrap
 def new_domain():
-    domain = VirtualDomains().from_json(request.json)
+    domain = VirtualDomains().from_json(request.get_json(force=True))
     db.session.add(domain)
     db.session.commit()
     return {}, 201
 
 
-@apiv1.route('/domains', methods=['DELETE'])
+@apiv1.route('/domains/<int:domain_id>', methods=['DELETE'])
 @login_required
 @json_wrap
-def delete_domain():
-    domain = VirtualDomains().query_from_json(request.json)
+def delete_domain(domain_id):
+    domain = VirtualDomains.query.get_or_404(domain_id)
     db.session.delete(domain)
     db.session.commit()
     return {}, 204

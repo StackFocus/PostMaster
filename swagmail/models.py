@@ -34,8 +34,8 @@ class VirtualDomains(db.Model):
         }
 
     def from_json(self, json):
-        if json.get('name', None) is None:
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if json.get('name', None) in [None, ""]:
+            raise ValidationError('The domain name was not specified')
         if self.query.filter_by(name=json['name']).first() is None:
             self.name = json['name']
         else:
@@ -83,9 +83,9 @@ class VirtualUsers(db.Model):
 
     def from_json(self, json):
         if json.get('email', None) is None:
-            raise ValidationError('Invalid user: missing ' + e.args[0])
+            raise ValidationError('The email address was not specified')
         if json.get('password', None) is None:
-            raise ValidationError('Invalid user: missing ' + e.args[0])
+            raise ValidationError('The password was not specified')
         if self.query.filter_by(email=json['email']).first() is not None:
             raise ValidationError('"%s" already exists!' % json['email'])
         self.email = json['email']
@@ -96,10 +96,7 @@ class VirtualUsers(db.Model):
             if VirtualDomains.query.filter_by(name=domain).first() is not None:
                 self.domain_id = VirtualDomains.query.filter_by(
                     name=domain).first().id
-                salt = (sha1(urandom(16)).hexdigest())[:16]
-                passwordAndSalt = sha512.encrypt(json['password'], rounds=5000,
-                                                 salt=salt, implicit_rounds=True)
-                self.password = passwordAndSalt
+                self.password = self.encrypt_password(json['password'])
             else:
                 raise ValidationError(
                     'The domain "%s" is not managed by this database' % domain)
@@ -107,6 +104,12 @@ class VirtualUsers(db.Model):
             raise ValidationError(
                 '"%s" is not a valid email address' % json['email'])
         return self
+
+    def encrypt_password(self, password):
+        salt = (sha1(urandom(16)).hexdigest())[:16]
+        protectedPassword = sha512.encrypt(password, rounds=5000,
+                                    salt=salt, implicit_rounds=True)
+        return protectedPassword
 
 
 class VirtualAliases(db.Model):
@@ -137,8 +140,10 @@ class VirtualAliases(db.Model):
         }
 
     def from_json(self, json):
-        if json.get('source', None) is None or json.get('destination', None) is None:
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
+        if json.get('source', None) is None:
+            raise ValidationError('The source email was not specified')
+        if json.get('destination', None) is None:
+            raise ValidationError('The destination email was not specified')
         if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
             raise ValidationError('"%s" to "%s" already exists!' % (
                 json['source'], json['destination']))
@@ -156,7 +161,7 @@ class VirtualAliases(db.Model):
                 self.source = json['source']
                 self.destination = json['destination']
                 if VirtualUsers.query.filter_by(email=json['destination']).first() is not None:
-                    self.domain_id = json['domain_id']
+                    self.domain_id = VirtualDomains.query.filter_by(name=destinationDomain).first().id
                 else:
                     raise ValidationError \
                         ('The destination "%s" is not a current email address' %

@@ -1,242 +1,168 @@
-﻿// Read a page's GET URL variables and return them as an associative array.
-// Inspired from http://www.drupalden.co.uk/get-values-from-url-query-string-jquery
-function getUrlVars() {
-    var vars = [], hash;
-    if (window.location.href.indexOf('?') != -1) {
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-
-        for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-    }
-
-    return vars;
-}
-
-
-function addStatusMessage(category, message) {
-
-    $('#statusMessage').html('\
-        <div class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible loginAlert fade in" role="alert">\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                ' + message + '\
-        </div>\
-    ').hide().fadeIn('fast');
-}
-
-
+﻿// Creates a new domain via the API
 function newDomain(name) {
+    if (name) {
+        $.ajax({
+            url: '/api/v1/domains',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ 'name': name }),
 
-    $.ajax({
-        url: '/api/v1/domains',
-        type: 'post',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({'name': name}),
+            success: function (data) {
+                addStatusMessage('success', 'The domain was added successfully.');
+                fillInTable();
+            },
 
-        success: function (data) {
-            addStatusMessage('success', 'The domain was added successfully.');
-            fillInTable();
-        },
-
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
-        }
-    });
+            error: function (data) {
+                // The jQuery('div />') is a work around to encode all html characters
+                addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+            }
+        });
+    }
+    else {
+        throw 'A name must be specified in the newDomain function';
+    }
 }
 
 
-function deleteDomain(name) {
+// Deletes a domain via the API
+function deleteDomain (id) {
+    if (id) {
+        $.ajax({
+            url: '/api/v1/domains/' + id,
+            type: 'delete',
+            contentType: 'application/json',
 
-    $.ajax({
-        url: '/api/v1/domains',
-        type: 'delete',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({ 'name': name }),
+            success: function (data) {
+                addStatusMessage('success', 'The domain was successfully removed.');
+                fillInTable();
+            },
 
-        success: function (data) {
-            addStatusMessage('success', 'The domain was successfully removed.');
-            fillInTable();
-        },
-
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
-        }
-    });
+            error: function (data) {
+                // The jQuery('div />') is a work around to encode all html characters
+                addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+            }
+        });
+    }
+    else {
+        throw 'An id must be specified in the deleteDomain function';
+    }
 }
 
 
-function deleteDomainClick(obj, e) {
+// Sets the event listeners in the dynamic table
+function domainEventListeners() {
 
-    deleteDomain($(obj).closest('tr').find('td.domainName').text());
-    e.preventDefault();
-}
+    var deleteAnchor = $('a.deleteAnchor');
+    var newItemAnchor = $('#newItemAnchor');
+    var newDomainInput = $('#newDomainInput');
 
-
-function changePage(obj, e) {
-
-    if (history.pushState) {
-
-        history.pushState(null, null, $(obj).attr('href'));
-        fillInTable();
+    deleteAnchor.unbind();
+    deleteAnchor.on('click', function (e) {
+        deleteDomain($(this).attr('data-pk'));
         e.preventDefault();
-    }
-    
-    return true;
+    });
+
+    // When the Add button is clicked, it will POST to the API
+    newItemAnchor.unbind();
+    newItemAnchor.on('click', function (e) {
+
+        // Close any status messages
+        $('#statusMessage div.alert button').trigger('click');
+
+        var domainInput = $('#newDomainInput');
+
+        // If the domainInput is empty, display a red border around it
+        if (!domainInput.val()) {
+            domainInput.parent().addClass('has-error');
+            domainInput.focus();
+        }
+        else {
+            // Remove any error bordering on the input fields
+            newDomainInput.parent().removeClass('has-error');
+            // Create the new domain
+            newDomain(domainInput.val());
+            domainInput.val('');
+        }
+
+        e.preventDefault();
+    });
+
+    // When the user clicks out of the errored input field, the red border disappears
+    newDomainInput.unbind();
+    newDomainInput.blur(function () {
+        newDomainInput.parent().removeClass('has-error');
+    });
+
+    // When in the input field, this triggers the newItemAnchor when pressing enter
+    newDomainInput.keyup(function (e) {
+
+        var key = e.which;
+        if (key == 13) {
+            newItemAnchor.trigger('click');
+        }
+    });
 }
 
 
-function fillInTable() {
-    var domainsUrl = '/api/v1/domains';
-    var urlVars = getUrlVars();
-
+// Loads the dynamic table and pagination
+function fillInTable () {
     // Set the loading spinner
-    if ($('div.loader').length == 0) {
-        $('#dynamicTable').prepend('<div class="loader"></div>');
-    }
+    manageSpinner(true);
 
     // If the page was specified in the URL, then add it to the API url
-    if ('page' in urlVars) {
-        domainsUrl += '?page=' + urlVars['page'];
-    }
+    var urlVars = getUrlVars();
+    'page' in urlVars ? apiURL = '/api/v1/domains?page=' + urlVars['page'] : apiURL = '/api/v1/domains';
 
     // Query the API
-    $.getJSON(domainsUrl, function (result) {
+    $.getJSON(apiURL, function (result) {
 
         var i = 1
-        // For each domain, add/change the value in the table
-        $.each(result['items'], function (j, domain) {
+        // For each item, add a row, but if the row exists, just change the value
+        $.each(result['items'], function (j, item) {
+            var tableRow = $('#dynamicTableRow' + String(i));
+            var html = '';
 
-            var tableRow = $('#domainRow' + String(i));
-
-            // If the row exists, then change it
-            if (tableRow.length != 0) {
-                tableRow.html('\
-                    <td class="domainName">' + domain.name + '</td>\
-                    <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this, event)">Delete</a></td>\
-                ');
-            }
-            // If the row doesn't exist, then add it
-            else {
-                $('#newDomainRow').before('\
-                    <tr id="domainRow' + String(i) + '">\
-                        <td class="domainName">' + domain.name + '</td>\
-                        <td><a href="#" class="deleteDomain" onclick="deleteDomainClick(this, event)">Delete</a></td>\
-                    </tr>\
-                ');
-            }
+            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
+            html += '<td class="domainName" data-pk="' + item.id + '">' + item.name + '</td>\
+                     <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
+            tableRow.length == 0 ? html += '</tr>' : null;
+            tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
 
             i++;
         });
 
-        // If there are some rows remaining after looping through the API results, remove them
-        var numTotalRows = $('#domainTable tr').size();
-        while (i < numTotalRows) {
-
-            if ($('#domainRow' + String(i)).length != 0) {
-                $('#domainRow' + String(i)).remove();
-            }
-            i++;
-        }
-
-        var numPages = result['meta']['pages'];
-        var currPage = result['meta']['page'];
-
+        // Clean up the table
+        removeEmptyTableRows(i);
         // Set the pagination
-        for (var i = 1; i <= numPages; i++) {
-
-            var domainPageButton = $('#domainPage' + String(i));
-
-            if (domainPageButton.length == 0) {
-                $('#domainPagination').append('\
-                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('domainPage' + String(i)) + '"><a href="' + '/domains?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>\
-                ');
-            }
-            else {
-                if ((currPage == i) && !(domainPageButton.hasClass('active'))) {
-                    domainPageButton.addClass('active');
-                }
-                else if ((currPage != i) && (domainPageButton.hasClass('active'))) {
-
-                    domainPageButton.removeClass('active');
-                }
-            }
-        }
-
-        var i = numPages + 1;
-        // If there are some pagination buttons remaining after looping through the API results, remove them
-        var numTotalPaginationButtons = $('#domainPagination li').size();
-        while (i <= numTotalPaginationButtons) {
-
-            if ($('#domainPage' + String(i)).length != 0) {
-                $('#domainPage' + String(i)).remove();
-            }
-            i++;
-        }
-
-        // Fade in the pagination on first load
-        if ($('#domainPagination').hasClass('hidden')) {
-            $('#domainPagination').removeClass('hidden').hide().fadeIn('fast');
-        }
-
-        setTimeout(function () {
-            $('div.loader').remove();
-        }, 500);
+        setPagination(result['meta']['page'], result['meta']['pages'], 'domains');
+        // Reactive all event listeners
+        domainEventListeners();
+        // Remove the loading spinner
+        manageSpinner(false);
     })
     .fail(function (jqxhr, textStatus, error) {
         
-        // If the resource is not found, then redirect to the previous domains page
+        // If the resource is not found, then redirect to the last page
         if (error == 'NOT FOUND') {
-
-            $.getJSON('/api/v1/domains', function (result) {
-
-                var url = ('/domains?page=' + String(result['meta']['pages']));
-
-                if (history.pushState) {
-
-                    history.pushState(null, null, url);
-                    fillInTable();
-                }
-                else {
-                    window.location.href = url;
-                }
-            });
+            redirectToLastPage('domains');
         }
     });
 }
 
 
 $(document).ready(function () {
-
-    // IE was caching the AJAX request and causing the table not to update
+    // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
 
+    // Populate the table
     fillInTable();
 
+    // Set the event listeners
+    domainEventListeners();
+
+    // When hitting the back/forward buttons, reload the table
     $(window).bind("popstate", function () {
         fillInTable();
-    });
-
-    // When the Add button is clicked, it will POST to the API
-    $('#newDomainAnchor').on('click', function () {
-
-        $('#statusMessage div.alert button').trigger('click');
-        newDomain($('#newDomainInput').val());
-        $('#newDomainInput').val('');
-    });
-
-    // This has the enter key when in the #newDomainInput trigger a click on the Add button
-    $('#newDomainInput').keyup(function (e) {
-
-        var key = e.which;
-        if (key == 13) {
-            $('#newDomainAnchor').trigger('click');
-            return false;
-        }
     });
 });

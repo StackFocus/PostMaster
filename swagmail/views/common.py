@@ -90,3 +90,12 @@ def domains():
     """
 
     return render_template('domains.html', authenticated=(current_user).is_authenticated())
+
+@app.route('/users', methods=["GET"])
+@login_required
+def users():
+    """
+    Manages users/email accounts in the database
+    """
+
+    return render_template('users.html', authenticated=(current_user).is_authenticated())
