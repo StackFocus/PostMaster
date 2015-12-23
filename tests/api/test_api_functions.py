@@ -43,6 +43,28 @@ class TestMailDbFunctions:
             assert False, "Not json"
         assert rv.status_code == 201
 
+    def test_aliases_update_source_pass(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/aliases/2", data=json.dumps(
+            {"source": "somealias@swagmail.com"}))
+        assert rv.status_code == 200
+
+    def test_aliases_update_destination_pass(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/aliases/2", data=json.dumps(
+            {"destination": "email@swagmail.org"}))
+        assert rv.status_code == 200
+
+    def test_alias_update_fail_source_or_destination_not_supplied(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/aliases/2", data=json.dumps(
+            {"someotherdata": "aomeotherdata"}))
+        
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        
+        assert rv.status_code == 400
+        assert "The source or destination was not supplied in the request" in rv.data
+
     def test_aliases_delete_pass(self, loggedin_client):
         rv = loggedin_client.delete("/api/v1/aliases/2", follow_redirects=True)
         assert rv.status_code == 204

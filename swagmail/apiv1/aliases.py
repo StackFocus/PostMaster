@@ -3,6 +3,7 @@ from flask_login import login_required
 from swagmail import db
 from swagmail.models import VirtualAliases
 from ..decorators import json_wrap, paginate
+from ..errors import ValidationError
 from . import apiv1
 
 
