@@ -124,7 +124,7 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td class="domainName" data-pk="' + item.id + '">' + item.name + '</td>\
+            html += '<td data-pk="' + item.id + '">' + item.name + '</td>\
                      <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);

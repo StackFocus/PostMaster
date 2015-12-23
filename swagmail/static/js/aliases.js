@@ -1,18 +1,19 @@
-﻿// Creates a new user via the API
-function newUser(email, password) {
+﻿// Creates a new alias via the API
+
+function newAlias(source, destination) {
 
     $.ajax({
-        url: '/api/v1/users',
+        url: '/api/v1/aliases',
         type: 'post',
         dataType: 'json',
         contentType: 'application/json',
         data: JSON.stringify({
-            'email': email,
-            'password': password
+            'source': source,
+            'destination': destination
         }),
 
         success: function (data) {
-            addStatusMessage('success', 'The user was added successfully');
+            addStatusMessage('success', 'The alias was added successfully');
             fillInTable();
         },
 
@@ -24,15 +25,15 @@ function newUser(email, password) {
 }
 
 
-// Deletes a user via the API
-function deleteUser (id) {
+// Deletes an alias via the API
+function deleteAlias (id) {
 
     $.ajax({
-        url: '/api/v1/users/' + id,
+        url: '/api/v1/aliases/' + id,
         type: 'delete',
 
         success: function (data) {
-            addStatusMessage('success', 'The user was successfully removed');
+            addStatusMessage('success', 'The alias was successfully removed');
             fillInTable();
         },
 
@@ -45,16 +46,21 @@ function deleteUser (id) {
 
 
 // Sets the event listeners in the dynamic table
-function userEventListeners () {
+function aliasEventListeners() {
 
-    var userPassword = $('a.userPassword');
+    var sourceAlias = $('a.sourceAlias');
+    var destinationAlias = $('a.destinationAlias');
     var deleteAnchor = $('a.deleteAnchor');
     var newItemAnchor = $('#newItemAnchor');
-    userPassword.unbind();
-    userPassword.tooltip();
 
-    userPassword.editable({
-        type: 'password',
+    sourceAlias.unbind();
+    sourceAlias.tooltip();
+
+    destinationAlias.unbind();
+    destinationAlias.tooltip();
+
+    sourceAlias.editable({
+        type: 'text',
         mode: 'inline',
         anim: 100,
 
@@ -65,11 +71,7 @@ function userEventListeners () {
         },
 
         params: function (params) {
-            return JSON.stringify({'password': params.value})
-        },
-
-        display: function () {
-            $(this).html('●●●●●●●●');
+            return JSON.stringify({'source': params.value})
         },
 
         error: function (response) {
@@ -78,14 +80,39 @@ function userEventListeners () {
         },
 
         success: function () {
-            addStatusMessage('success', 'The user\'s password was changed successfully');
+            addStatusMessage('success', 'The source alias was changed successfully');
+        }
+    });
+
+    destinationAlias.editable({
+        type: 'text',
+        mode: 'inline',
+        anim: 100,
+
+        ajaxOptions: {
+            type: 'PUT',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        },
+
+        params: function (params) {
+            return JSON.stringify({ 'destination': params.value })
+        },
+
+        error: function(response) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+        },
+
+        success: function () {
+            addStatusMessage('success', 'The destination alias was changed successfully');
         }
     });
 
 
     deleteAnchor.unbind();
     deleteAnchor.on('click', function (e) {
-        deleteUser($(this).attr('data-pk'));
+        deleteAlias($(this).attr('data-pk'));
         e.preventDefault();
     });
 
@@ -96,41 +123,41 @@ function userEventListeners () {
         // Close any status messages
         $('#statusMessage div.alert button').trigger('click');
 
-        var userInput = $('#newUserInput');
-        var passwordInput = $('#newPasswordInput');
+        var aliasSourceInput = $('#newAliasSourceInput');
+        var aliasDestinationInput = $('#newAliasDestinationInput');
 
-        // If userInput is empty, highlight it in red
-        if (!userInput.val()) {
-            userInput.parent().addClass('has-error');
-            userInput.focus();
+        // If aliasSourceInput is empty, highlight it in red
+        if (!aliasSourceInput.val()) {
+            aliasSourceInput.parent().addClass('has-error');
+            aliasSourceInput.focus();
         }
-            // If passwordInput is empty, highlight it in red
-        else if (!passwordInput.val()) {
-            passwordInput.parent().addClass('has-error');
-            passwordInput.focus();
+            // If aliasDestinationInput is empty, highlight it in red
+        else if (!aliasDestinationInput.val()) {
+            aliasDestinationInput.parent().addClass('has-error');
+            aliasDestinationInput.focus();
         }
         else {
             // Remove any error bordering on the input fields
-            userInput.parent().removeClass('has-error');
-            passwordInput.parent().removeClass('has-error');
+            aliasSourceInput.parent().removeClass('has-error');
+            aliasDestinationInput.parent().removeClass('has-error');
             // Create the new user
-            newUser(userInput.val(), passwordInput.val());
-            userInput.val('');
-            passwordInput.val('');
+            newAlias(aliasSourceInput.val(), aliasDestinationInput.val());
+            aliasSourceInput.val('');
+            aliasDestinationInput.val('');
         }
 
         e.preventDefault();
     });
 
-    $('#newUserInput, #newPasswordInput').unbind();
+    $('#newAliasSourceInput, #newAliasDestinationInput').unbind();
     // When the user clicks out of the errored input field, the red border disappears
-    $('#newUserInput, #newPasswordInput').blur(function () {
-        $('#newUserInput').parent().removeClass('has-error');
-        $('#newPasswordInput').parent().removeClass('has-error');
+    $('#newAliasSourceInput, #newAliasDestinationInput').blur(function () {
+        $('#newAliasSourceInput').parent().removeClass('has-error');
+        $('#newAliasDestinationInput').parent().removeClass('has-error');
     });
 
     // When in the input field, this triggers the newItemAnchor when pressing enter
-    $('#newUserInput, #newPasswordInput').keyup(function (e) {
+    $('#newAliasSourceInput, #newAliasDestinationInput').keyup(function (e) {
         var key = e.which;
         if (key == 13) {
             $('#newItemAnchor').trigger('click');
@@ -146,7 +173,7 @@ function fillInTable () {
 
     // If the page was specified in the URL, then add it to the API url
     var urlVars = getUrlVars();
-    'page' in urlVars ? apiURL = '/api/v1/users?page=' + urlVars['page'] : apiURL = '/api/v1/users';
+    'page' in urlVars ? apiURL = '/api/v1/aliases?page=' + urlVars['page'] : apiURL = '/api/v1/aliases';
 
     // Query the API
     $.getJSON(apiURL, function (result) {
@@ -158,8 +185,8 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td>' + item.email + '</td>\
-                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
+            html += '<td><a href="#" class="sourceAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the source of the alias">' + item.source + '</td>\
+                    <td><a href="#" class="destinationAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the destination of the alias">' + item.destination + '</td>\
                     <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
@@ -170,9 +197,9 @@ function fillInTable () {
         // Clean up the table
         removeEmptyTableRows(i);
         // Set the pagination
-        setPagination(result['meta']['page'], result['meta']['pages'], 'users');
+        setPagination(result['meta']['page'], result['meta']['pages'], 'aliases');
         //Activate x-editable on new elements and other events
-        userEventListeners();
+        aliasEventListeners();
         // Remove the loading spinner
         manageSpinner(false);
     })
@@ -180,7 +207,7 @@ function fillInTable () {
 
         // If the resource is not found, then redirect to the last page
         if (error == 'NOT FOUND') {
-            redirectToLastPage('domains');
+            redirectToLastPage('aliases');
         }
     });
 }
@@ -198,5 +225,5 @@ $(document).ready(function () {
         fillInTable();
     });
 
-    userEventListeners();
+    aliasEventListeners();
 });

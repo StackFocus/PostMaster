@@ -11,6 +11,14 @@ class TestUserFunctions:
         rv = loggedin_client.get("/domains", follow_redirects=True)
         assert "Domains" in rv.data
 
+    def test_users_page(self, loggedin_client):
+        rv = loggedin_client.get("/users", follow_redirects=True)
+        assert "Users" in rv.data
+
+    def test_aliases_page(self, loggedin_client):
+        rv = loggedin_client.get("/aliases", follow_redirects=True)
+        assert "Aliases" in rv.data
+
     def test_user_logout(self, loggedin_client):
         rv = loggedin_client.get("/logout", follow_redirects=True)
         assert "Successfully logged out" in rv.data
