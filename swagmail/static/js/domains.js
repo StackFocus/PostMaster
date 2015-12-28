@@ -135,7 +135,8 @@ function fillInTable () {
         // Clean up the table
         removeEmptyTableRows(i);
         // Set the pagination
-        setPagination(result['meta']['page'], result['meta']['pages'], 'domains');
+        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages']
+        setPagination(result['meta']['page'], pages, 'domains');
         // Reactive all event listeners
         domainEventListeners();
         // Remove the loading spinner

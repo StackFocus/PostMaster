@@ -197,7 +197,8 @@ function fillInTable () {
         // Clean up the table
         removeEmptyTableRows(i);
         // Set the pagination
-        setPagination(result['meta']['page'], result['meta']['pages'], 'aliases');
+        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages']
+        setPagination(result['meta']['page'], pages, 'aliases');
         //Activate x-editable on new elements and other events
         aliasEventListeners();
         // Remove the loading spinner

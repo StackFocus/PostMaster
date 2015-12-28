@@ -1,5 +1,5 @@
 from flask import Blueprint
-from ..errors import ValidationError, bad_request, not_found
+from ..errors import ValidationError, GenericError, bad_request, not_found
 
 
 apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
@@ -9,6 +9,9 @@ apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
 def validation_error(e):
     return bad_request(e.args[0])
 
+@apiv1.errorhandler(GenericError)
+def validation_error(e):
+    return bad_request(e.args[0])
 
 @apiv1.errorhandler(400)
 def bad_request_error(e):
