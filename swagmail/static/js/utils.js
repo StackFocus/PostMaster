@@ -47,7 +47,7 @@ function manageSpinner(present) {
 function addStatusMessage(category, message) {
 
     $('#statusMessage').html('\
-        <div class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible loginAlert fade in" role="alert">\
+        <div class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
                 ' + message + '\
         </div>\

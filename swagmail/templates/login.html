@@ -11,13 +11,15 @@
                 <div class="panel-title text-center">Login In</div>
             </div> 
             <div class="panel-body">
+                <div id="statusMessage">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
+                        
                         {% for category, message in messages %}
                             {% if category == "success" %}
-                                <div class="alert alert-success alert-dismissible loginAlert fade in" role="alert">
+                                <div class="alert alert-success alert-dismissible fade in" role="alert">
                             {% else %}
-                                <div class="alert alert-danger alert-dismissible loginAlert fade in" role="alert">
+                                <div class="alert alert-danger alert-dismissible fade in" role="alert">
                             {% endif %}
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     {{ message }}
@@ -25,6 +27,7 @@
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
+                </div>
                 <form action="/login" method="POST" class="form-horizontal">
                     {{ loginForm.hidden_tag() }}
                     <div class="input-group loginInput">

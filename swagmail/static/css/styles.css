@@ -63,10 +63,9 @@ div.panel-heading i {
     margin-bottom: 2em;
 }
 
-.loginAlert {
+.alert {
     width: 60%;
     margin: auto;
-    margin-bottom: 4.5em;
     text-align: center;
 }
 /* End of Login Page CSS */
@@ -165,6 +164,11 @@ ul.pagination li.disabled a:hover {
 /* End of Only Alias Page CSS */
 
 @media(max-width:767px) {
+    div.editable-buttons {
+        display: block;
+        margin-left: 0 !important;
+    }
+
     /* Login Page CSS */
     #loginRow {
         margin: auto;
@@ -174,8 +178,10 @@ ul.pagination li.disabled a:hover {
         width: 95%;
     }
 
-    .loginAlert {
-        margin-bottom: 3em;
+    .alert {
+        width: 95%;
+        margin: auto;
+        text-align: center;
     }
     /* End of Login Page CSS */
 }
@@ -191,8 +197,13 @@ ul.pagination li.disabled a:hover {
 	}
 
     /* Login Page CSS */
-    #loginRow .panel-body {
+    #loginRow {
         margin-top: 4em;
+        margin-bottom: 3em;
+    }
+
+    #loginRow div.panel-body {
+        margin-top: 2em;
         margin-bottom: 3em;
     }
 
@@ -204,7 +215,6 @@ ul.pagination li.disabled a:hover {
         margin-top: 4em;
     }
     /* End of Login Page CSS */
-    
 }
 
 @media(min-width:992px) {
