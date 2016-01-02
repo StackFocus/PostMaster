@@ -164,6 +164,9 @@ ul.pagination li.disabled a:hover {
 /* End of Only Alias Page CSS */
 
 @media(max-width:767px) {
+    /* Make the x-editable buttons go underneath the form when on a mobile device
+       This causes the x-editable buttons not to flow over into the other column
+    */
     div.editable-buttons {
         display: block;
         margin-left: 0 !important;
