@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     {% if title %}<title>{{ title }}</title>{% endif %}
@@ -15,7 +16,7 @@
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     {% block head %}{% endblock %}
 </head>
-<body style="background-color:#FEFEFE; height:100%" id="body">
+<body id="body">
     <!-- Navigation Menu Starts -->
     <nav role="navigation" class="navbar navbar-default navbar-static-top" id="navigation-bar">
         <div class="container">

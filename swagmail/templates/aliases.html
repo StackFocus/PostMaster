@@ -11,7 +11,7 @@
     </div>
 </div>
 <div class="row">
-    <div id="dynamicTableDiv" class="table-responsive">
+    <div id="dynamicTableDiv">
         <div class="loader"></div>
         <table class="table table-striped table-bordered" id="dynamicTable">
             <thead>
@@ -24,15 +24,15 @@
             <tbody>
                 {% for i in range(5) %}
                     <tr id="dynamicTableRow{{i + 1}}">
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td data-title="Source: "></td>
+                        <td data-title="Destination: "></td>
+                        <td data-title="Action: "></td>
                     </tr>
                 {% endfor %}
                 <tr id="addItemRow">
-                    <td><div><input id="newAliasSourceInput" class="form-control" type="text" placeholder="Enter a new alias email address" /></div></td>
-                    <td><div><input id="newAliasDestinationInput" class="form-control" type="text" placeholder="Enter an existing destination email address" /></div></td>
-                    <td style="vertical-align: middle"><a href="#" id="newItemAnchor">Add</a></td>
+                    <td data-title="Source: "><div><input id="newAliasSourceInput" class="form-control" type="text" placeholder="Enter a new alias email address" /></div></td>
+                    <td data-title="Destination: "><div><input id="newAliasDestinationInput" class="form-control" type="text" placeholder="Enter an existing destination email address" /></div></td>
+                    <td data-title="Action: "><a href="#" id="newItemAnchor">Add</a></td>
                 </tr>
             </tbody>
         </table>

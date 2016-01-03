@@ -1,3 +1,12 @@
+html,
+body {
+    height:100%;
+}
+
+body {
+    background-color:#FEFEFE;
+}
+
 a, a:focus {
     color: #2C3E50;
     text-decoration: none !important;
@@ -21,13 +30,10 @@ h2.textHeading {
     margin-bottom: 3em;
 }
 
-table.table > tbody > tr > td {
+#dynamicTable th,
+#dynamicTable td {
     vertical-align: middle;
-}
-
-button.editable-submit,
-button.editable-cancel {
-    margin-top: 3px;
+    overflow: hidden;
 }
 
 /* Dashboard CSS */
@@ -122,11 +128,6 @@ ul.pagination li.disabled a:hover {
     position: relative;
 }
 
-#dynamicTable td {
-    height: 46px;
-    padding: 5px 8px;
-}
-
 #actionHeader {
     width: 15%;
 }
@@ -164,13 +165,51 @@ ul.pagination li.disabled a:hover {
 /* End of Only Alias Page CSS */
 
 @media(max-width:767px) {
-    /* Make the x-editable buttons go underneath the form when on a mobile device
-       This causes the x-editable buttons not to flow over into the other column
-    */
-    div.editable-buttons {
-        display: block;
-        margin-left: 0 !important;
+    /* No More Tables */
+    #dynamicTable, 
+    #dynamicTable thead, 
+    #dynamicTable tbody, 
+    #dynamicTable th, 
+    #dynamicTable td, 
+    #dynamicTable tr { 
+        display: block; 
     }
+
+    #dynamicTable thead tr { 
+        display: none;
+    }
+ 
+    #dynamicTable tr { border: 1px solid #ccc; }
+ 
+    #dynamicTable td { 
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 50%; 
+        white-space: normal;
+        text-align:left;
+    }
+ 
+    #dynamicTable td:before { 
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align:left;
+        font-weight: bold;
+    }
+
+    #dynamicTable td:before { content: attr(data-title); }
+
+    div.editable-input {
+        max-width: 72.5%;
+    }
+    button.editable-cancel {
+        display: none;
+    }
+    /* End of No More Tables */
 
     /* Login Page CSS */
     #loginRow {
@@ -197,6 +236,12 @@ ul.pagination li.disabled a:hover {
 
     ul.dropdown-menu {
         border: none !important;
+    }
+
+    #dynamicTable th,
+    #dynamicTable td {
+        height: 50px;
+        padding: 5px 8px;
     }
 
     /* Login Page CSS */
