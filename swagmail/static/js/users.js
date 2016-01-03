@@ -48,7 +48,8 @@ function deleteUser (id) {
 function userEventListeners () {
 
     var userPassword = $('a.userPassword');
-    var deleteAnchor = $('a.deleteAnchor');
+    var deleteModal = $('#deleteUserModal');
+    var deleteModalBtn = $('#modalDeleteBtn');
     var newItemAnchor = $('#newItemAnchor');
     userPassword.unbind();
     userPassword.tooltip();
@@ -82,11 +83,16 @@ function userEventListeners () {
         }
     });
 
+    deleteModal.unbind();
+    deleteModal.on('show.bs.modal', function (e) {
+        console.log('hello');
+        deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
+    });
 
-    deleteAnchor.unbind();
-    deleteAnchor.on('click', function (e) {
+    deleteModalBtn.unbind();
+    deleteModalBtn.on('click', function (e) {
+        deleteModal.modal('hide');
         deleteUser($(this).attr('data-pk'));
-        e.preventDefault();
     });
 
     // When the Add button is clicked, it will POST to the API
@@ -160,7 +166,7 @@ function fillInTable () {
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td>' + item.email + '</td>\
                     <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
+                    <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteUserModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
 
@@ -170,7 +176,8 @@ function fillInTable () {
         // Clean up the table
         removeEmptyTableRows(i);
         // Set the pagination
-        setPagination(result['meta']['page'], result['meta']['pages'], 'users');
+        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages']
+        setPagination(result['meta']['page'], pages, 'users');
         //Activate x-editable on new elements and other events
         userEventListeners();
         // Remove the loading spinner

@@ -5,6 +5,10 @@ class ValidationError(ValueError):
     pass
 
 
+class GenericError(ValueError):
+    pass
+
+
 def not_modified():
     response = jsonify({'status': 304, 'error': 'not modified'})
     response.status_code = 304

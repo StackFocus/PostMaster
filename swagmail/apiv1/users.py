@@ -1,9 +1,9 @@
 ﻿from flask import jsonify, request
 from flask_login import login_required
 from swagmail import db
-from swagmail.models import VirtualUsers
+from swagmail.models import VirtualUsers, VirtualAliases
 from ..decorators import json_wrap, paginate
-from ..errors import ValidationError
+from ..errors import ValidationError, GenericError
 from . import apiv1
 
 
@@ -36,8 +36,16 @@ def new_user():
 @json_wrap
 def delete_user(user_id):
     user = VirtualUsers.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
+    try:
+        aliases = VirtualAliases.query.filter_by(destination=user.email).all()
+        if aliases:
+            for alias in aliases:
+                db.session.delete(alias)
+        db.session.delete(user)
+        db.session.commit()
+    except:
+        raise GenericError('The user could not be deleted')
+
     return {}, 204
 
 
