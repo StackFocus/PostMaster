@@ -185,9 +185,9 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td><a href="#" class="sourceAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the source of the alias">' + item.source + '</td>\
-                    <td><a href="#" class="destinationAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the destination of the alias">' + item.destination + '</td>\
-                    <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
+            html += '<td data-title="Source: "><a href="#" class="sourceAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the source of the alias">' + item.source + '</td>\
+                    <td data-title="Destination: "><a href="#" class="destinationAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the destination of the alias">' + item.destination + '</td>\
+                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
 

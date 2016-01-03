@@ -164,9 +164,9 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td>' + item.email + '</td>\
-                    <td><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteUserModal">Delete</a></td>';
+            html += '<td data-title="Email: ">' + item.email + '</td>\
+                    <td data-title="Password: "><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
+                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteUserModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
 

@@ -9,7 +9,9 @@
     <h2 class="textHeadingManage">Domains</h2>
     <div id="statusMessage">
     </div>
-    <div id="dynamicTableDiv">
+</div>
+<div class="row">
+    <div id="dynamicTableDiv" class="table-responsive">
         <div class="loader"></div>
         <table class="table table-striped table-bordered" id="dynamicTable">
             <thead>
@@ -21,13 +23,13 @@
             <tbody>
                 {% for i in range(5) %}
                     <tr id="dynamicTableRow{{i + 1}}">
-                        <td></td>
-                        <td></td>
+                        <td data-title="Domain: "></td>
+                        <td data-title="Action: "></td>
                     </tr>
                 {% endfor %}
                 <tr id="addItemRow">
-                    <td><div><input id="newDomainInput" class="form-control" type="text" placeholder="Enter a new domain" /></div></td>
-                    <td style="vertical-align: middle"><a href="#" id="newItemAnchor">Add</a></td>
+                    <td data-title="Domain: "><div><input id="newDomainInput" class="form-control" type="text" placeholder="Enter a new domain" /></div></td>
+                    <td data-title="Action: "><a href="#" id="newItemAnchor">Add</a></td>
                 </tr>
             </tbody>
         </table>
