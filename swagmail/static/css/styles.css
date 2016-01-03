@@ -206,8 +206,13 @@ ul.pagination li.disabled a:hover {
     div.editable-input {
         max-width: 72.5%;
     }
+
     button.editable-cancel {
         display: none;
+    }
+
+    div.tooltip {
+        display: none !important;
     }
     /* End of No More Tables */
 
