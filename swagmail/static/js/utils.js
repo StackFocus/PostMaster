@@ -53,7 +53,7 @@ function addStatusMessage(category, message) {
         </div>\
     ').hide().fadeIn('slow');
 
-    $('#bottomOuterAlertDiv #bottomAlert').animate({ marginBottom: "+=110px" }, 300, function () {
+    $('#bottomOuterAlertDiv #bottomAlert').animate({ marginBottom: "+=110px" }, 100, function () {
         var that = this;
         setTimeout(function () { $(that).find('button.close').trigger('click'); }, 8000);
     });
