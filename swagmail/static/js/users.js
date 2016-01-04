@@ -83,13 +83,13 @@ function userEventListeners () {
         }
     });
 
-    deleteModal.unbind();
+    deleteModal.unbind('show.bs.modal');
     deleteModal.on('show.bs.modal', function (e) {
         console.log('hello');
         deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
     });
 
-    deleteModalBtn.unbind();
+    deleteModalBtn.unbind('click');
     deleteModalBtn.on('click', function (e) {
         deleteModal.modal('hide');
         deleteUser($(this).attr('data-pk'));

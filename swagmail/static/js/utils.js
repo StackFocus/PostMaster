@@ -46,12 +46,17 @@ function manageSpinner(present) {
 
 function addStatusMessage(category, message) {
 
-    $('#statusMessage').html('\
-        <div class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
+    $('#bottomOuterAlertDiv').html('\
+        <div id="bottomAlert" class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
                 ' + message + '\
         </div>\
-    ').hide().fadeIn('fast');
+    ').hide().fadeIn('slow');
+
+    $('#bottomOuterAlertDiv #bottomAlert').animate({ marginBottom: "+=110px" }, 100, function () {
+        var that = this;
+        setTimeout(function () { $(that).find('button.close').trigger('click'); }, 8000);
+    });
 }
 
 
