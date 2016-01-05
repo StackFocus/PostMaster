@@ -1,4 +1,4 @@
-﻿from flask import jsonify, request
+﻿from flask import request
 from flask_login import login_required
 from swagmail import db
 from swagmail.models import VirtualUsers, VirtualAliases
@@ -27,7 +27,13 @@ def get_user(user_id):
 def new_user():
     user = VirtualUsers().from_json(request.get_json(force=True))
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise GenericError('The user could not be created')
+    finally:
+        db.session.close()
     return {}, 201
 
 
@@ -36,16 +42,19 @@ def new_user():
 @json_wrap
 def delete_user(user_id):
     user = VirtualUsers.query.get_or_404(user_id)
+
+    aliases = VirtualAliases.query.filter_by(destination=user.email).all()
+    if aliases:
+        for alias in aliases:
+            db.session.delete(alias)
+    db.session.delete(user)
     try:
-        aliases = VirtualAliases.query.filter_by(destination=user.email).all()
-        if aliases:
-            for alias in aliases:
-                db.session.delete(alias)
-        db.session.delete(user)
         db.session.commit()
     except:
+        db.session.rollback()
         raise GenericError('The user could not be deleted')
-
+    finally:
+        db.session.close()
     return {}, 204
 
 
@@ -58,8 +67,14 @@ def update_user(user_id):
 
     if 'password' in json:
         user.password = VirtualUsers().encrypt_password(json['password'])
+        db.session.add(user)
     else:
         raise ValidationError('The password was not supplied in the request')
-
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise GenericError('The user could not be updated')
+    finally:
+        db.session.close()
     return {}, 200

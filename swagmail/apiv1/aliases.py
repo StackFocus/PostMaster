@@ -1,9 +1,9 @@
-﻿from flask import jsonify, request
+﻿from flask import request
 from flask_login import login_required
 from swagmail import db
 from swagmail.models import VirtualAliases
 from ..decorators import json_wrap, paginate
-from ..errors import ValidationError
+from ..errors import ValidationError, GenericError
 from . import apiv1
 
 
@@ -27,7 +27,13 @@ def get_alias(alias_id):
 def new_alias():
     alias = VirtualAliases().from_json(request.get_json(force=True))
     db.session.add(alias)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise GenericError('The alias could not be created')
+    finally:
+        db.session.close()
     return {}, 201
 
 
@@ -37,7 +43,13 @@ def new_alias():
 def delete_alias(alias_id):
     alias = VirtualAliases.query.get_or_404(alias_id)
     db.session.delete(alias)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise GenericError('The alias could not be deleted')
+    finally:
+        db.session.close()
     return {}, 204
 
 
@@ -51,13 +63,19 @@ def update_alias(alias_id):
     if 'source' in json:
         if VirtualAliases().validate_source(json['source']):
             alias.source = json['source']
-            db.session.commit()
+            db.session.add(alias)
     elif 'destination' in json:
         if VirtualAliases().validate_destination(json['destination']):
             alias.destination = json['destination']
-            db.session.commit()
+            db.session.add(alias)
     else:
         raise ValidationError('The source or destination was not supplied in the request')
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        raise GenericError('The alias could not be updated')
+    finally:
+        db.session.close()
     return {}, 200
