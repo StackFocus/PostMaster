@@ -46,17 +46,17 @@ function manageSpinner(present) {
 
 function addStatusMessage(category, message) {
 
+    // Generates a random id for the alert so that the setTimeout function below only applies to that specific alert
+    var alertId = Math.floor((Math.random() * 100000) + 1);
+
     $('#bottomOuterAlertDiv').html('\
-        <div id="bottomAlert" class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
+        <div id="bottomAlert' + alertId + '" class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
                 ' + message + '\
         </div>\
-    ').hide().fadeIn('slow');
+    ').hide().fadeIn();
 
-    $('#bottomOuterAlertDiv #bottomAlert').animate({ marginBottom: "+=110px" }, 100, function () {
-        var that = this;
-        setTimeout(function () { $(that).find('button.close').trigger('click'); }, 8000);
-    });
+    setTimeout(function () { $('#bottomAlert' + alertId + ' button.close').trigger('click'); }, ((category == 'success') ? 5000 : 8000));
 }
 
 
