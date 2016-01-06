@@ -53,14 +53,20 @@ function deleteDomain (id) {
 // Sets the event listeners in the dynamic table
 function domainEventListeners() {
 
-    var deleteAnchor = $('a.deleteAnchor');
     var newItemAnchor = $('#newItemAnchor');
+    var deleteModal = $('#deleteModal');
+    var deleteModalBtn = $('#modalDeleteBtn');
     var newDomainInput = $('#newDomainInput');
 
-    deleteAnchor.unbind();
-    deleteAnchor.on('click', function (e) {
+    deleteModal.unbind('show.bs.modal');
+    deleteModal.on('show.bs.modal', function (e) {
+        deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
+    });
+
+    deleteModalBtn.unbind('click');
+    deleteModalBtn.on('click', function (e) {
+        deleteModal.modal('hide');
         deleteDomain($(this).attr('data-pk'));
-        e.preventDefault();
     });
 
     // When the Add button is clicked, it will POST to the API
@@ -125,7 +131,7 @@ function fillInTable () {
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-pk="' + item.id + '" data-title="Domain: ">' + item.name + '</td>\
-                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
+                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
 

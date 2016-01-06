@@ -48,7 +48,7 @@ function deleteUser (id) {
 function userEventListeners () {
 
     var userPassword = $('a.userPassword');
-    var deleteModal = $('#deleteUserModal');
+    var deleteModal = $('#deleteModal');
     var deleteModalBtn = $('#modalDeleteBtn');
     var newItemAnchor = $('#newItemAnchor');
     userPassword.unbind();
@@ -85,7 +85,6 @@ function userEventListeners () {
 
     deleteModal.unbind('show.bs.modal');
     deleteModal.on('show.bs.modal', function (e) {
-        console.log('hello');
         deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
     });
 
@@ -166,7 +165,7 @@ function fillInTable () {
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Email: ">' + item.email + '</td>\
                     <td data-title="Password: "><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteUserModal">Delete</a></td>';
+                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
 
