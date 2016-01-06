@@ -33,15 +33,15 @@ h2.textHeading {
 #bottomOuterAlertDiv {
     position: fixed;
     bottom: 0;
-    margin: 0 !important;
+    margin: 0;
     width: 100%;
 }
 
-#bottomOuterAlertDiv #bottomAlert {
+#bottomOuterAlertDiv div.alert {
     margin: 0;
     margin: auto;
     max-width: 800px;
-    margin-bottom: -100px;
+    margin-bottom: 1em;
     text-align: center;
 }
 
@@ -168,7 +168,7 @@ ul.pagination li.disabled a:hover {
         margin-left: 1em;
     }
 
-    #bottomOuterAlertDiv #bottomAlert {
+    #bottomOuterAlertDiv div.alert {
         width: 85%;
     }
 
@@ -264,7 +264,7 @@ ul.pagination li.disabled a:hover {
         padding: 5px 8px;
     }
 
-    #bottomOuterAlertDiv #bottomAlert {
+    #bottomOuterAlertDiv div.alert {
         width: 60%;
     }
 
