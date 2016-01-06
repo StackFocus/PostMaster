@@ -6,7 +6,8 @@ Because managing your mailserver should be easier
 ### Installing
 ```
 $ pip install -r requirements.txt
-$ python app.py
+$ python manage.py createdb
+$ python manage.py runserver
 ```
 ### Tests
 ```
