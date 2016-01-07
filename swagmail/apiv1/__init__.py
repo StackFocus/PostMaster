@@ -1,8 +1,10 @@
 from flask import Blueprint
+from flask_bcrypt import Bcrypt
 from ..errors import ValidationError, GenericError, bad_request, not_found
 
 
 apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
+bcrypt = Bcrypt()
 
 
 @apiv1.errorhandler(ValidationError)
@@ -23,4 +25,4 @@ def not_found_error(e):
     return not_found('item not found')
 
 
-from . import domains, users, aliases
+from . import domains, users, aliases, admins

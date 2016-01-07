@@ -3,7 +3,7 @@ Author: Swagger.pro
 File: models.py
 Purpose: database definitions for SQLAlchemy
 """
-from swagmail import db
+from swagmail import db, bcrypt
 from .errors import ValidationError
 from re import search, match
 from os import urandom
@@ -230,3 +230,26 @@ class Admins(db.Model):
 
     def __repr__(self):
         return '<swagmail_admins(email=\'%s\')>' % (self.email)
+
+    def to_json(self):
+        """ Leaving password out
+        """
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email
+        }
+
+    def from_json(self, json):
+        if json.get('email', None) is None:
+            raise ValidationError('The email address was not specified')
+        if json.get('password', None) is None:
+            raise ValidationError('The password was not specified')
+        if json.get('name', None) is None:
+            raise ValidationError('The name was not specified')
+        if self.query.filter_by(email=json['email']).first() is not None:
+            raise ValidationError('"%s" already exists!' % json['email'])
+        self.email = json['email']
+        self.name = json['name']
+        self.password = bcrypt.generate_password_hash(json['password'])
+        return self

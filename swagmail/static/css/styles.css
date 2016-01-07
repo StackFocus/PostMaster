@@ -87,7 +87,8 @@ h2.textHeadingManage {
 
 #newDomainInput, #newUserInput,
 #newPasswordInput, #newAliasSourceInput,
-#newAliasDestinationInput {
+#newAliasDestinationInput,
+#newAdminInput, #newAdminPasswordInput {
     height: 40px;
 }
 
@@ -161,6 +162,12 @@ ul.pagination li.disabled a:hover {
     width: 42.5%;
 }
 /* End of Only Alias Page CSS */
+
+/* Only Admin Page CSS */
+#emailAdminHeader, #passwordAdminHeader {
+    width: 42.5%;
+}
+/* End of Only Admin Page CSS */
 
 @media(max-width:767px) {
 
@@ -287,7 +294,8 @@ ul.pagination li.disabled a:hover {
     /* Manage Page CSS */
     #newDomainInput, #newUserInput,
     #newPasswordInput, #newAliasSourceInput,
-    #newAliasDestinationInput {
+    #newAliasDestinationInput,
+    #newAdminInput, #newAdminPasswordInput {
         width: 75%;
     }
     /* End of Manage Page CSS */
