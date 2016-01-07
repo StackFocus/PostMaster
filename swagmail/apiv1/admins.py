@@ -64,14 +64,14 @@ def update_admin(admin_id):
         if Admins.query.filter_by(email=json['email']).first() is not None:
             admin.email = json['email']
             db.session.add(admin)
-    elif 'name' in json:
-        admin.name = json['name']
-        db.session.add(admin)
     elif 'password' in json:
         admin.password = bcrypt.generate_password_hash(json['password'])
         db.session.add(admin)
+    elif 'name' in json:
+        admin.name = json['name']
+        db.session.add(admin)
     else:
-        raise ValidationError('The source or destination was not supplied in the request')
+        raise ValidationError('The email, password, or name was not supplied in the request')
 
     try:
         db.session.commit()
