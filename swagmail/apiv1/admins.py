@@ -41,7 +41,7 @@ def new_admin():
 @login_required
 @json_wrap
 def delete_admin(admin_id):
-    admin = Admins.query.get_or_404(alias_id)
+    admin = Admins.query.get_or_404(admin_id)
     db.session.delete(admin)
     try:
         db.session.commit()
@@ -61,9 +61,11 @@ def update_admin(admin_id):
     json = request.get_json(force=True)
 
     if 'email' in json:
-        if Admins.query.filter_by(email=json['email']).first() is not None:
+        if Admins.query.filter_by(email=json['email']).first() is None:
             admin.email = json['email']
             db.session.add(admin)
+        else:
+            ValidationError('The email supplied already exists')
     elif 'password' in json:
         admin.password = bcrypt.generate_password_hash(json['password'])
         db.session.add(admin)

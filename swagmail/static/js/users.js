@@ -109,7 +109,7 @@ function userEventListeners () {
             userInput.parent().addClass('has-error');
             userInput.focus();
         }
-            // If passwordInput is empty, highlight it in red
+        // If passwordInput is empty, highlight it in red
         else if (!passwordInput.val()) {
             passwordInput.parent().addClass('has-error');
             passwordInput.focus();
@@ -186,7 +186,7 @@ function fillInTable () {
 
         // If the resource is not found, then redirect to the last page
         if (error == 'NOT FOUND') {
-            redirectToLastPage('domains');
+            redirectToLastPage('users');
         }
     });
 }

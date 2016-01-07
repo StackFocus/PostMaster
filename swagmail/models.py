@@ -206,12 +206,6 @@ class Admins(db.Model):
     password = db.Column(db.String(64))
     active = db.Column(db.Boolean, default=True)
 
-    def __init__(self, name, email, password, authenticated, active):
-        self.name = name
-        self.email = email
-        self.password = password
-        self.active = active
-
     def is_active(self):
         """ Returns if user is active
         """
@@ -259,4 +253,5 @@ class Admins(db.Model):
         self.email = json['email']
         self.name = json['name']
         self.password = bcrypt.generate_password_hash(json['password'])
+        self.active = True
         return self
