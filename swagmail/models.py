@@ -24,6 +24,11 @@ class VirtualDomains(db.Model):
                    nullable=False, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
 
+    virtual_users = db.relationship(
+        "VirtualUsers", cascade="all,delete", backref="virtual_domains")
+    virtual_aliases = db.relationship(
+        "VirtualAliases", cascade="all,delete", backref="virtual_domains")
+
     def __repr__(self):
         return '<virtual_domains(name=\'%s\')>' % (self.name)
 
@@ -39,9 +44,9 @@ class VirtualDomains(db.Model):
         if self.query.filter_by(name=json['name']).first() is None:
             self.name = json['name']
         else:
-            raise ValidationError('The domain "%s" already exists' % json['name'])
+            raise ValidationError(
+                'The domain "%s" already exists' % json['name'])
         return self
-
 
     def query_from_json(self, json):
         if json.get('name', None) is None:
@@ -49,7 +54,8 @@ class VirtualDomains(db.Model):
         if self.query.filter_by(name=json['name']).first() is not None:
             return self.query.filter_by(name=json['name']).first()
         else:
-            raise ValidationError('The domain "%s" does not exist' % json['name'])
+            raise ValidationError(
+                'The domain "%s" does not exist' % json['name'])
         return self
 
 
@@ -108,7 +114,7 @@ class VirtualUsers(db.Model):
     def encrypt_password(self, password):
         salt = (sha1(urandom(16)).hexdigest())[:16]
         protectedPassword = sha512.encrypt(password, rounds=5000,
-                                    salt=salt, implicit_rounds=True)
+                                           salt=salt, implicit_rounds=True)
         return protectedPassword
 
 
@@ -152,7 +158,7 @@ class VirtualAliases(db.Model):
         if self.validate_destination(json['destination']):
             self.destination = json['destination']
             self.domain_id = VirtualDomains.query.filter_by(name=search(
-                    '(?<=@).*$', json['destination']).group(0)).first().id
+                '(?<=@).*$', json['destination']).group(0)).first().id
         return self
 
     def validate_source(self, source):
@@ -183,7 +189,8 @@ class VirtualAliases(db.Model):
                 return True
             else:
                 raise ValidationError \
-                    ('The destination "%s" is not a current email address' % destination)
+                    ('The destination "%s" is not a current email address' %
+                     destination)
         else:
             raise ValidationError(
                 'The destination "%s" is not in a valid email format' % destination)

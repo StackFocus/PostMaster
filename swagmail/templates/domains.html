@@ -37,4 +37,22 @@
     <ul class="pagination hidden" id="pagination">
     </ul>
 </div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="deleteModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Domain</h4>
+            </div>
+            <div class="modal-body">
+                <p>Deleting this domain will delete all its associated users and aliases.<br />Would you like to continue?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger btn-ok" id="modalDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
