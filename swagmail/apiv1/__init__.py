@@ -1,10 +1,8 @@
 from flask import Blueprint
-from flask_bcrypt import Bcrypt
 from ..errors import ValidationError, GenericError, bad_request, not_found
 
 
 apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
-bcrypt = Bcrypt()
 
 
 @apiv1.errorhandler(ValidationError)
