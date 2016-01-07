@@ -21,22 +21,22 @@
                 <div class="panel-title text-center">Login In</div>
             </div>
             <div class="panel-body">
-                    <form action="/login" method="POST" class="form-horizontal">
-                        {{ loginForm.hidden_tag() }}
-                        <div class="input-group loginInput">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            {{ loginForm.username(class_='form-control',placeholder='Enter a username') }}
-                        </div>
-                        <div class="input-group loginInput">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            {{ loginForm.password(class_='form-control',placeholder='Enter a password') }}
-                        </div>
-                        <div class="input-group text-center" style="margin: auto">
-                            <input class="btn btn-primary" id="loginButton" type="submit" value="Login" />
-                            <input class="btn btn-default" style="margin-left: 1.5em" id="loginButton" type="reset" value="Reset" />
-                        </div>
-                    </form>
-                </div>
+                <form action="/login" method="POST" class="form-horizontal">
+                    {{ loginForm.hidden_tag() }}
+                    <div class="input-group loginInput">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        {{ loginForm.username(class_='form-control',placeholder='Enter a username') }}
+                    </div>
+                    <div class="input-group loginInput">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        {{ loginForm.password(class_='form-control',placeholder='Enter a password') }}
+                    </div>
+                    <div class="input-group text-center" style="margin: auto">
+                        <input class="btn btn-primary" id="loginButton" type="submit" value="Login" />
+                        <input class="btn btn-default" style="margin-left: 1.5em" id="loginButton" type="reset" value="Reset" />
+                    </div>
+                </form>
             </div>
         </div>
-        {% endblock %}
+    </div>
+    {% endblock %}
