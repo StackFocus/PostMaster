@@ -249,7 +249,7 @@ class Admins(db.Model):
         if json.get('name', None) is None:
             raise ValidationError('The name was not specified')
         if self.query.filter_by(email=json['email']).first() is not None:
-            raise ValidationError('"%s" already exists!' % json['email'])
+            raise ValidationError('"%s" already exists' % json['email'])
         self.email = json['email']
         self.name = json['name']
         self.password = bcrypt.generate_password_hash(json['password'])
