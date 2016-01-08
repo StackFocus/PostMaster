@@ -30,7 +30,7 @@ def new_admin():
     db.session.add(admin)
     try:
         db.session.commit()
-        json_logger('audit', 'The administrator "%s" was created successfully by "%s"' % (admin.email, current_user.email))
+        json_logger('audit', current_user.email, 'The administrator "%s" was created successfully by "%s"' % admin.email)
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -50,7 +50,7 @@ def delete_admin(admin_id):
     db.session.delete(admin)
     try:
         db.session.commit()
-        json_logger('audit', 'The administrator "%s" was deleted successfully by "%s"' % (admin.email, current_user.email))
+        json_logger('audit', current_user.email, 'The administrator "%s" was deleted successfully' % admin.email)
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -72,17 +72,17 @@ def update_admin(admin_id):
 
     if 'email' in json:
         if Admins.query.filter_by(email=json['email']).first() is None:
-            auditMessage = 'The administrator "%s" had their email changed to "%s" by "%s"' % (admin.email, json['email'], current_user.email)
+            auditMessage = 'The administrator "%s" had their email changed to "%s"' % (admin.email, json['email'])
             admin.email = json['email']
             db.session.add(admin)
         else:
             ValidationError('The email supplied already exists')
     elif 'password' in json:
-        auditMessage = 'The administrator "%s" had their password changed by "%s"' % (admin.email, current_user.email)
+        auditMessage = 'The administrator "%s" had their password changed' % admin.email
         admin.password = bcrypt.generate_password_hash(json['password'])
         db.session.add(admin)
     elif 'name' in json:
-        auditMessage = 'The administrator "%s" had their name changed to "%s" by "%s"' % (admin.email, admin.name, current_user.email)
+        auditMessage = 'The administrator "%s" had their name changed to "%s"' % (admin.email, admin.name)
         admin.name = json['name']
         db.session.add(admin)
     else:
@@ -90,7 +90,7 @@ def update_admin(admin_id):
 
     try:
         db.session.commit()
-        json_logger('audit', auditMessage)
+        json_logger('audit', current_user.email, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:
