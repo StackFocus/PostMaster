@@ -1,10 +1,11 @@
 ﻿from flask import request
-from flask_login import login_required
+from flask_login import login_required, current_user
 from swagmail import db
 from swagmail.models import VirtualUsers, VirtualAliases
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
+from utils import json_logger
 
 
 @apiv1.route("/users", methods=["GET"])
@@ -29,8 +30,16 @@ def new_user():
     db.session.add(user)
     try:
         db.session.commit()
-    except:
+        json_logger('audit', current_user.email,
+                    'The user "{0}" was created successfully by "{1}"'.format(
+                        user.email, current_user.email))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error',
+            'The following error occurred in new_user: {0}'.format(str(e)))
         raise GenericError('The user could not be created')
     finally:
         db.session.close()
@@ -50,8 +59,16 @@ def delete_user(user_id):
     db.session.delete(user)
     try:
         db.session.commit()
-    except:
+        json_logger(
+            'audit', current_user.email,
+            'The user "{0}" was deleted successfully'.format(user.email))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error',
+            'The following error occurred in delete_user: {0}'.format(str(e)))
         raise GenericError('The user could not be deleted')
     finally:
         db.session.close()
@@ -67,13 +84,21 @@ def update_user(user_id):
 
     if 'password' in json:
         user.password = VirtualUsers().encrypt_password(json['password'])
+        auditMessage = 'The user "{0}" had their password changed'.format(
+            user.email)
         db.session.add(user)
     else:
         raise ValidationError('The password was not supplied in the request')
     try:
         db.session.commit()
-    except:
+        json_logger('audit', current_user.email, auditMessage)
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error',
+            'The following error occurred in update_user: {0}'.format(str(e)))
         raise GenericError('The user could not be updated')
     finally:
         db.session.close()

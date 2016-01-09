@@ -3,10 +3,11 @@ Author: Swagger.pro
 File: utils.py
 Purpose: General helper utils
 """
-from os import path, getcwd
+from os import getcwd
 from json import dumps as dumps
 from datetime import datetime
 from ..errors import ValidationError
+
 
 def json_logger(category, user, message):
     """
@@ -17,14 +18,16 @@ def json_logger(category, user, message):
 
     try:
         with open(logPath, mode='a+') as logFile:
-            logFile.write("{}\n".format(dumps({
+            logFile.write("{}\n".format(dumps(
+                {
                     'category': category,
                     'message': message,
                     'user': user,
                     'timestamp': datetime.utcnow().isoformat() + 'Z'
-                }, sort_keys=True)))
+                },
+                sort_keys=True)))
             logFile.close()
     except IOError:
         raise ValidationError(
-            'The log could not be written to  "%s". Verify that the path exists and is writeable.'
-            % (getcwd().replace('\\','/') + '/' + logPath))
+            'The log could not be written to  "{0}". Verify that the path exists and is writeable.'.format(
+                getcwd().replace('\\', '/') + '/' + logPath))

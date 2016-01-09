@@ -25,12 +25,7 @@ def createdb():
     os.system('python manage.py db init')
     os.system('python manage.py db migrate')
     os.system('python manage.py db upgrade')
-    user = models.Admins(
-        'Default User', 'user@swagmail.com',
-        '$2a$12$OihMM.ogbjvUZWPLqHfBZOU4vzSjbhvypuGxef4NjbERRc839LKOy',
-        False,
-        True
-    )
+    user = models.Admins().from_json({'email': 'user@swagmail.com', 'password': 'password', 'name': 'Default User'})
     db.session.add(user)
     db.session.commit()
 

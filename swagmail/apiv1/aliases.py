@@ -1,10 +1,11 @@
 ﻿from flask import request
-from flask_login import login_required
+from flask_login import login_required, current_user
 from swagmail import db
 from swagmail.models import VirtualAliases
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
+from utils import json_logger
 
 
 @apiv1.route("/aliases", methods=["GET"])
@@ -29,8 +30,16 @@ def new_alias():
     db.session.add(alias)
     try:
         db.session.commit()
-    except:
+        json_logger('audit', current_user.email,
+                    'The alias "{0}" was created successfully by "{1}"'.format(
+                        alias.source, current_user.email))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error', current_user.email,
+            'The following error occurred in new_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be created')
     finally:
         db.session.close()
@@ -45,8 +54,16 @@ def delete_alias(alias_id):
     db.session.delete(alias)
     try:
         db.session.commit()
-    except:
+        json_logger(
+            'audit', current_user.email,
+            'The alias "{0}" was deleted successfully'.format(alias.source))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error',
+            'The following error occurred in delete_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be deleted')
     finally:
         db.session.close()
@@ -62,19 +79,32 @@ def update_alias(alias_id):
 
     if 'source' in json:
         if VirtualAliases().validate_source(json['source']):
+            auditMessage = 'The alias "{0}" had their source changed to "{1}"'.format(
+                alias.source, json[
+                    'source'])
             alias.source = json['source']
             db.session.add(alias)
     elif 'destination' in json:
         if VirtualAliases().validate_destination(json['destination']):
+            auditMessage = 'The alias "{0}" had their destination changed to "{1}"'.format(
+                alias.source, json[
+                    'destination'])
             alias.destination = json['destination']
             db.session.add(alias)
     else:
-        raise ValidationError('The source or destination was not supplied in the request')
+        raise ValidationError(
+            'The source or destination was not supplied in the request')
 
     try:
         db.session.commit()
-    except:
+        json_logger('audit', current_user.email, auditMessage)
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error',
+            'The following error occurred in update_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be updated')
     finally:
         db.session.close()

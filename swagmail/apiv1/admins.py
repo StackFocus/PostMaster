@@ -1,4 +1,4 @@
-from flask import request, session
+from flask import request
 from flask_login import login_required, current_user
 from swagmail import db, bcrypt
 from swagmail.models import Admins
@@ -30,12 +30,17 @@ def new_admin():
     db.session.add(admin)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, 'The administrator "%s" was created successfully by "%s"' % admin.email)
+        json_logger(
+            'audit', current_user.email,
+            'The administrator "{0}" was created successfully by "{1}"'.format(
+                admin.email, current_user.email))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
-        json_logger('error', 'The following error occurred in new_admin: %s' % str(e))
+        json_logger(
+            'error', current_user.email,
+            'The following error occurred in new_admin: {0}'.format(str(e)))
         raise GenericError('The admininstrator could not be created')
     finally:
         db.session.close()
@@ -50,12 +55,16 @@ def delete_admin(admin_id):
     db.session.delete(admin)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, 'The administrator "%s" was deleted successfully' % admin.email)
+        json_logger('audit', current_user.email,
+                    'The administrator "{0}" was deleted successfully'.format(
+                        admin.email))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
-        json_logger('error', 'The following error occurred in delete_admin: %s' % str(e))
+        json_logger(
+            'error',
+            'The following error occurred in delete_admin: {0}'.format(str(e)))
         raise GenericError('The administrator could not be deleted')
     finally:
         db.session.close()
@@ -72,21 +81,26 @@ def update_admin(admin_id):
 
     if 'email' in json:
         if Admins.query.filter_by(email=json['email']).first() is None:
-            auditMessage = 'The administrator "%s" had their email changed to "%s"' % (admin.email, json['email'])
+            auditMessage = 'The administrator "{0}" had their email changed to "{1}"'.format(
+                admin.email, json[
+                    'email'])
             admin.email = json['email']
             db.session.add(admin)
         else:
             ValidationError('The email supplied already exists')
     elif 'password' in json:
-        auditMessage = 'The administrator "%s" had their password changed' % admin.email
+        auditMessage = 'The administrator "{0}" had their password changed'.format(
+            admin.email)
         admin.password = bcrypt.generate_password_hash(json['password'])
         db.session.add(admin)
     elif 'name' in json:
-        auditMessage = 'The administrator "%s" had their name changed to "%s"' % (admin.email, admin.name)
+        auditMessage = 'The administrator "{0}" had their name changed to "{1}"'.format(
+            admin.email, admin.name)
         admin.name = json['name']
         db.session.add(admin)
     else:
-        raise ValidationError('The email, password, or name was not supplied in the request')
+        raise ValidationError(
+            'The email, password, or name was not supplied in the request')
 
     try:
         db.session.commit()
@@ -95,7 +109,9 @@ def update_admin(admin_id):
         raise e
     except Exception as e:
         db.session.rollback()
-        json_logger('error', 'The following error occurred in update_admin: %s' % str(e))
+        json_logger(
+            'error',
+            'The following error occurred in update_admin: {0}'.format(str(e)))
         raise GenericError('The administrator could not be updated')
     finally:
         db.session.close()
