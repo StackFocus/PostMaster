@@ -111,3 +111,12 @@ def aliases():
 
     return render_template('aliases.html', authenticated=(current_user).is_authenticated())
 
+
+@app.route('/admins', methods=["GET"])
+@login_required
+def admins():
+    """
+    Manages admins in the database
+    """
+
+    return render_template('admins.html', authenticated=(current_user).is_authenticated())

@@ -8,12 +8,7 @@ def initialize():
         db.drop_all()
 
         db.create_all()
-        user = models.Admins(
-            'Default User', 'user@swagmail.com',
-            '$2a$12$OihMM.ogbjvUZWPLqHfBZOU4vzSjbhvypuGxef4NjbERRc839LKOy',
-            False,
-            True
-        )
+        user = models.Admins().from_json({'email': 'user@swagmail.com', 'password': 'password', 'name': 'Default User'})
 
         try:
             db.session.add(user)

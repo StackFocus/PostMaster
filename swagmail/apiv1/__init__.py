@@ -23,4 +23,4 @@ def not_found_error(e):
     return not_found('item not found')
 
 
-from . import domains, users, aliases
+from . import domains, users, aliases, admins
