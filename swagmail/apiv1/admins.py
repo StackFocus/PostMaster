@@ -32,8 +32,8 @@ def new_admin():
         db.session.commit()
         json_logger(
             'audit', current_user.email,
-            'The administrator "{0}" was created successfully by "{1}"'.format(
-                admin.email, current_user.email))
+            'The administrator "{0}" was created successfully'.format(
+                admin.email))
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -82,8 +82,7 @@ def update_admin(admin_id):
     if 'email' in json:
         if Admins.query.filter_by(email=json['email']).first() is None:
             auditMessage = 'The administrator "{0}" had their email changed to "{1}"'.format(
-                admin.email, json[
-                    'email'])
+                admin.email, json['email'])
             admin.email = json['email']
             db.session.add(admin)
         else:

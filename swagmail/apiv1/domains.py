@@ -32,8 +32,7 @@ def new_domain():
         db.session.commit()
         json_logger(
             'audit', current_user.email,
-            'The domain "{0}" was created successfully by "{1}"'.format(
-                domain.name, current_user.email))
+            'The domain "{0}" was created successfully'.format(domain.name))
     except ValidationError as e:
         raise e
     except Exception as e:

@@ -31,8 +31,7 @@ def new_user():
     try:
         db.session.commit()
         json_logger('audit', current_user.email,
-                    'The user "{0}" was created successfully by "{1}"'.format(
-                        user.email, current_user.email))
+                    'The user "{0}" was created successfully'.format(user.email))
     except ValidationError as e:
         raise e
     except Exception as e:
