@@ -5,7 +5,7 @@ from swagmail.models import VirtualDomains
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
-from utils import json_logger, maildb_auditing_enabled
+from utils import json_logger
 
 
 @apiv1.route("/domains", methods=["GET"])
@@ -30,10 +30,9 @@ def new_domain():
     db.session.add(domain)
     try:
         db.session.commit()
-        if maildb_auditing_enabled():
-            json_logger(
-                'audit', current_user.email,
-                'The domain "{0}" was created successfully'.format(domain.name))
+        json_logger(
+            'audit', current_user.email,
+            'The domain "{0}" was created successfully'.format(domain.name))
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -55,10 +54,9 @@ def delete_domain(domain_id):
     db.session.delete(domain)
     try:
         db.session.commit()
-        if maildb_auditing_enabled():
-            json_logger(
-                'audit', current_user.email,
-                'The domain "{0}" was deleted successfully'.format(domain.name))
+        json_logger(
+            'audit', current_user.email,
+            'The domain "{0}" was deleted successfully'.format(domain.name))
     except ValidationError as e:
         raise e
     except Exception as e:

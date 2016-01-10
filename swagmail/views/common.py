@@ -61,17 +61,15 @@ def login():
 
                 if admin and (bcrypt.check_password_hash(admin.password, loginForm.password.data)):
                     login_user(admin, remember=False)
-                    if login_auditing_enabled():
-                        json_logger(
-                            'audit', admin.email,
-                            'The administrator "{0}" logged in successfully'.format(admin.email))
+                    json_logger(
+                        'auth', admin.email,
+                        'The administrator "{0}" logged in successfully'.format(admin.email))
                     return redirect(request.args.get('next') or url_for('index'))
 
-            if login_auditing_enabled():
-                json_logger(
-                    'audit', admin.email,
-                    'The administrator "{0}" entered an incorrect username or password'.format(
-                        admin.email))
+            json_logger(
+                'auth', admin.email,
+                'The administrator "{0}" entered an incorrect username or password'.format(
+                    admin.email))
             flash('The username or password was incorrect', 'error')
             return redirect(url_for('login'))
         else:

@@ -16,7 +16,7 @@ def initialize():
         except:
             return False
 
-        config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'True'})
+        config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'False'})
         config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
 
         try:
