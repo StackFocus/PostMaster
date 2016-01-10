@@ -42,7 +42,8 @@ def json_logger(category, admin, message):
        (category == 'error'):
         try:
             with open(logPath, mode='a+') as logFile:
-                logFile.write("{}\n".format(dumps({
+                logFile.write("{}\n".format(dumps(
+                    {
                         'category': category,
                         'message': message,
                         'admin': admin,
@@ -51,5 +52,6 @@ def json_logger(category, admin, message):
                 logFile.close()
         except IOError:
             raise ValidationError(
-                'The log could not be written to  "{0}". Verify that the path exists and is writeable.'.format(
+                'The log could not be written to  "{0}". \
+                Verify that the path exists and is writeable.'.format(
                     getcwd().replace('\\', '/') + '/' + logPath))

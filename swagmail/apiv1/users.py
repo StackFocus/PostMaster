@@ -19,6 +19,8 @@ from utils import json_logger
 @login_required
 @paginate()
 def get_users():
+    """ Queries all the users in VirtualUsers, and returns paginated JSON
+    """
     return VirtualUsers.query
 
 
@@ -26,6 +28,8 @@ def get_users():
 @login_required
 @json_wrap
 def get_user(user_id):
+    """ Queries a specific user based on ID in VirtualUsers, and returns JSON
+    """
     return VirtualUsers.query.get_or_404(user_id)
 
 
@@ -33,6 +37,8 @@ def get_user(user_id):
 @login_required
 @json_wrap
 def new_user():
+    """ Creates a new user in VirtualUsers, and returns HTTP 201 on success
+    """
     user = VirtualUsers().from_json(request.get_json(force=True))
     db.session.add(user)
     try:
@@ -44,7 +50,7 @@ def new_user():
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error',
+            'error', current_user.email,
             'The following error occurred in new_user: {0}'.format(str(e)))
         raise GenericError('The user could not be created')
     finally:
@@ -56,6 +62,8 @@ def new_user():
 @login_required
 @json_wrap
 def delete_user(user_id):
+    """ Deletes a user by ID in VirtualUsers, and returns HTTP 204 on success
+    """
     user = VirtualUsers.query.get_or_404(user_id)
 
     aliases = VirtualAliases.query.filter_by(destination=user.email).all()
@@ -73,7 +81,7 @@ def delete_user(user_id):
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error',
+            'error', current_user.email,
             'The following error occurred in delete_user: {0}'.format(str(e)))
         raise GenericError('The user could not be deleted')
     finally:
@@ -85,6 +93,8 @@ def delete_user(user_id):
 @login_required
 @json_wrap
 def update_user(user_id):
+    """ Updates a user by ID in VirtualUsers, and returns HTTP 200 on success
+    """
     user = VirtualUsers.query.get_or_404(user_id)
     json = request.get_json(force=True)
 
@@ -103,7 +113,7 @@ def update_user(user_id):
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error',
+            'error', current_user.email,
             'The following error occurred in update_user: {0}'.format(str(e)))
         raise GenericError('The user could not be updated')
     finally:

@@ -15,15 +15,17 @@ from . import apiv1
 from utils import json_logger
 
 validConfigItems = {
-        'Login Auditing': ('True', 'False'),
-        'Mail Database Auditing': ('True', 'False')
-    }
+    'Login Auditing': ('True', 'False'),
+    'Mail Database Auditing': ('True', 'False')
+}
 
 
 @apiv1.route("/configs", methods=["GET"])
 @login_required
 @paginate()
 def get_configs():
+    """ Queries all the settings in Configs, and returns paginated JSON
+    """
     return Configs.query
 
 
@@ -31,6 +33,8 @@ def get_configs():
 @login_required
 @json_wrap
 def get_config(config_id):
+    """ Queries a specific setting based on ID in Configs, and returns JSON
+    """
     return Configs.query.get_or_404(config_id)
 
 
@@ -38,6 +42,8 @@ def get_config(config_id):
 @login_required
 @json_wrap
 def update_config(config_id):
+    """ Updates a config by ID in Configs, and returns HTTP 200 on success
+    """
     auditMessage = ''
     config = Configs.query.get_or_404(config_id)
     json = request.get_json(force=True)
@@ -58,7 +64,7 @@ def update_config(config_id):
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error',
+            'error', current_user.email,
             'The following error occurred in update_config: {0}'.format(str(e)))
         raise GenericError('The configuration could not be updated')
     finally:

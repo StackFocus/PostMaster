@@ -19,6 +19,8 @@ from utils import json_logger
 @login_required
 @paginate()
 def get_aliases():
+    """ Queries all the aliases in VirtualAliases, and returns paginated JSON
+    """
     return VirtualAliases.query
 
 
@@ -26,6 +28,8 @@ def get_aliases():
 @login_required
 @json_wrap
 def get_alias(alias_id):
+    """ Queries a specific alias based on ID in VirtualAliases, and returns JSON
+    """
     return VirtualAliases.query.get_or_404(alias_id)
 
 
@@ -33,20 +37,22 @@ def get_alias(alias_id):
 @login_required
 @json_wrap
 def new_alias():
+    """ Creates a new alias in VirtualAliases, and returns HTTP 201 on success
+    """
     alias = VirtualAliases().from_json(request.get_json(force=True))
     db.session.add(alias)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email,
-                'The alias "{0}" was created successfully'.format(alias.source))
+        json_logger(
+            'audit', current_user.email,
+            'The alias "{0}" was created successfully'.format(alias.source))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
-        if maildb_auditing_enabled():
-            json_logger(
-                'error', current_user.email,
-                'The following error occurred in new_alias: {0}'.format(str(e)))
+        json_logger(
+            'error', current_user.email,
+            'The following error occurred in new_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be created')
     finally:
         db.session.close()
@@ -57,6 +63,8 @@ def new_alias():
 @login_required
 @json_wrap
 def delete_alias(alias_id):
+    """ Deletes an alias by ID in VirtualAliases, and returns HTTP 204 on success
+    """
     alias = VirtualAliases.query.get_or_404(alias_id)
     db.session.delete(alias)
     try:
@@ -69,7 +77,7 @@ def delete_alias(alias_id):
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error',
+            'error', current_user.email,
             'The following error occurred in delete_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be deleted')
     finally:
@@ -81,6 +89,8 @@ def delete_alias(alias_id):
 @login_required
 @json_wrap
 def update_alias(alias_id):
+    """ Updates an alias by ID in VirtualAliases, and returns HTTP 200 on success
+    """
     alias = VirtualAliases.query.get_or_404(alias_id)
     json = request.get_json(force=True)
 
@@ -110,7 +120,7 @@ def update_alias(alias_id):
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error',
+            'error', current_user.email,
             'The following error occurred in update_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be updated')
     finally:
