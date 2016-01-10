@@ -16,6 +16,16 @@ def initialize():
         except:
             return False
 
+        config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'False'})
+        config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
+
+        try:
+            db.session.add(config_login_auditing)
+            db.session.add(config_maildb_auditing)
+            db.session.commit()
+        except:
+            return False
+
         domain = models.VirtualDomains().from_json({'name':'swagmail.com'})
         domain2 = models.VirtualDomains().from_json({'name':'swagmail.org'})
 

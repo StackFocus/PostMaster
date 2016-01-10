@@ -25,13 +25,12 @@ def createdb():
     os.system('python manage.py db init')
     os.system('python manage.py db migrate')
     os.system('python manage.py db upgrade')
-    user = models.Admins(
-        'Default User', 'user@swagmail.com',
-        '$2a$12$OihMM.ogbjvUZWPLqHfBZOU4vzSjbhvypuGxef4NjbERRc839LKOy',
-        False,
-        True
-    )
-    db.session.add(user)
+    admin = models.Admins().from_json({'email': 'user@swagmail.com', 'password': 'password', 'name': 'Default User'})
+    db.session.add(admin)
+    config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'True'})
+    db.session.add(config_login_auditing)
+    config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
+    db.session.add(config_maildb_auditing)
     db.session.commit()
 
 

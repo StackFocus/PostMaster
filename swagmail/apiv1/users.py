@@ -1,16 +1,26 @@
-﻿from flask import request
-from flask_login import login_required
+﻿"""
+Author: Swagger.pro
+File: users.py
+Purpose: The users API for SwagMail which allows
+an admin to create, delete, and update users
+"""
+
+from flask import request
+from flask_login import login_required, current_user
 from swagmail import db
 from swagmail.models import VirtualUsers, VirtualAliases
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
+from utils import json_logger
 
 
 @apiv1.route("/users", methods=["GET"])
 @login_required
 @paginate()
 def get_users():
+    """ Queries all the users in VirtualUsers, and returns paginated JSON
+    """
     return VirtualUsers.query
 
 
@@ -18,6 +28,8 @@ def get_users():
 @login_required
 @json_wrap
 def get_user(user_id):
+    """ Queries a specific user based on ID in VirtualUsers, and returns JSON
+    """
     return VirtualUsers.query.get_or_404(user_id)
 
 
@@ -25,12 +37,21 @@ def get_user(user_id):
 @login_required
 @json_wrap
 def new_user():
+    """ Creates a new user in VirtualUsers, and returns HTTP 201 on success
+    """
     user = VirtualUsers().from_json(request.get_json(force=True))
     db.session.add(user)
     try:
         db.session.commit()
-    except:
+        json_logger('audit', current_user.email,
+                    'The user "{0}" was created successfully'.format(user.email))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error', current_user.email,
+            'The following error occurred in new_user: {0}'.format(str(e)))
         raise GenericError('The user could not be created')
     finally:
         db.session.close()
@@ -41,6 +62,8 @@ def new_user():
 @login_required
 @json_wrap
 def delete_user(user_id):
+    """ Deletes a user by ID in VirtualUsers, and returns HTTP 204 on success
+    """
     user = VirtualUsers.query.get_or_404(user_id)
 
     aliases = VirtualAliases.query.filter_by(destination=user.email).all()
@@ -50,8 +73,16 @@ def delete_user(user_id):
     db.session.delete(user)
     try:
         db.session.commit()
-    except:
+        json_logger(
+            'audit', current_user.email,
+            'The user "{0}" was deleted successfully'.format(user.email))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error', current_user.email,
+            'The following error occurred in delete_user: {0}'.format(str(e)))
         raise GenericError('The user could not be deleted')
     finally:
         db.session.close()
@@ -62,18 +93,28 @@ def delete_user(user_id):
 @login_required
 @json_wrap
 def update_user(user_id):
+    """ Updates a user by ID in VirtualUsers, and returns HTTP 200 on success
+    """
     user = VirtualUsers.query.get_or_404(user_id)
     json = request.get_json(force=True)
 
     if 'password' in json:
         user.password = VirtualUsers().encrypt_password(json['password'])
+        auditMessage = 'The user "{0}" had their password changed'.format(
+            user.email)
         db.session.add(user)
     else:
         raise ValidationError('The password was not supplied in the request')
     try:
         db.session.commit()
-    except:
+        json_logger('audit', current_user.email, auditMessage)
+    except ValidationError as e:
+        raise e
+    except Exception as e:
         db.session.rollback()
+        json_logger(
+            'error', current_user.email,
+            'The following error occurred in update_user: {0}'.format(str(e)))
         raise GenericError('The user could not be updated')
     finally:
         db.session.close()

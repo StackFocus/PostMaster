@@ -257,3 +257,30 @@ class TestMailDbFunctions:
     def test_admins_delete_pass(self, loggedin_client):
         rv = loggedin_client.delete("/api/v1/admins/2", follow_redirects=True)
         assert rv.status_code == 204
+
+    def test_configs_get_one(self, loggedin_client):
+        rv = loggedin_client.get("/api/v1/configs/1", follow_redirects=True)
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 200
+
+    def test_configs_get_all(self, loggedin_client):
+        rv = loggedin_client.get("/api/v1/configs", follow_redirects=True)
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 200
+
+    def test_configs_update_pass(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 200
+
+    def test_configs_update_fail(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
+            {"someparameter": "somevalue"}))
+        assert rv.status_code == 400
+        assert 'An invalid setting value was supplied' in rv.data

@@ -1,7 +1,7 @@
 ﻿"""
 Author: Swagger.pro
 File: forms.py
-Purpose: form definitions for app
+Purpose: form definitions for the app
 """
 
 from flask_wtf import Form

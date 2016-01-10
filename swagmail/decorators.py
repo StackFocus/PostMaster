@@ -1,3 +1,9 @@
+"""
+Author: Swagger.pro
+File: decorators.py
+Purpose: defines decorators for the app
+"""
+
 import functools
 from flask import jsonify, request, url_for
 
