@@ -1,7 +1,7 @@
 ﻿"""
 Author: Swagger.pro
 File: __init__.py
-Purpose: initializes the application settings modules
+Purpose: initializes the application
 """
 
 from flask import Flask, redirect, request

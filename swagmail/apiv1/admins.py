@@ -1,3 +1,10 @@
+"""
+Author: Swagger.pro
+File: admins.py
+Purpose: The admins API for SwagMail which allows
+an admin to create, delete, and update admins
+"""
+
 from flask import request
 from flask_login import login_required, current_user
 from swagmail import db, bcrypt

@@ -1,4 +1,11 @@
-﻿from flask import request
+﻿"""
+Author: Swagger.pro
+File: users.py
+Purpose: The users API for SwagMail which allows
+an admin to create, delete, and update users
+"""
+
+from flask import request
 from flask_login import login_required, current_user
 from swagmail import db
 from swagmail.models import VirtualUsers, VirtualAliases

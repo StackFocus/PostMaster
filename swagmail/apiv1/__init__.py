@@ -1,6 +1,9 @@
-'''
-__init__ for apiv1
-'''
+"""
+Author: Swagger.pro
+File: __init__.py
+Purpose: initializes apiv1
+"""
+
 from flask import Blueprint
 from ..errors import ValidationError, GenericError, bad_request, not_found
 

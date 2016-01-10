@@ -3,6 +3,7 @@ Author: Swagger.pro
 File: utils.py
 Purpose: General helper utils
 """
+
 from os import getcwd
 from json import dumps as dumps
 from datetime import datetime

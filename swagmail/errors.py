@@ -1,3 +1,9 @@
+"""
+Author: Swagger.pro
+File: errors.py
+Purpose: defines error handling functions
+"""
+
 from flask import jsonify
 
 

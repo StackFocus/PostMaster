@@ -1,4 +1,11 @@
-﻿from flask import request
+﻿"""
+Author: Swagger.pro
+File: aliases.py
+Purpose: The aliases API for SwagMail which allows
+an admin to create, delete, and update aliases
+"""
+
+from flask import request
 from flask_login import login_required, current_user
 from swagmail import db
 from swagmail.models import VirtualAliases

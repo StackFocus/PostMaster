@@ -1,7 +1,7 @@
 ﻿"""
 Author: Swagger.pro
-File: views.py
-Purpose: routes for the app
+File: common.py
+Purpose: UI routes for the app
 """
 
 from flask import render_template, redirect, url_for, request, flash, Blueprint

@@ -1,3 +1,10 @@
+"""
+Author: Swagger.pro
+File: configs.py
+Purpose: The configs API for SwagMail which
+allows an admin to update SwagMail configurations
+"""
+
 from flask import request
 from flask_login import login_required, current_user
 from swagmail import db
