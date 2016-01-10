@@ -23,6 +23,10 @@ class TestUserFunctions:
         rv = loggedin_client.get("/admins", follow_redirects=True)
         assert "Administrators" in rv.data
 
+    def test_configs_page(self, loggedin_client):
+        rv = loggedin_client.get("/admins", follow_redirects=True)
+        assert "Administrators" in rv.data
+
     def test_user_logout(self, loggedin_client):
         rv = loggedin_client.get("/logout", follow_redirects=True)
         assert "Successfully logged out" in rv.data

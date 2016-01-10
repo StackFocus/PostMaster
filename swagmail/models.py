@@ -197,7 +197,7 @@ class VirtualAliases(db.Model):
 
 
 class Admins(db.Model):
-    """ A table to house the admin users
+    """ A table to store the admin users
     """
     __tablename__ = 'swagmail_admins'
     id = db.Column(db.Integer, primary_key=True)
@@ -254,4 +254,36 @@ class Admins(db.Model):
         self.name = json['name']
         self.password = bcrypt.generate_password_hash(json['password'])
         self.active = True
+        return self
+
+
+class Configs(db.Model):
+    """ Table to store configuration items
+    """
+
+    __tablename__ = 'swagmail_configuration'
+    id = db.Column(db.Integer, primary_key=True)
+    setting = db.Column(db.String(128), unique=True)
+    value = db.Column(db.String(512))
+
+    def to_json(self):
+        """ Returns the database row in JSON
+        """
+        return {
+            'id': self.id,
+            'setting': self.setting,
+            'value': self.value
+        }
+
+    def from_json(self, json):
+        """ Returns a database rwo from JSON input
+        """
+        if json.get('setting', None) is None:
+            raise ValidationError('The setting was not specified')
+        if json.get('value', None) is None:
+            raise ValidationError('The value of the setting was not specified')
+        if self.query.filter_by(setting=json['setting']).first() is not None:
+            raise ValidationError('The setting "%s" already exists' % json['setting'])
+        self.setting = json['setting']
+        self.value = json['value']
         return self

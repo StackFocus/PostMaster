@@ -5,7 +5,7 @@ from swagmail.models import VirtualAliases
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
-from utils import json_logger
+from utils import json_logger, maildb_auditing_enabled
 
 
 @apiv1.route("/aliases", methods=["GET"])
@@ -30,15 +30,17 @@ def new_alias():
     db.session.add(alias)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email,
+        if maildb_auditing_enabled():
+            json_logger('audit', current_user.email,
                     'The alias "{0}" was created successfully'.format(alias.source))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
-        json_logger(
-            'error', current_user.email,
-            'The following error occurred in new_alias: {0}'.format(str(e)))
+        if maildb_auditing_enabled():
+            json_logger(
+                'error', current_user.email,
+                'The following error occurred in new_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be created')
     finally:
         db.session.close()
@@ -53,9 +55,10 @@ def delete_alias(alias_id):
     db.session.delete(alias)
     try:
         db.session.commit()
-        json_logger(
-            'audit', current_user.email,
-            'The alias "{0}" was deleted successfully'.format(alias.source))
+        if maildb_auditing_enabled():
+            json_logger(
+                'audit', current_user.email,
+                'The alias "{0}" was deleted successfully'.format(alias.source))
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -96,7 +99,8 @@ def update_alias(alias_id):
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, auditMessage)
+        if maildb_auditing_enabled():
+            json_logger('audit', current_user.email, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:

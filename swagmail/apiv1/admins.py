@@ -5,7 +5,7 @@ from swagmail.models import Admins
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
-from utils import json_logger
+from utils import json_logger, maildb_auditing_enabled
 
 
 @apiv1.route("/admins", methods=["GET"])
@@ -30,10 +30,11 @@ def new_admin():
     db.session.add(admin)
     try:
         db.session.commit()
-        json_logger(
-            'audit', current_user.email,
-            'The administrator "{0}" was created successfully'.format(
-                admin.email))
+        if maildb_auditing_enabled():
+            json_logger(
+                'audit', current_user.email,
+                'The administrator "{0}" was created successfully'.format(
+                    admin.email))
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -55,9 +56,10 @@ def delete_admin(admin_id):
     db.session.delete(admin)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email,
-                    'The administrator "{0}" was deleted successfully'.format(
-                        admin.email))
+        if maildb_auditing_enabled():
+            json_logger('audit', current_user.email,
+                        'The administrator "{0}" was deleted successfully'.format(
+                            admin.email))
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -103,7 +105,8 @@ def update_admin(admin_id):
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, auditMessage)
+        if maildb_auditing_enabled():
+            json_logger('audit', current_user.email, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:

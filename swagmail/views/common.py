@@ -7,6 +7,7 @@ Purpose: routes for the app
 from flask import render_template, redirect, url_for, request, flash, Blueprint
 from flask_login import login_required, login_user, logout_user, current_user
 from swagmail import app, forms, models, login_manager, bcrypt
+from swagmail.apiv1.utils import login_auditing_enabled, json_logger
 
 common = Blueprint('common', __name__)
 
@@ -55,13 +56,22 @@ def login():
         elif loginForm.validate_on_submit():
 
             if models.Admins.query.filter_by(email=loginForm.username.data).first() is not None:
-                user = models.Admins.query.filter_by(
+                admin = models.Admins.query.filter_by(
                     email=loginForm.username.data).first()
 
-                if user and (bcrypt.check_password_hash(user.password, loginForm.password.data)):
-                    login_user(user, remember=False)
+                if admin and (bcrypt.check_password_hash(admin.password, loginForm.password.data)):
+                    login_user(admin, remember=False)
+                    if login_auditing_enabled():
+                        json_logger(
+                            'audit', admin.email,
+                            'The administrator "{0}" logged in successfully'.format(admin.email))
                     return redirect(request.args.get('next') or url_for('index'))
 
+            if login_auditing_enabled():
+                json_logger(
+                    'audit', admin.email,
+                    'The administrator "{0}" entered an incorrect username or password'.format(
+                        admin.email))
             flash('The username or password was incorrect', 'error')
             return redirect(url_for('login'))
         else:
@@ -119,3 +129,13 @@ def admins():
     """
 
     return render_template('admins.html', authenticated=(current_user).is_authenticated())
+
+
+@app.route('/configs', methods=["GET"])
+@login_required
+def configs():
+    """
+    Manages configs in the database
+    """
+
+    return render_template('configs.html', authenticated=(current_user).is_authenticated())

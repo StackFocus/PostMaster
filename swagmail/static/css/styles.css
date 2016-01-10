@@ -171,6 +171,12 @@ ul.pagination li.disabled a:hover {
 }
 /* End of Only Admin Page CSS */
 
+/* Only Configs Page CSS */
+#settingHeader, #valueHeader {
+    width: 50%;
+}
+/* End of Only Configs Page CSS */
+
 @media(max-width:767px) {
 
     ul.pagination {

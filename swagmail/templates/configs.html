@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='js/configs.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h2 class="textHeadingManage">SwagMail Configurations</h2>
+</div>
+<div class="row">
+    <div id="dynamicTableDiv">
+        <div class="loader"></div>
+        <table class="table table-striped table-bordered" id="dynamicTable">
+            <thead>
+                <tr>
+                    <th id="settingHeader">Configuration:</th>
+                    <th id="valueHeader">Value:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(2) %}
+                <tr id="dynamicTableRow{{i + 1}}">
+                    <td data-title="Setting: "></td>
+                    <td data-title="Value: "></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <ul class="pagination hidden" id="pagination"></ul>
+</div>
+{% endblock %}
