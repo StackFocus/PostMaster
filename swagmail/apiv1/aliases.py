@@ -31,8 +31,7 @@ def new_alias():
     try:
         db.session.commit()
         json_logger('audit', current_user.email,
-                    'The alias "{0}" was created successfully'.format(
-                        alias.source))
+                    'The alias "{0}" was created successfully'.format(alias.source))
     except ValidationError as e:
         raise e
     except Exception as e:
