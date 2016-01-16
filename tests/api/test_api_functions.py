@@ -34,6 +34,26 @@ class TestMailDbFunctions:
         assert rv.status_code == 400
         assert "not a current" in rv.data
 
+    def test_aliases_add_fail_source_empty(self, loggedin_client):
+        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
+            {"source": "", "destination": "rawr@swagmail.com"}))
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 400
+        assert "The source email was not specified" in rv.data
+
+    def test_aliases_add_fail_destination_empty(self, loggedin_client):
+        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
+            {"source": "rawr@swagmail.com", "destination": ""}))
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 400
+        assert "The destination email was not specified" in rv.data
+
     def test_aliases_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
             {"source": "rawr@swagmail.com", "destination": "email@swagmail.com"}))
@@ -97,10 +117,29 @@ class TestMailDbFunctions:
         assert rv.status_code == 400
         assert "not managed" in rv.data
 
+    def test_users_add_fail_password_empty(self, loggedin_client):
+        rv = loggedin_client.post("/api/v1/users", data=json.dumps(
+            {"email": "pickles@test123.com", "password": ""}))
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 400
+        assert "The password was not specified" in rv.data
+
+    def test_users_add_fail_email_empty(self, loggedin_client):
+        rv = loggedin_client.post("/api/v1/users", data=json.dumps(
+            {"email": "", "password": "som3passw0rd"}))
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 400
+        assert "The email address was not specified" in rv.data
+
     def test_users_update_fail_password_not_supplied(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/users/2", data=json.dumps(
             {"someotherdata": "pickles"}))
-        
         try:
             json.loads(rv.data)
         except:
@@ -154,6 +193,16 @@ class TestMailDbFunctions:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "already exists" in rv.data
+
+    def test_domains_add_fail_name_empty(self, loggedin_client):
+        rv = loggedin_client.post("/api/v1/domains", data=json.dumps(
+            {"name": ""}))
+        try:
+            json.loads(rv.data)
+        except:
+            assert False, "Not json"
+        assert rv.status_code == 400
+        assert "The domain name was not specified" in rv.data
 
     def test_domains_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/domains", data=json.dumps(
