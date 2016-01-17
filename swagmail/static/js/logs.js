@@ -15,6 +15,8 @@ function dateFormatFromISO(timestamp) {
 
 // Loads the dynamic table and pagination
 function fillInTable() {
+    // Set the loading spinner
+    manageSpinner(true);
 
     apiURL = '/api/v1/logs?reverse=1&lines=75';
 
@@ -40,6 +42,8 @@ function fillInTable() {
 
         // Clean up the table
         removeEmptyTableRows(i);
+        // Remove the loading spinner
+        manageSpinner(false);
     })
     .fail(function (jqxhr, textStatus, error) {
 
@@ -52,10 +56,6 @@ $(document).ready(function () {
     // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
 
-    manageSpinner(true);
-
     // Populate the table
     fillInTable();
-
-    manageSpinner(false);
 });
