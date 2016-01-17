@@ -177,6 +177,24 @@ ul.pagination li.disabled a:hover {
 }
 /* End of Only Configs Page CSS */
 
+/* Only Logs Page CSS */
+#timeHeader {
+    width: 20%;
+}
+
+#adminHeader {
+    width: 25%;
+}
+
+#categoryHeader {
+    width: 10%;
+}
+
+#timeMessage {
+    width: 45%;
+}
+/* End of Only Logs Page CSS */
+
 @media(max-width:767px) {
 
     ul.pagination {

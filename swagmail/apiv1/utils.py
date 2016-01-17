@@ -4,8 +4,8 @@ File: utils.py
 Purpose: General helper utils
 """
 
-from os import getcwd
-from json import dumps as dumps
+from os import getcwd, path
+from json import dumps, loads
 from datetime import datetime
 from ..errors import ValidationError
 from swagmail.models import Configs
@@ -55,3 +55,26 @@ def json_logger(category, admin, message):
                 'The log could not be written to  "{0}". \
                 Verify that the path exists and is writeable.'.format(
                     getcwd().replace('\\', '/') + '/' + logPath))
+
+
+def getLogs(numLines=50, reverseOrder=False):
+    """
+    Returns the JSON formatted log file as a dict
+    """
+    logPath = 'swagmail.log'
+    if path.exists('swagmail.log'):
+        if reverseOrder:
+            # Reverse the list, trim the bottom based on numLines
+            logFile = list(reversed(
+                open(logPath, mode='r').readlines()))[0:numLines]
+        else:
+            # Reverse the list, trim the bottom based on numLines, then reverse again
+            logFile = reversed(list(reversed(
+                open(logPath, mode='r').readlines()))[0:numLines])
+        return {
+            'items': [loads(log) for log in logFile],
+        }
+    else:
+        raise ValidationError(
+            '"{0}" could not be found.'.format(
+                getcwd().replace('\\', '/') + '/' + logPath))
