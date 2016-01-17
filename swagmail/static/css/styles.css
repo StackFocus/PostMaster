@@ -179,19 +179,15 @@ ul.pagination li.disabled a:hover {
 
 /* Only Logs Page CSS */
 #timeHeader {
-    width: 20%;
+    width: 25%;
 }
 
 #adminHeader {
     width: 25%;
 }
 
-#categoryHeader {
-    width: 10%;
-}
-
 #timeMessage {
-    width: 45%;
+    width: 50%;
 }
 /* End of Only Logs Page CSS */
 

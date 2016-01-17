@@ -32,7 +32,6 @@ function fillInTable() {
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Time: ">' + dateFormatFromISO(item.timestamp) + '</td>\
                     <td data-title="Admin: ">' + item.admin + '</td>\
-                    <td data-title="Category: ">' + item.category + '</td>\
                     <td data-title="Message: ">' + item.message + '</td>'
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? $('#dynamicTable tbody').append(html) : tableRow.html(html);
