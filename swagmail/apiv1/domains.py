@@ -22,7 +22,8 @@ def get_domains():
     """ Queries all the domains in VirtualDomains, and returns paginated JSON
     """
     if request.args.get('term'):
-        return VirtualDomains.query.filter(VirtualDomains.name.ilike("%{0}%".format(request.args.get('term'))))
+        return VirtualDomains.query.filter(VirtualDomains.name.ilike(
+            "%{0}%".format(request.args.get('term'))))
     return VirtualDomains.query
 
 
@@ -33,6 +34,7 @@ def get_domain(domain_id):
     """ Queries a specific domain based on ID in VirtualDomains, and returns JSON
     """
     return VirtualDomains.query.get_or_404(domain_id)
+
 
 @apiv1.route('/domains', methods=['POST'])
 @login_required

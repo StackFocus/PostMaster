@@ -22,7 +22,8 @@ def get_users():
     """ Queries all the users in VirtualUsers, and returns paginated JSON
     """
     if request.args.get('term'):
-        return VirtualUsers.query.filter(VirtualUsers.email.ilike("%{0}%".format(request.args.get('term'))))
+        return VirtualUsers.query.filter(VirtualUsers.email.ilike(
+            "%{0}%".format(request.args.get('term'))))
     return VirtualUsers.query
 
 
@@ -45,8 +46,9 @@ def new_user():
     db.session.add(user)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email,
-                    'The user "{0}" was created successfully'.format(user.email))
+        json_logger(
+            'audit', current_user.email,
+            'The user "{0}" was created successfully'.format(user.email))
     except ValidationError as e:
         raise e
     except Exception as e:
