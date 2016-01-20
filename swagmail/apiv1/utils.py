@@ -5,6 +5,7 @@ Purpose: General helper utils
 """
 
 from os import getcwd, path
+from mmap import mmap
 from json import dumps, loads
 from datetime import datetime
 from ..errors import ValidationError
@@ -63,16 +64,56 @@ def getLogs(numLines=50, reverseOrder=False):
     """
     logPath = 'swagmail.log'
     if path.exists('swagmail.log'):
-        if reverseOrder:
-            # Reverse the list, trim the bottom based on numLines
-            logFile = list(reversed(
-                open(logPath, mode='r').readlines()))[0:numLines]
-        else:
-            # Reverse the list, trim the bottom based on numLines, then reverse again
-            logFile = reversed(list(reversed(
-                open(logPath, mode='r').readlines()))[0:numLines])
+        logFile = open(logPath, mode='r+')
+
+        try:
+            mmapHandler = mmap(logFile.fileno(), 0)
+        except ValueError as e:
+            if str(e) == 'cannot mmap an empty file':
+                # If the file is empty, return empty JSON
+                return {
+                    'items': [],
+                }
+            else:
+                raise ValidationError('There was an error opening "{0}"'.format(
+                    getcwd().replace('\\', '/') + '/' + logPath))
+
+        newLineCount = 0
+        # Assigns currentChar to the last character of the file
+        currentChar = mmapHandler.size() - 1
+
+        # If the file ends in a new line, add 1 more line to process
+        # for mmapHandler[currentChar:].splitlines() later on
+        if mmapHandler[currentChar] == '\n':
+            numLines += 1
+
+        # While the number of lines iterated is less than numLines
+        # and the beginning of the file hasn't been reached
+        while newLineCount < numLines and currentChar > 0:
+            # If a new line character is found, this means
+            # the current line has ended
+            if mmapHandler[currentChar] == '\n':
+                newLineCount += 1
+            # Subtract from the charcter count to read the previous character
+            currentChar -= 1
+
+        # If the beginning of the file hasn't been reached,
+        # strip the preceeding new line character
+        if currentChar > 0:
+            currentChar += 2
+
+        # Create the list
+        logs = mmapHandler[currentChar:].splitlines()
+
+        # Close the log file
+        mmapHandler.close()
+        logFile.close()
+
+        if not reverseOrder:
+            logs = list(reversed(logs))
+
         return {
-            'items': [loads(log) for log in logFile],
+            'items': [loads(log) for log in logs],
         }
     else:
         raise ValidationError(
