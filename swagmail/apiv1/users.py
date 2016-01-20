@@ -21,9 +21,9 @@ from utils import json_logger
 def get_users():
     """ Queries all the users in VirtualUsers, and returns paginated JSON
     """
-    if request.args.get('term'):
+    if request.args.get('search'):
         return VirtualUsers.query.filter(VirtualUsers.email.ilike(
-            "%{0}%".format(request.args.get('term'))))
+            "%{0}%".format(request.args.get('search'))))
     return VirtualUsers.query
 
 
