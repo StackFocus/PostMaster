@@ -21,9 +21,9 @@ from utils import json_logger
 def get_domains():
     """ Queries all the domains in VirtualDomains, and returns paginated JSON
     """
-    if request.args.get('term'):
+    if request.args.get('search'):
         return VirtualDomains.query.filter(VirtualDomains.name.ilike(
-            "%{0}%".format(request.args.get('term'))))
+            "%{0}%".format(request.args.get('search'))))
     return VirtualDomains.query
 
 
