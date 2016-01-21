@@ -13,6 +13,7 @@ from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
 from utils import json_logger
+from sqlalchemy import or_
 
 
 @apiv1.route("/aliases", methods=["GET"])
@@ -21,6 +22,12 @@ from utils import json_logger
 def get_aliases():
     """ Queries all the aliases in VirtualAliases, and returns paginated JSON
     """
+    if request.args.get('search'):
+        return VirtualAliases.query.filter(or_(VirtualAliases.destination.ilike(
+            "%{0}%".format(request.args.get('search'))),
+            VirtualAliases.source.ilike(
+            "%{0}%".format(request.args.get('search')))
+        ))
     return VirtualAliases.query
 
 
