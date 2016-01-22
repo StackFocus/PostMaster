@@ -21,8 +21,13 @@ class TestUtilsFunctions:
 
     def test_maildb_auditing_enabled(self):
         result = maildb_auditing_enabled()
-        assert (isinstance(result, bool))
+        assert isinstance(result, bool)
 
     def test_login_auditing_enabled(self):
         result = login_auditing_enabled()
-        assert (isinstance(result, bool))
+        assert isinstance(result, bool)
+
+    def test_getLogs(self):
+        result = getLogs()
+        assert isinstance(result, dict)
+        assert 'items' in result
