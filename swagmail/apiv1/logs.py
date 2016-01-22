@@ -20,7 +20,5 @@ def get_logs():
 
     numLines = request.args.get('lines', 50, type=int)
     reverseOrder = request.args.get('reverse', 0, type=int)
-    if reverseOrder == 1:
-        return jsonify(getLogs(numLines, True))
-    else:
-        return jsonify(getLogs(numLines, False))
+
+    return jsonify(getLogs(numLines, bool(reverseOrder)))
