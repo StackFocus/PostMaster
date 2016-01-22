@@ -18,10 +18,12 @@ def initialize():
 
         config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'False'})
         config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
+        config_log_path = models.Configs().from_json({'setting': 'Log File', 'value': 'swagmail.log'})
 
         try:
             db.session.add(config_login_auditing)
             db.session.add(config_maildb_auditing)
+            db.session.add(config_log_path)
             db.session.commit()
         except:
             return False
