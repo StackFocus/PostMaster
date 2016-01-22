@@ -16,20 +16,14 @@ def maildb_auditing_enabled():
     """ Returns a bool based on if mail db auditing is enabled
     """
     auditingSetting = Configs.query.filter_by(setting='Mail Database Auditing').first().value
-    if auditingSetting == 'True':
-        return True
-    else:
-        return False
+    return auditingSetting == 'True'
 
 
 def login_auditing_enabled():
     """ Returns a bool based on if mail db auditing is enabled
     """
     auditingSetting = Configs.query.filter_by(setting='Login Auditing').first().value
-    if auditingSetting == 'True':
-        return True
-    else:
-        return False
+    return auditingSetting == 'True'
 
 
 def json_logger(category, admin, message):
