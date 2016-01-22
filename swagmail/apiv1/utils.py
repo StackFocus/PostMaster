@@ -37,7 +37,7 @@ def json_logger(category, admin, message):
     Takes a category (typically error or audit), a log message and the responsible
     user. It then appends it with an ISO 8601 UTC timestamp to a JSON formatted log file
     """
-    logPath = 'swagmail.log'
+    logPath = Configs.query.filter_by(setting='Log File').first().value
     if (category == 'audit' and maildb_auditing_enabled()) or\
        (category == 'auth' and login_auditing_enabled()) or\
        (category == 'error'):
@@ -62,8 +62,8 @@ def getLogs(numLines=50, reverseOrder=False):
     """
     Returns the JSON formatted log file as a dict
     """
-    logPath = 'swagmail.log'
-    if path.exists('swagmail.log'):
+    logPath = Configs.query.filter_by(setting='Log File').first().value
+    if path.exists(logPath):
         logFile = open(logPath, mode='r+')
 
         try:
