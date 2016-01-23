@@ -16,7 +16,8 @@ from utils import json_logger
 
 validConfigItems = {
     'Login Auditing': ('True', 'False'),
-    'Mail Database Auditing': ('True', 'False')
+    'Mail Database Auditing': ('True', 'False'),
+    'Log File': '*'
 }
 
 
@@ -48,13 +49,17 @@ def update_config(config_id):
     config = Configs.query.get_or_404(config_id)
     json = request.get_json(force=True)
 
-    if 'value' in json and json['value'] in validConfigItems[config.setting]:
-        auditMessage = 'The setting "{0}" was set from "{1}" to "{2}"'.format(
-            config.setting, config.value, json['value'])
-        config.value = json['value']
-        db.session.add(config)
-    else:
-        raise ValidationError('An invalid setting value was supplied')
+    try:
+        if 'value' in json and (validConfigItems[config.setting] == '*' or
+                                json['value'] in validConfigItems[config.setting]):
+            auditMessage = 'The setting "{0}" was set from "{1}" to "{2}"'.format(
+                config.setting, config.value, json['value'])
+            config.value = json['value']
+            db.session.add(config)
+        else:
+            raise ValidationError('An invalid setting value was supplied')
+    except KeyError:
+        raise ValidationError('An invalid setting was supplied')
 
     try:
         db.session.commit()

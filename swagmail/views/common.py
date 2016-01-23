@@ -137,3 +137,14 @@ def configs():
     """
 
     return render_template('configs.html', authenticated=(current_user).is_authenticated())
+
+
+@app.route('/logs', methods=["GET"])
+@login_required
+def logs():
+    """
+    Displays logs from the log file
+    """
+
+    return render_template('logs.html', authenticated=(current_user).is_authenticated())
+

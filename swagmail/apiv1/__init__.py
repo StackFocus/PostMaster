@@ -38,4 +38,4 @@ def not_found_error(e):
     return not_found('item not found')
 
 
-from . import domains, users, aliases, admins, configs
+from . import domains, users, aliases, admins, configs, logs

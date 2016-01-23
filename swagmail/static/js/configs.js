@@ -2,6 +2,7 @@
 function configEventListeners () {
 
     var configBoolItems = $('a.configBool');
+    var configTextItems = $('a.configText');
     var tooltipAnchors = $("#dynamicTable tr td a[title]");
     tooltipAnchors.unbind();
     tooltipAnchors.tooltip();
@@ -36,6 +37,32 @@ function configEventListeners () {
             addStatusMessage('success', 'The setting was changed successfully');
         }
     });
+
+    configTextItems.unbind();
+    configTextItems.editable({
+        type: 'text',
+        mode: 'inline',
+        showbuttons: false,
+        anim: 100,
+        ajaxOptions: {
+            type: 'PUT',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        },
+
+        params: function (params) {
+            return JSON.stringify({ 'value': params.value })
+        },
+
+        error: function (response) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+        },
+
+        success: function () {
+            addStatusMessage('success', 'The setting was changed successfully');
+        }
+    });
 }
 
 
@@ -56,12 +83,13 @@ function fillInTable () {
         $.each(result['items'], function (j, item) {
             var tableRow = $('#dynamicTableRow' + String(i));
             var html = '';
+            var cssClass = item.value == 'True' || item.value == 'False' ? 'configBool' : 'configText'
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Setting: ">' + item.setting + '</td>\
-                    <td data-title="Value: "><a href="#" class="configBool" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + item.value + '</a></td>';
+                    <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + item.value + '</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? $('#dynamicTableRow').append(html) : tableRow.html(html);
+            tableRow.length == 0 ? $('#dynamicTable tbody').append(html) : tableRow.html(html);
 
             i++;
         });
