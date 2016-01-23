@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <script src="{{ url_for('static', filename='js/logs.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h2 class="textHeadingManage">SwagMail Recent Logs</h2>
+</div>
+<div class="row">
+    <div id="dynamicTableDiv">
+        <div class="loader"></div>
+        <table class="table table-striped table-bordered" id="dynamicTable">
+            <thead>
+                <tr>
+                    <th id="timeHeader">Time:</th>
+                    <th id="timeAdmin">Admin:</th>
+                    <th id="timeMessage">Message:</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(5) %}
+                <tr id="dynamicTableRow{{i + 1}}">
+                    <td data-title="Time: "></td>
+                    <td data-title="Administrator: "></td>
+                    <td data-title="Message: "></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
