@@ -8,6 +8,12 @@
 <div class="row">
     <h2 class="textHeadingManage">Domains</h2>
 </div>
+<div class="row" id="filterRow">
+    <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input class="form-control" type="text" placeholder="Start typing to search for a domain" />
+    </div>
+</div>
 <div class="row">
     <div id="dynamicTableDiv" class="table-responsive">
         <div class="loader"></div>
@@ -26,7 +32,7 @@
                     </tr>
                 {% endfor %}
                 <tr id="addItemRow">
-                    <td data-title="Domain: "><div><input id="newDomainInput" class="form-control" type="text" placeholder="Enter a new domain" /></div></td>
+                    <td data-title="Domain: "><input id="newDomainInput" class="form-control" type="text" placeholder="Enter a new domain" /></td>
                     <td data-title="Action: "><a href="#" id="newItemAnchor">Add</a></td>
                 </tr>
             </tbody>

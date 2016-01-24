@@ -8,6 +8,12 @@
 <div class="row">
     <h2 class="textHeadingManage">Users</h2>
 </div>
+<div class="row" id="filterRow">
+    <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input class="form-control" type="text" placeholder="Start typing to search for a user" />
+    </div>
+</div>
 <div class="row">
     <div id="dynamicTableDiv">
         <div class="loader"></div>
@@ -28,8 +34,8 @@
                 </tr>
                 {% endfor %}
                 <tr id="addItemRow">
-                    <td data-title="Email: "><div><input id="newUserInput" class="form-control" type="text" placeholder="Enter a new user's email address" /></div></td>
-                    <td data-title="Password: "><div><input id="newPasswordInput" class="form-control" type="password" placeholder="Enter the new user's password" /></div></td>
+                    <td data-title="Email: "><input id="newUserInput" class="form-control" type="text" placeholder="Enter a new user's email address" /></td>
+                    <td data-title="Password: "><input id="newPasswordInput" class="form-control" type="password" placeholder="Enter the new user's password" /></td>
                     <td data-title="Action: "><a href="#" id="newItemAnchor">Add</a></td>
                 </tr>
             </tbody>

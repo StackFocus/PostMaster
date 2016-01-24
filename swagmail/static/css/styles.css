@@ -76,6 +76,11 @@ div.panel-heading i {
 /* Manage Page CSS */
 h2.textHeadingManage {
     text-align: center;
+    margin-bottom: 1.4em;
+}
+
+h2.textHeadingManageNoFilter {
+    text-align: center;
     margin-bottom: 2em;
 }
 
@@ -130,6 +135,15 @@ ul.pagination li.disabled a:hover {
 
 #actionHeader {
     width: 15%;
+}
+
+#filterRow {
+    margin-bottom: 3em;
+}
+
+#filterRow .input-group {
+    margin: auto;
+    width: 60%;
 }
 
 .loader {
@@ -201,8 +215,17 @@ ul.pagination li.disabled a:hover {
         width: 85%;
     }
 
-    h2.textHeadingManage {
+    h2.textHeadingManage,
+    h2.textHeadingManageNoFilter {
         margin-bottom: 1em;
+    }
+
+    #filterRow {
+        margin-bottom: 2.5em;
+    }
+
+    #filterRow .input-group {
+        width: 95%;
     }
 
     /* No More Tables */
