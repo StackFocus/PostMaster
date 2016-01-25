@@ -21,6 +21,9 @@ from utils import json_logger
 def get_admins():
     """ Queries all the admin users in Admins, and returns paginated JSON
     """
+    if request.args.get('search'):
+        return Admins.query.filter(Admins.email.ilike(
+            "%{0}%".format(request.args.get('search'))))
     return Admins.query
 
 

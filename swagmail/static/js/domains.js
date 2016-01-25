@@ -89,6 +89,7 @@ function domainEventListeners() {
             // Create the new domain
             newDomain(domainInput.val());
             domainInput.val('');
+            $('#filterRow input').val('');
         }
 
         e.preventDefault();
@@ -112,13 +113,12 @@ function domainEventListeners() {
 
 
 // Loads the dynamic table and pagination
-function fillInTable () {
+function fillInTable(filter) {
     // Set the loading spinner
     manageSpinner(true);
 
-    // If the page was specified in the URL, then add it to the API url
-    var urlVars = getUrlVars();
-    'page' in urlVars ? apiURL = '/api/v1/domains?page=' + urlVars['page'] : apiURL = '/api/v1/domains';
+    // If the page or filter was specified, get the appropriate API URL
+    apiURL = getApiUrl('domains');
 
     // Query the API
     $.getJSON(apiURL, function (result) {
@@ -165,11 +165,17 @@ $(document).ready(function () {
     // Populate the table
     fillInTable();
 
-    // Set the event listeners
-    domainEventListeners();
-
     // When hitting the back/forward buttons, reload the table
     $(window).bind("popstate", function () {
         fillInTable();
     });
+
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    }
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
 });

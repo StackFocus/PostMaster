@@ -122,6 +122,7 @@ function userEventListeners () {
             newUser(userInput.val(), passwordInput.val());
             userInput.val('');
             passwordInput.val('');
+            $('#filterRow input').val('');
         }
 
         e.preventDefault();
@@ -149,9 +150,8 @@ function fillInTable () {
     // Set the loading spinner
     manageSpinner(true);
 
-    // If the page was specified in the URL, then add it to the API url
-    var urlVars = getUrlVars();
-    'page' in urlVars ? apiURL = '/api/v1/users?page=' + urlVars['page'] : apiURL = '/api/v1/users';
+    // If the page or filter was specified, get the appropriate API URL
+    apiURL = getApiUrl('users');
 
     // Query the API
     $.getJSON(apiURL, function (result) {
@@ -204,5 +204,13 @@ $(document).ready(function () {
         fillInTable();
     });
 
-    userEventListeners();
+
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    }
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
 });

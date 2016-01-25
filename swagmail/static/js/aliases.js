@@ -144,6 +144,7 @@ function aliasEventListeners() {
             newAlias(aliasSourceInput.val(), aliasDestinationInput.val());
             aliasSourceInput.val('');
             aliasDestinationInput.val('');
+            $('#filterRow input').val('');
         }
 
         e.preventDefault();
@@ -171,9 +172,8 @@ function fillInTable () {
     // Set the loading spinner
     manageSpinner(true);
 
-    // If the page was specified in the URL, then add it to the API url
-    var urlVars = getUrlVars();
-    'page' in urlVars ? apiURL = '/api/v1/aliases?page=' + urlVars['page'] : apiURL = '/api/v1/aliases';
+    // If the page or filter was specified, get the appropriate API URL
+    apiURL = getApiUrl('aliases');
 
     // Query the API
     $.getJSON(apiURL, function (result) {
@@ -226,5 +226,12 @@ $(document).ready(function () {
         fillInTable();
     });
 
-    aliasEventListeners();
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    }
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
 });

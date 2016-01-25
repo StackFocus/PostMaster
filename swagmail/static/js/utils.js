@@ -39,7 +39,7 @@ function manageSpinner(present) {
     else {
         setTimeout(function () {
             $('div.loader').remove();
-        }, 500);
+        }, 350);
     }
 }
 
@@ -131,4 +131,22 @@ function redirectToLastPage(api) {
             window.location.href = url;
         }
     });
+}
+
+function getApiUrl(api) {
+    var urlVars = getUrlVars();
+    var filter = $('#filterRow input').val();
+
+    if ('page' in urlVars && filter != '') {
+        return ('/api/v1/' + api + '?page=' + urlVars['page'] + '&search=' + filter);
+    }
+    else if ('page' in urlVars) {
+        return ('/api/v1/' + api + '?page=' + urlVars['page']);
+    }
+    else if (filter != '') {
+        return ('/api/v1/' + api + '?&search=' + filter);
+    }
+    else {
+        return ('/api/v1/' + api);
+    }
 }

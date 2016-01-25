@@ -125,6 +125,4 @@ $(document).ready(function () {
     $(window).bind("popstate", function () {
         fillInTable();
     });
-
-    configEventListeners();
 });

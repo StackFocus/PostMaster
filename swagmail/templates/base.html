@@ -11,6 +11,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <script src="{{ url_for('static', filename='libraries/js/jquery.typewatch.js') }}"></script>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
@@ -38,11 +39,11 @@
                         <li class="dropdown">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">Manage <b class="caret"></b></a>
                             <ul role="menu" class="dropdown-menu">
+                                <li><a href="/admins">Administrators</a></li>
+                                <li><a href="/aliases">Aliases</a></li>
+                                <li><a href="/configs">Configurations</a></li>
                                 <li><a href="/domains">Domains</a></li>
                                 <li><a href="/users">Users</a></li>
-                                <li><a href="/aliases">Aliases</a></li>
-                                <li><a href="/admins">Administrators</a></li>
-                                <li><a href="/configs">Configurations</a></li>
                             </ul>
                         </li>
                         <li><a href="/logs">Logs</a></li>
