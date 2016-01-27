@@ -89,7 +89,7 @@ function fillInTable () {
             html += '<td data-title="Setting: ">' + item.setting + '</td>\
                     <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + item.value + '</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? $('#dynamicTable tbody').append(html) : tableRow.html(html);
+            tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
 
             i++;
         });
