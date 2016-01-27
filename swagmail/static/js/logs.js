@@ -34,7 +34,7 @@ function fillInTable() {
                     <td data-title="Admin: ">' + item.admin + '</td>\
                     <td data-title="Message: ">' + item.message + '</td>'
             tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? $('#dynamicTable tbody').append(html) : tableRow.html(html);
+            tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
 
             i++;
         });

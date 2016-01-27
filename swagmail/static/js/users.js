@@ -167,7 +167,7 @@ function fillInTable () {
                     <td data-title="Password: "><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? $('#addItemRow').before(html) : tableRow.html(html);
+            tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
 
             i++;
         });

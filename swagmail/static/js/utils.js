@@ -31,15 +31,21 @@ function changePage(obj, e) {
 
 // This manages the loading spinner for the table
 function manageSpinner(present) {
+
+    var spinner = $('div.loader');
+
     if (present) {
-        if ($('div.loader').length == 0) {
+        if (spinner.length == 0) {
             $('#dynamicTableDiv').prepend('<div class="loader"></div>');
         }
     }
     else {
+        // Remove the spinner but keep the gray background with opacity
+        spinner.css('background', 'rgba(255, 255, 255, 0.7)');
+        // Remove the gray background with opacity after 300 ms
         setTimeout(function () {
-            $('div.loader').remove();
-        }, 350);
+            spinner.fadeOut('fast', function() { spinner.remove() });
+        }, 400);
     }
 }
 
@@ -70,9 +76,8 @@ function setPagination(currPage, numPages, api) {
             var pageButton = $('#itemPage' + String(i));
             // If the page button does not exist, create it
             if (pageButton.length == 0) {
-                paginationDiv.append('\
-                    <li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '"><a href="' + '/' + api + '?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>\
-                ');
+                $('<li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '">\
+                    <a href="' + '/' + api + '?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>').appendTo(paginationDiv).hide().fadeIn('fast');
             }
             // If the page button does exist, make sure the correct button is marked as active
             else {
@@ -86,7 +91,7 @@ function setPagination(currPage, numPages, api) {
         while (i <= numTotalPaginationButtons) {
 
             if ($('#itemPage' + String(i)).length != 0) {
-                $('#itemPage' + String(i)).remove();
+                $('#itemPage' + String(i)).fadeOut('fast', function () { $(this).remove(); });
             }
             i++;
         }
@@ -102,13 +107,41 @@ function setPagination(currPage, numPages, api) {
 }
 
 
+function insertTableRow(tableRow) {
+    $(tableRow).insertBefore('#addItemRow')
+        .find('td').wrapInner('<div style="display: none;" />')
+        .parent().find('td > div')
+        .slideDown('fast', function () {
+            var $set = $(this);
+            $set.replaceWith($set.contents());
+        });
+}
+
+
+function appendTableRow(tableRow) {
+    $(tableRow).appendTo('#dynamicTable tbody')
+        .find('td').wrapInner('<div style="display: none;" />')
+        .parent().find('td > div')
+        .slideDown('fast', function () {
+            var $set = $(this);
+            $set.replaceWith($set.contents());
+        });
+}
+
+
 function removeEmptyTableRows(startRow) {
 
     var numTotalRows = $('#dynamicTable tr').size();
     while (startRow < numTotalRows) {
 
-        if ($('#dynamicTableRow' + String(startRow)).length != 0) {
-            $('#dynamicTableRow' + String(startRow)).remove();
+        var tableRow = $('#dynamicTableRow' + String(startRow));
+
+        if (tableRow.length != 0) {
+            tableRow.find('td')
+                .wrapInner('<div style="display: block;" />')
+                .parent()
+                .find('td > div')
+                .slideUp('fast', function () { $(this).parent().parent().remove(); });
         }
 
         startRow++;

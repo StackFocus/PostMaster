@@ -27,14 +27,6 @@
                 </tr>
             </thead>
             <tbody>
-                {% for i in range(5) %}
-                <tr id="dynamicTableRow{{i + 1}}">
-                    <td data-title="Email: "></td>
-                    <td data-title="Password: "></td>
-                    <td data-title="Name: "></td>
-                    <td data-title="Action: "></td>
-                </tr>
-                {% endfor %}
                 <tr id="addItemRow">
                     <td data-title="Email: "><input id="newAdminInput" class="form-control" type="text" placeholder="Enter a new admins's email address" /></td>
                     <td data-title="Password: "><input id="newAdminPasswordInput" class="form-control" type="password" placeholder="Enter the new admin's password" /></td>
