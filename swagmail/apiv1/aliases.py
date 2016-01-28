@@ -26,9 +26,8 @@ def get_aliases():
         return VirtualAliases.query.filter(or_(VirtualAliases.destination.ilike(
             "%{0}%".format(request.args.get('search'))),
             VirtualAliases.source.ilike(
-            "%{0}%".format(request.args.get('search'))).order_by(
-                VirtualAliases.source)
-        ))
+            "%{0}%".format(request.args.get('search')))
+        )).order_by(VirtualAliases.source)
     return VirtualAliases.query.order_by(VirtualAliases.source)
 
 

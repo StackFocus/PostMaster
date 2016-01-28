@@ -344,4 +344,3 @@ class TestMailDbFunctions:
             {"value": "9999"}))
         assert rv.status_code == 400
         assert 'An invalid minimum password length was supplied.' in rv.data
-
