@@ -105,6 +105,10 @@ function adminEventListeners () {
             return JSON.stringify({ 'email': params.value })
         },
 
+        display: function (value) {
+            $(this).html(value.toLowerCase());
+        },
+
         error: function (response) {
             // The jQuery('div />') is a work around to encode all html characters
             addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());

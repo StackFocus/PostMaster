@@ -74,6 +74,10 @@ function aliasEventListeners() {
             return JSON.stringify({'source': params.value})
         },
 
+        display: function (value) {
+            $(this).html(value.toLowerCase());
+        },
+
         error: function (response) {
             // The jQuery('div />') is a work around to encode all html characters
             addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
@@ -97,6 +101,10 @@ function aliasEventListeners() {
 
         params: function (params) {
             return JSON.stringify({ 'destination': params.value })
+        },
+
+        display: function (value) {
+            $(this).html(value.toLowerCase());
         },
 
         error: function(response) {
