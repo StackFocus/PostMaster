@@ -8,7 +8,7 @@ an admin to create, delete, and update users
 from flask import request
 from flask_login import login_required, current_user
 from swagmail import db
-from swagmail.models import VirtualUsers, VirtualAliases
+from swagmail.models import VirtualUsers, VirtualAliases, Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
@@ -23,8 +23,8 @@ def get_users():
     """
     if request.args.get('search'):
         return VirtualUsers.query.filter(VirtualUsers.email.ilike(
-            "%{0}%".format(request.args.get('search'))))
-    return VirtualUsers.query
+            "%{0}%".format(request.args.get('search')))).order_by(VirtualUsers.email)
+    return VirtualUsers.query.order_by(VirtualUsers.email)
 
 
 @apiv1.route("/users/<int:user_id>", methods=["GET"])
@@ -103,6 +103,10 @@ def update_user(user_id):
     json = request.get_json(force=True)
 
     if 'password' in json:
+        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        if len(json['password']) < minPwdLength:
+            raise ValidationError(
+            'The password must be at least %s characters long' % minPwdLength)
         user.password = VirtualUsers().encrypt_password(json['password'])
         auditMessage = 'The user "{0}" had their password changed'.format(
             user.email)

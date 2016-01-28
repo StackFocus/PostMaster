@@ -14,10 +14,15 @@ from ..errors import ValidationError, GenericError
 from . import apiv1
 from utils import json_logger
 
+minPwdLengthRange = list()
+for num in range(1,26):
+    minPwdLengthRange.append(str(num))
+
 validConfigItems = {
     'Login Auditing': ('True', 'False'),
     'Mail Database Auditing': ('True', 'False'),
-    'Log File': '*'
+    'Log File': '*',
+    'Minimum Password Length': minPwdLengthRange
 }
 
 
@@ -57,6 +62,9 @@ def update_config(config_id):
             config.value = json['value']
             db.session.add(config)
         else:
+            if config.setting == 'Minimum Password Length':
+                raise ValidationError('An invalid minimum password length was supplied.\
+                    The value must be between 1-25.')
             raise ValidationError('An invalid setting value was supplied')
     except KeyError:
         raise ValidationError('An invalid setting was supplied')

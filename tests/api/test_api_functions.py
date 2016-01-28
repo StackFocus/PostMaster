@@ -324,12 +324,24 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     def test_configs_update_pass(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
             {"value": "True"}))
         assert rv.status_code == 200
 
     def test_configs_update_fail(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
         assert 'An invalid setting value was supplied' in rv.data
+
+    def test_configs_min_pwd_update_pass(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
+            {"value": "7"}))
+        assert rv.status_code == 200
+
+    def test_configs_min_pwd_update_fail(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
+            {"value": "99999"}))
+        assert rv.status_code == 400
+        assert 'An invalid minimum password length was supplied.' in rv.data
+

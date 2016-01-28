@@ -8,7 +8,7 @@ an admin to create, delete, and update admins
 from flask import request
 from flask_login import login_required, current_user
 from swagmail import db, bcrypt
-from swagmail.models import Admins
+from swagmail.models import Admins, Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
@@ -23,8 +23,8 @@ def get_admins():
     """
     if request.args.get('search'):
         return Admins.query.filter(Admins.email.ilike(
-            "%{0}%".format(request.args.get('search'))))
-    return Admins.query
+            "%{0}%".format(request.args.get('search')))).order_by(Admins.email)
+    return Admins.query.order_by(Admins.email)
 
 
 @apiv1.route("/admins/<int:admin_id>", methods=["GET"])
@@ -100,14 +100,19 @@ def update_admin(admin_id):
     json = request.get_json(force=True)
 
     if 'email' in json:
-        if Admins.query.filter_by(email=json['email']).first() is None:
+        newEmail = json['email'].lower()
+        if Admins.query.filter_by(email=newEmail).first() is None:
             auditMessage = 'The administrator "{0}" had their email changed to "{1}"'.format(
-                admin.email, json['email'])
-            admin.email = json['email']
+                admin.email, newEmail)
+            admin.email = newEmail
             db.session.add(admin)
         else:
             ValidationError('The email supplied already exists')
     elif 'password' in json:
+        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        if len(json['password']) < minPwdLength:
+            raise ValidationError(
+            'The password must be at least %s characters long' % minPwdLength)
         auditMessage = 'The administrator "{0}" had their password changed'.format(
             admin.email)
         admin.password = bcrypt.generate_password_hash(json['password'])

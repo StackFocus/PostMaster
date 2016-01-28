@@ -42,20 +42,10 @@ class VirtualDomains(db.Model):
         if not json.get('name', None):
             raise ValidationError('The domain name was not specified')
         if self.query.filter_by(name=json['name']).first() is None:
-            self.name = json['name']
+            self.name = json['name'].lower()
         else:
             raise ValidationError(
-                'The domain "%s" already exists' % json['name'])
-        return self
-
-    def query_from_json(self, json):
-        if not json.get('name', None):
-            raise ValidationError('Invalid domain: missing ' + e.args[0])
-        if self.query.filter_by(name=json['name']).first() is not None:
-            return self.query.filter_by(name=json['name']).first()
-        else:
-            raise ValidationError(
-                'The domain "%s" does not exist' % json['name'])
+                'The domain "%s" already exists' % json['name'].lower())
         return self
 
 
@@ -92,23 +82,27 @@ class VirtualUsers(db.Model):
             raise ValidationError('The email address was not specified')
         if not json.get('password', None):
             raise ValidationError('The password was not specified')
-        if self.query.filter_by(email=json['email']).first() is not None:
-            raise ValidationError('"%s" already exists!' % json['email'])
-        self.email = json['email']
+        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        if len(json['password']) < minPwdLength:
+            raise ValidationError(
+            'The password must be at least %s characters long' % minPwdLength)
+        if self.query.filter_by(email=json['email'].lower()).first() is not None:
+            raise ValidationError('"%s" already exists!' % json['email'].lower())
         # Checks if the domain can be extracted and if the email is at least
         # somewhat in the right format
         if search('(?<=@).*$', json['email']) and match('.*@.*[.].*$', json['email']):
-            domain = search('(?<=@).*$', json['email']).group(0)
+            domain = search('(?<=@).*$', json['email'].lower()).group(0)
             if VirtualDomains.query.filter_by(name=domain).first() is not None:
                 self.domain_id = VirtualDomains.query.filter_by(
                     name=domain).first().id
+                self.email = json['email'].lower()
                 self.password = self.encrypt_password(json['password'])
             else:
                 raise ValidationError(
                     'The domain "%s" is not managed by this database' % domain)
         else:
             raise ValidationError(
-                '"%s" is not a valid email address' % json['email'])
+                '"%s" is not a valid email address' % json['email'].lower())
         return self
 
     def encrypt_password(self, password):
@@ -153,12 +147,12 @@ class VirtualAliases(db.Model):
         if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
             raise ValidationError('"%s" to "%s" already exists!' % (
                 json['source'], json['destination']))
-        if self.validate_source(json['source']):
-            self.source = json['source']
-        if self.validate_destination(json['destination']):
-            self.destination = json['destination']
+        if self.validate_source(json['source'].lower()):
+            self.source = json['source'].lower()
+        if self.validate_destination(json['destination'].lower()):
+            self.destination = json['destination'].lower()
             self.domain_id = VirtualDomains.query.filter_by(name=search(
-                '(?<=@).*$', json['destination']).group(0)).first().id
+                '(?<=@).*$', self.destination).group(0)).first().id
         return self
 
     def validate_source(self, source):
@@ -249,10 +243,14 @@ class Admins(db.Model):
         if not json.get('name', None):
             raise ValidationError('The name was not specified')
         if self.query.filter_by(email=json['email']).first() is not None:
-            raise ValidationError('"%s" already exists' % json['email'])
-        self.email = json['email']
-        self.name = json['name']
+            raise ValidationError('"%s" already exists' % json['email'].lower())
+        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        if len(json['password']) < minPwdLength:
+            raise ValidationError(
+            'The password must be at least %s characters long' % minPwdLength)
         self.password = bcrypt.generate_password_hash(json['password'])
+        self.email = json['email'].lower()
+        self.name = json['name']
         self.active = True
         return self
 
