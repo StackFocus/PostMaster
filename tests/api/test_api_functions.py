@@ -341,7 +341,7 @@ class TestMailDbFunctions:
 
     def test_configs_min_pwd_update_fail(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
-            {"value": "99999"}))
+            {"value": "9999"}))
         assert rv.status_code == 400
         assert 'An invalid minimum password length was supplied.' in rv.data
 
