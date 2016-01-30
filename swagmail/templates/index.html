@@ -1,40 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="row">
+    <div id="dashboardRow" class="row">
         <h2 class="textHeading">Dashboard</h2>
-        <div class="col-md-6">
-            <div class="panel panel-info">
-                <div class="panel-heading"><i class="fa fa-cloud"></i>Domains at a Glance</div>
-                <div class="panel-body">
-                    <br /><br /><br /><br /><br /><br /><br /><br /><!--Temporary-->
-                </div>
-            </div>
+        <div class="col-sm-4 dasboardColumn">
+            <ul>
+                <li>
+                    <a id="usersTile" href="/users"><i class="fa fa-user"></i> Users</a>
+                </li>
+                <li>
+                    <a id="aliasesTile" href="/aliases"><i class="fa fa-external-link"></i> Aliases</a>
+                </li>
+            </ul>
         </div>
-        <div class="col-md-6">
-            <div class="panel panel-danger">
-                <div class="panel-heading"><i class="fa fa-user"></i>Users at a Glance</div>
-                <div class="panel-body">
-                    <br /><br /><br /><br /><br /><br /><br /><br /><!--Temporary-->
-                </div>
-            </div>
+        <div class="col-sm-4 dasboardColumn">
+            <ul>
+                <li>
+                    <a id="domainsTile" href="/domains"><i class="fa fa-cloud"></i> Domains</a>
+                </li>
+                <li>
+                    <a id="logsTile" href="/logs"><i class="fa fa-pencil"></i> Logs</a>
+                </li>
+            </ul>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-warning">
-                <div class="panel-heading"><i class="fa fa-external-link"></i>Aliases at a Glance</div>
-                <div class="panel-body">
-                    <br /><br /><br /><br /><br /><br /><br /><br /><!--Temporary-->
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-success">
-                <div class="panel-heading"><i class="fa fa-pencil"></i></i>Logs at a Glance</div>
-                <div class="panel-body">
-                    <br /><br /><br /><br /><br /><br /><br /><br /><!--Temporary-->
-                </div>
-            </div>
+        <div class="col-sm-4 dasboardColumn">
+            <ul>
+                <li>
+                    <a id="configurationsTile" href="/configs"><i class="fa fa-cog"></i> Configurations</a>
+                </li>
+                <li>
+                    <a id="administratorsTile" href="/admins"><i class="fa fa-lock"></i> Administrators</a>
+                </li>
+            </ul>
         </div>
     </div>
 {% endblock %}
