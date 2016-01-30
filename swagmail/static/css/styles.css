@@ -27,7 +27,7 @@ nav a:hover {
 
 h2.textHeading {
     text-align: center;
-    margin-bottom: 3em;
+    margin-bottom: 2em;
 }
 
 #bottomOuterAlertDiv {
@@ -46,16 +46,61 @@ h2.textHeading {
 }
 
 /* Dashboard CSS */
-div.panel {
-    margin-bottom: 6em;
+#dashboardRow {
+    margin-bottom: 2em;
 }
 
-div.panel-heading {
-    font-size: 110%;
+div.dasboardColumn {
+    padding: 0 0.25em 0 0.25em;
 }
 
-div.panel-heading i {
-    margin-right: 0.75em;
+div.dasboardColumn ul {
+    padding: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+div.dasboardColumn ul li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+div.dasboardColumn ul li a {
+    text-decoration: none !important;
+    color: #FEFEFE;
+    display: block;
+    text-align: center;
+    font-size: 180%;
+    height: 6.5em;
+    line-height: 6.5em;
+    transition: font 0.05s ease;
+        -webkit-transition: all 0.05s ease;
+        -moz-transition: all 0.05s ease;
+        -o-transition: all 0.05s ease;
+}
+
+#domainsTile {
+    background-color: #248A8E;
+}
+
+#usersTile {
+    background-color: #E60000;
+}
+
+#aliasesTile {
+    background-color: #36A5C9;
+}
+
+#configurationsTile {
+    background-color: #A8C92E;
+}
+
+#logsTile {
+    background-color: #FF9900;
+}
+
+#administratorsTile {
+    background-color: #0B486B;
 }
 /* End of Dashboard CSS */
 
@@ -216,7 +261,8 @@ ul.pagination li.disabled a:hover {
     }
 
     h2.textHeadingManage,
-    h2.textHeadingManageNoFilter {
+    h2.textHeadingManageNoFilter,
+    h2.textHeading {
         margin-bottom: 1em;
     }
 
@@ -298,6 +344,16 @@ ul.pagination li.disabled a:hover {
         margin-bottom: 1.5em;
     }
     /* End of Login Page CSS */
+
+    /* Dashboard CSS */
+    div.dasboardColumn ul li a {
+        margin-left: 7.5%;
+        margin-right: 7.5%;
+        font-size: 150%;
+        height: 5em;
+        line-height: 5em;
+    }
+    /* End of Dashboard CSS */
 }
 
 @media(min-width:768px) {
@@ -333,6 +389,14 @@ ul.pagination li.disabled a:hover {
         margin-bottom: 2em;
     }
     /* End of Login Page CSS */
+
+    /* Dashboard CSS */
+    div.dasboardColumn ul li a:hover {
+        font-size: 190%;
+        height: 6.16em;
+        line-height: 6.16em;
+    }
+    /* End of Dashboard CSS */
 }
 
 @media(min-width:992px) {
