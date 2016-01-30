@@ -103,7 +103,7 @@ def getLogs(numLines=50, reverseOrder=False):
         mmapHandler.close()
         logFile.close()
 
-        if not reverseOrder:
+        if reverseOrder:
             logs = list(reversed(logs))
 
         return {

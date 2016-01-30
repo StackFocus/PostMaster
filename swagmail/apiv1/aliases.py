@@ -27,8 +27,8 @@ def get_aliases():
             "%{0}%".format(request.args.get('search'))),
             VirtualAliases.source.ilike(
             "%{0}%".format(request.args.get('search')))
-        ))
-    return VirtualAliases.query
+        )).order_by(VirtualAliases.source)
+    return VirtualAliases.query.order_by(VirtualAliases.source)
 
 
 @apiv1.route("/aliases/<int:alias_id>", methods=["GET"])
@@ -102,18 +102,18 @@ def update_alias(alias_id):
     json = request.get_json(force=True)
 
     if 'source' in json:
-        if VirtualAliases().validate_source(json['source']):
+        newSource = json['source'].lower()
+        if VirtualAliases().validate_source(newSource):
             auditMessage = 'The alias "{0}" had their source changed to "{1}"'.format(
-                alias.source, json[
-                    'source'])
-            alias.source = json['source']
+                alias.source, newSource)
+            alias.source = newSource
             db.session.add(alias)
     elif 'destination' in json:
-        if VirtualAliases().validate_destination(json['destination']):
+        newDestination = json['destination'].lower()
+        if VirtualAliases().validate_destination(newDestination):
             auditMessage = 'The alias "{0}" had their destination changed to "{1}"'.format(
-                alias.source, json[
-                    'destination'])
-            alias.destination = json['destination']
+                alias.source, newDestination)
+            alias.destination = newDestination
             db.session.add(alias)
     else:
         raise ValidationError(
