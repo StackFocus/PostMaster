@@ -67,7 +67,7 @@ fi
 export DEBIAN_FRONTEND=noninteractive
 
 echo 'Updating the aptitude repository...'
-sudo apt-get -y update > /dev/null
+apt-get -y update > /dev/null
 
 packages=('python' 'python-pip' 'python-dev')
 if [ INSTALL_APACHE ]
@@ -92,6 +92,10 @@ then
     >&2 echo "Please ensure that python 2.7 is installed and is the default python"
     exit 1
 fi
+
+echo 'Creating the /opt/swagmail/logs directory'
+mkdir /opt/swagmail/logs
+chown www-data:www-data /opt/swagmail/logs
 
 if ! [ -d '/opt/swagmail/env' ]
 then
