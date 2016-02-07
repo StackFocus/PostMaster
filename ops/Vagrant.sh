@@ -93,11 +93,6 @@ then
     exit 1
 fi
 
-echo 'Setting the proper permissions on /opt/swagmail...'
-chown -R www-data:www-data /opt/swagmail
-find /opt/swagmail -type d -exec chmod 770 {} +
-find /opt/swagmail -type f -path /opt/swagmail/git/ops/Vagrant.sh -prune -o -exec chmod 760 {} +
-
 if ! [ -d '/opt/swagmail/env' ]
 then
     echo 'Installing the virtual environment...'
