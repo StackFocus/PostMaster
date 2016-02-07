@@ -15,10 +15,9 @@ $ py.test tests/
 ```
 
 ### Docker!
-We use docker to scale this application.
 ```
 $ docker build .
-$ docker run -p 0.0.0.0:80:8080 [image id]
+$ docker run -p 0.0.0.0:80:80 -d [image id]
 ```
 
 ### Screenshots

@@ -31,7 +31,7 @@ def createdb():
     db.session.add(config_login_auditing)
     config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
     db.session.add(config_maildb_auditing)
-    config_log_path = models.Configs().from_json({'setting': 'Log File', 'value': 'swagmail.log'})
+    config_log_path = models.Configs().from_json({'setting': 'Log File', 'value': '../logs/swagmail.log'})
     db.session.add(config_log_path)
     admin = models.Admins().from_json({'email': 'user@swagmail.com', 'password': 'password', 'name': 'Default User'})
     db.session.add(admin)
@@ -50,13 +50,14 @@ def clean():
 
     if os.name == 'nt':
         commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"", # pylint: disable=anomalous-backslash-in-string, line-too-long
-                    "powershell.exe -Command \"@('swagmail.db', 'migrations') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""] # pylint: disable=anomalous-backslash-in-string, line-too-long
+                    "powershell.exe -Command \"@('swagmail.db', 'migrations', 'swagmail.log') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""] # pylint: disable=anomalous-backslash-in-string, line-too-long
     else:
         commands = ["find . -name '*.pyc' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "find . -name '*.pyo' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "find . -name '*~' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "find . -name '__pycache__' -exec rmdir {} \;",  # pylint: disable=anomalous-backslash-in-string
-                    "rm -f swagmail.db"]
+                    "rm -f swagmail.db swagmail.log",
+                    "rm -rf migrations"]
     for command in commands:
         os.system(command)
 
