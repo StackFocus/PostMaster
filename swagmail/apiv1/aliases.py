@@ -23,11 +23,12 @@ def get_aliases():
     """ Queries all the aliases in VirtualAliases, and returns paginated JSON
     """
     if request.args.get('search'):
-        return VirtualAliases.query.filter(or_(VirtualAliases.destination.ilike(
-            "%{0}%".format(request.args.get('search'))),
-            VirtualAliases.source.ilike(
-            "%{0}%".format(request.args.get('search')))
-        )).order_by(VirtualAliases.source)
+        return VirtualAliases.query.filter(
+            or_(VirtualAliases.destination.ilike(
+                "%{0}%".format(request.args.get('search'))),
+                VirtualAliases.source.ilike(
+                    "%{0}%".format(request.args.get('search'))))).order_by(
+                        VirtualAliases.source)
     return VirtualAliases.query.order_by(VirtualAliases.source)
 
 

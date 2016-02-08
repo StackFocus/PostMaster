@@ -109,10 +109,12 @@ def update_admin(admin_id):
         else:
             ValidationError('The email supplied already exists')
     elif 'password' in json:
-        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        minPwdLength = int(Configs.query.filter_by(
+            setting='Minimum Password Length').first().value)
         if len(json['password']) < minPwdLength:
             raise ValidationError(
-            'The password must be at least %s characters long' % minPwdLength)
+                'The password must be at least {0} characters long'.format(
+                    minPwdLength))
         auditMessage = 'The administrator "{0}" had their password changed'.format(
             admin.email)
         admin.password = bcrypt.generate_password_hash(json['password'])

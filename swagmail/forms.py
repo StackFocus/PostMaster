@@ -14,11 +14,5 @@ class LoginForm(Form):
     Class for login form on /login
     """
 
-    username = StringField(
-        label="Username: ",
-        validators=[DataRequired()]
-    )
-    password = PasswordField(
-        label="Password: ",
-        validators=[DataRequired()]
-    )
+    username = StringField(label="Username: ", validators=[DataRequired()])
+    password = PasswordField(label="Password: ", validators=[DataRequired()])

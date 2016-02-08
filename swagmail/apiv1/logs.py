@@ -11,6 +11,7 @@ from json import loads, dumps
 from . import apiv1
 from utils import getLogs
 
+
 @apiv1.route("/logs", methods=["GET"])
 @login_required
 def get_logs():
