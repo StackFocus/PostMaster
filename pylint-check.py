@@ -1,7 +1,7 @@
 #! /usr/bin/env python
-'''
+"""
 Module that runs pylint on all python scripts found in a directory tree..
-'''
+"""
 import os
 import re
 import sys
@@ -10,9 +10,9 @@ count = 0
 
 
 def check(module):
-    '''
-    apply pylint to the file specified if it is a *.py file
-    '''
+    """
+    Apply pylint to the file specified if it is a *.py file
+    """
     global total, count
     if module[-3:] == ".py":
         print("CHECKING  {0}".format(module))

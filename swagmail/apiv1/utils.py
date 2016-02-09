@@ -55,7 +55,7 @@ def json_logger(category, admin, message):
                     getcwd().replace('\\', '/') + '/' + logPath))
 
 
-def getLogs(numLines=50, reverseOrder=False):
+def get_logs_dict(numLines=50, reverseOrder=False):
     """
     Returns the JSON formatted log file as a dict
     """

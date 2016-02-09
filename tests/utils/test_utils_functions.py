@@ -27,7 +27,7 @@ class TestUtilsFunctions:
         result = login_auditing_enabled()
         assert isinstance(result, bool)
 
-    def test_getLogs(self):
-        result = getLogs()
+    def test_get_logs_dict(self):
+        result = get_logs_dict()
         assert isinstance(result, dict)
         assert 'items' in result

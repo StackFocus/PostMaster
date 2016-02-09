@@ -21,7 +21,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def createdb():
-    '''Runs the db init, db migrate, db upgrade commands automatically'''
+    """Runs the db init, db migrate, db upgrade commands automatically"""
     os.system('python manage.py db init')
     os.system('python manage.py db migrate')
     os.system('python manage.py db upgrade')
@@ -40,13 +40,13 @@ def createdb():
 
 @manager.shell
 def make_shell_context():
-    ''' Returns app, db, models to the shell '''
+    """Returns app, db, models to the shell"""
     return dict(app=app, db=db, models=models)
 
 
 @manager.command
 def clean():
-    '''Cleans the codebase'''
+    """Cleans the codebase"""
 
     if os.name == 'nt':
         commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"", # pylint: disable=anomalous-backslash-in-string, line-too-long
