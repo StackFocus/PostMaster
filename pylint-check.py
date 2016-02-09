@@ -16,7 +16,7 @@ def check(module):
     global total, count
     if module[-3:] == ".py":
         print("CHECKING  {0}".format(module))
-        pout = os.popen('pylint --rcfile=.pylintrc "%s"' % module, 'r')
+        pout = os.popen('pylint --rcfile=.pylintrc "{0]"'.format(module), 'r')
         for line in pout:
             if re.match("E....:.", line):
                 print(line)
