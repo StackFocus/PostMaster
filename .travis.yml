@@ -6,6 +6,6 @@ install:
 before_script:
   - ./pylint-check.py
 script:  
-  - py.test -v --cov swagmail --cov-report term-missing tests/ 
+  - py.test -v --cov postmaster --cov-report term-missing tests/
 after_success:  
   - coveralls

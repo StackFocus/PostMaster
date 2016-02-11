@@ -1,14 +1,14 @@
 """
 Author: Swagger.pro
 File: admins.py
-Purpose: The admins API for SwagMail which allows
+Purpose: The admins API for PostMaster which allows
 an admin to create, delete, and update admins
 """
 
 from flask import request
 from flask_login import login_required, current_user
-from swagmail import db, bcrypt
-from swagmail.models import Admins, Configs
+from postmaster import db, bcrypt
+from postmaster.models import Admins, Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1

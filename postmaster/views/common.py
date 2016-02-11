@@ -6,8 +6,8 @@ Purpose: UI routes for the app
 
 from flask import render_template, redirect, url_for, request, flash, Blueprint
 from flask_login import login_required, login_user, logout_user, current_user
-from swagmail import app, forms, models, login_manager, bcrypt
-from swagmail.apiv1.utils import json_logger
+from postmaster import app, forms, models, login_manager, bcrypt
+from postmaster.apiv1.utils import json_logger
 
 common = Blueprint('common', __name__)
 
@@ -51,7 +51,7 @@ def login():
     else:
         if request.method == 'GET':
             return render_template('login.html',
-                                   title='SwagMail Management Login',
+                                   title='PostMaster Management Login',
                                    loginForm=loginForm)
 
         elif loginForm.validate_on_submit():

@@ -42,7 +42,6 @@ function configEventListeners () {
     configTextItems.editable({
         type: 'text',
         mode: 'inline',
-        showbuttons: false,
         anim: 100,
         ajaxOptions: {
             type: 'PUT',

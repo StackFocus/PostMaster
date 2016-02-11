@@ -1,14 +1,14 @@
 ﻿"""
 Author: Swagger.pro
 File: domains.py
-Purpose: The domains API for SwagMail which allows
+Purpose: The domains API for PostMaster which allows
 an admin to create, and delete domains
 """
 
 from flask import request
 from flask_login import login_required, current_user
-from swagmail import db
-from swagmail.models import VirtualDomains
+from postmaster import db
+from postmaster.models import VirtualDomains
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1

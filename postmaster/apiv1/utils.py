@@ -9,7 +9,7 @@ from mmap import mmap
 from json import dumps, loads
 from datetime import datetime
 from ..errors import ValidationError
-from swagmail.models import Configs
+from postmaster.models import Configs
 
 
 def maildb_auditing_enabled():

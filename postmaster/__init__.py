@@ -22,4 +22,4 @@ from views.common import common
 app.register_blueprint(apiv1)
 app.register_blueprint(common)
 
-from swagmail import models
+from postmaster import models

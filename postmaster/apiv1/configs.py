@@ -1,14 +1,14 @@
 """
 Author: Swagger.pro
 File: configs.py
-Purpose: The configs API for SwagMail which
-allows an admin to update SwagMail configurations
+Purpose: The configs API for PostMaster which
+allows an admin to update PostMaster configurations
 """
 
 from flask import request
 from flask_login import login_required, current_user
-from swagmail import db
-from swagmail.models import Configs
+from postmaster import db
+from postmaster.models import Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1

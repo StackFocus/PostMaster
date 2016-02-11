@@ -1,4 +1,4 @@
-﻿from swagmail import app
+﻿from postmaster import app
 
 class TestUserFunctions:
 

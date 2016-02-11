@@ -1,14 +1,14 @@
 ﻿"""
 Author: Swagger.pro
 File: aliases.py
-Purpose: The aliases API for SwagMail which allows
+Purpose: The aliases API for PostMaster which allows
 an admin to create, delete, and update aliases
 """
 
 from flask import request
 from flask_login import login_required, current_user
-from swagmail import db
-from swagmail.models import VirtualAliases
+from postmaster import db
+from postmaster.models import VirtualAliases
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1

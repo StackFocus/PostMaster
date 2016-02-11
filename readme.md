@@ -1,4 +1,4 @@
-## SwagMail
+## PostMaster
 [![Build Status](https://travis-ci.org/thatarchguy/SwagMail.svg)](https://travis-ci.org/thatarchguy/SwagMail)![Python](https://img.shields.io/badge/python-2.7-blue.svg)![Flask](http://flask.pocoo.org/static/badges/made-with-flask-s.png)
 
 Because managing your mailserver should be easier

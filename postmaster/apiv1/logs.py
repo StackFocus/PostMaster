@@ -1,7 +1,7 @@
 """
 Author: Swagger.pro
 File: logs.py
-Purpose: The logs API for SwagMail which allows
+Purpose: The logs API for PostMaster which allows
 an admin to query the log file
 """
 
