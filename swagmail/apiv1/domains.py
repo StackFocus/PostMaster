@@ -23,7 +23,8 @@ def get_domains():
     """
     if request.args.get('search'):
         return VirtualDomains.query.filter(VirtualDomains.name.ilike(
-            "%{0}%".format(request.args.get('search')))).order_by(VirtualDomains.name)
+            "%{0}%".format(request.args.get('search')))).order_by(
+                VirtualDomains.name)
     return VirtualDomains.query.order_by(VirtualDomains.name)
 
 

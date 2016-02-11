@@ -76,12 +76,10 @@ class TestMailDbFunctions:
     def test_alias_update_fail_source_or_destination_not_supplied(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/aliases/2", data=json.dumps(
             {"someotherdata": "aomeotherdata"}))
-        
         try:
             json.loads(rv.data)
         except:
             assert False, "Not json"
-        
         assert rv.status_code == 400
         assert "The source or destination was not supplied in the request" in rv.data
 
@@ -144,7 +142,6 @@ class TestMailDbFunctions:
             json.loads(rv.data)
         except:
             assert False, "Not json"
-        
         assert rv.status_code == 400
         assert "The password was not supplied in the request" in rv.data
 
@@ -206,7 +203,7 @@ class TestMailDbFunctions:
 
     def test_domains_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/domains", data=json.dumps(
-            {"name": "".join((random.choice(string.ascii_uppercase + string.digits) for _ in range(6)))+ ".com"}))
+            {"name": "".join((random.choice(string.ascii_uppercase + string.digits) for _ in range(6))) + ".com"}))
         try:
             json.loads(rv.data)
         except:

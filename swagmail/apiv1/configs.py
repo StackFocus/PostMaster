@@ -15,7 +15,7 @@ from . import apiv1
 from utils import json_logger
 
 minPwdLengthRange = list()
-for num in range(1,26):
+for num in range(1, 26):
     minPwdLengthRange.append(str(num))
 
 validConfigItems = {
@@ -55,15 +55,17 @@ def update_config(config_id):
     json = request.get_json(force=True)
 
     try:
-        if 'value' in json and (validConfigItems[config.setting] == '*' or
-                                json['value'] in validConfigItems[config.setting]):
+        if 'value' in json and (
+                validConfigItems[config.setting] == '*' or
+                json['value'] in validConfigItems[config.setting]):
             auditMessage = 'The setting "{0}" was set from "{1}" to "{2}"'.format(
                 config.setting, config.value, json['value'])
             config.value = json['value']
             db.session.add(config)
         else:
             if config.setting == 'Minimum Password Length':
-                raise ValidationError('An invalid minimum password length was supplied.\
+                raise ValidationError(
+                    'An invalid minimum password length was supplied.\
                     The value must be between 1-25.')
             raise ValidationError('An invalid setting value was supplied')
     except KeyError:
@@ -78,7 +80,8 @@ def update_config(config_id):
         db.session.rollback()
         json_logger(
             'error', current_user.email,
-            'The following error occurred in update_config: {0}'.format(str(e)))
+            'The following error occurred in update_config: {0}'.format(str(
+                e)))
         raise GenericError('The configuration could not be updated')
     finally:
         db.session.close()

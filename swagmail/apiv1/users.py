@@ -23,7 +23,8 @@ def get_users():
     """
     if request.args.get('search'):
         return VirtualUsers.query.filter(VirtualUsers.email.ilike(
-            "%{0}%".format(request.args.get('search')))).order_by(VirtualUsers.email)
+            "%{0}%".format(request.args.get('search')))).order_by(
+                VirtualUsers.email)
     return VirtualUsers.query.order_by(VirtualUsers.email)
 
 
@@ -103,10 +104,12 @@ def update_user(user_id):
     json = request.get_json(force=True)
 
     if 'password' in json:
-        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        minPwdLength = int(Configs.query.filter_by(
+            setting='Minimum Password Length').first().value)
         if len(json['password']) < minPwdLength:
             raise ValidationError(
-            'The password must be at least %s characters long' % minPwdLength)
+                'The password must be at least {0} characters long'.format(
+                    minPwdLength))
         user.password = VirtualUsers().encrypt_password(json['password'])
         auditMessage = 'The user "{0}" had their password changed'.format(
             user.email)

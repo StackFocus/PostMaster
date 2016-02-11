@@ -35,7 +35,8 @@ def index():
     """ Function to return index page
     """
 
-    return render_template('index.html', authenticated=(current_user).is_authenticated())
+    return render_template('index.html',
+                           authenticated=(current_user).is_authenticated())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -55,16 +56,20 @@ def login():
 
         elif loginForm.validate_on_submit():
 
-            if models.Admins.query.filter_by(email=loginForm.username.data).first() is not None:
+            if models.Admins.query.filter_by(
+                email=loginForm.username.data).first() is not None:
                 admin = models.Admins.query.filter_by(
                     email=loginForm.username.data).first()
 
-                if admin and (bcrypt.check_password_hash(admin.password, loginForm.password.data)):
+                if admin and (bcrypt.check_password_hash(
+                        admin.password, loginForm.password.data)):
                     login_user(admin, remember=False)
                     json_logger(
                         'auth', admin.email,
-                        'The administrator "{0}" logged in successfully'.format(admin.email))
-                    return redirect(request.args.get('next') or url_for('index'))
+                        'The administrator "{0}" logged in successfully'.format(
+                            admin.email))
+                    return redirect(request.args.get('next') or url_for(
+                        'index'))
 
             json_logger(
                 'auth', admin.email,
@@ -96,7 +101,8 @@ def domains():
     Manages domains in the database
     """
 
-    return render_template('domains.html', authenticated=(current_user).is_authenticated())
+    return render_template('domains.html',
+                           authenticated=(current_user).is_authenticated())
 
 
 @app.route('/users', methods=["GET"])
@@ -106,7 +112,8 @@ def users():
     Manages users/email accounts in the database
     """
 
-    return render_template('users.html', authenticated=(current_user).is_authenticated())
+    return render_template('users.html',
+                           authenticated=(current_user).is_authenticated())
 
 
 @app.route('/aliases', methods=["GET"])
@@ -116,7 +123,8 @@ def aliases():
     Manages aliases in the database
     """
 
-    return render_template('aliases.html', authenticated=(current_user).is_authenticated())
+    return render_template('aliases.html',
+                           authenticated=(current_user).is_authenticated())
 
 
 @app.route('/admins', methods=["GET"])
@@ -126,7 +134,8 @@ def admins():
     Manages admins in the database
     """
 
-    return render_template('admins.html', authenticated=(current_user).is_authenticated())
+    return render_template('admins.html',
+                           authenticated=(current_user).is_authenticated())
 
 
 @app.route('/configs', methods=["GET"])
@@ -136,7 +145,8 @@ def configs():
     Manages configs in the database
     """
 
-    return render_template('configs.html', authenticated=(current_user).is_authenticated())
+    return render_template('configs.html',
+                           authenticated=(current_user).is_authenticated())
 
 
 @app.route('/logs', methods=["GET"])
@@ -146,5 +156,5 @@ def logs():
     Displays logs from the log file
     """
 
-    return render_template('logs.html', authenticated=(current_user).is_authenticated())
-
+    return render_template('logs.html',
+                           authenticated=(current_user).is_authenticated())

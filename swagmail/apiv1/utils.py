@@ -15,14 +15,16 @@ from swagmail.models import Configs
 def maildb_auditing_enabled():
     """ Returns a bool based on if mail db auditing is enabled
     """
-    auditingSetting = Configs.query.filter_by(setting='Mail Database Auditing').first().value
+    auditingSetting = Configs.query.filter_by(
+        setting='Mail Database Auditing').first().value
     return auditingSetting == 'True'
 
 
 def login_auditing_enabled():
     """ Returns a bool based on if mail db auditing is enabled
     """
-    auditingSetting = Configs.query.filter_by(setting='Login Auditing').first().value
+    auditingSetting = Configs.query.filter_by(
+        setting='Login Auditing').first().value
     return auditingSetting == 'True'
 
 
@@ -42,7 +44,8 @@ def json_logger(category, admin, message):
                         'category': category,
                         'message': message,
                         'admin': admin,
-                        'timestamp': datetime.utcnow().isoformat() + 'Z'},
+                        'timestamp': datetime.utcnow().isoformat() + 'Z'
+                    },
                     sort_keys=True)))
                 logFile.close()
         except IOError:
@@ -52,7 +55,7 @@ def json_logger(category, admin, message):
                     getcwd().replace('\\', '/') + '/' + logPath))
 
 
-def getLogs(numLines=50, reverseOrder=False):
+def get_logs_dict(numLines=50, reverseOrder=False):
     """
     Returns the JSON formatted log file as a dict
     """
@@ -65,12 +68,11 @@ def getLogs(numLines=50, reverseOrder=False):
         except ValueError as e:
             if str(e) == 'cannot mmap an empty file':
                 # If the file is empty, return empty JSON
-                return {
-                    'items': [],
-                }
+                return {'items': [], }
             else:
-                raise ValidationError('There was an error opening "{0}"'.format(
-                    getcwd().replace('\\', '/') + '/' + logPath))
+                raise ValidationError(
+                    'There was an error opening "{0}"'.format(
+                        getcwd().replace('\\', '/') + '/' + logPath))
 
         newLineCount = 0
         # Assigns currentChar to the last character of the file
@@ -106,9 +108,7 @@ def getLogs(numLines=50, reverseOrder=False):
         if reverseOrder:
             logs = list(reversed(logs))
 
-        return {
-            'items': [loads(log) for log in logs],
-        }
+        return {'items': [loads(log) for log in logs], }
     else:
         raise ValidationError(
             '"{0}" could not be found.'.format(

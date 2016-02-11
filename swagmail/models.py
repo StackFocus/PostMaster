@@ -15,28 +15,28 @@ class VirtualDomains(db.Model):
     """ A table to house the email domains
     """
     __table_name__ = 'virtual_domains'
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8'
-    }
+    __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
-    id = db.Column(db.Integer, primary_key=True,
-                   nullable=False, autoincrement=True)
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   nullable=False,
+                   autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
 
     virtual_users = db.relationship(
-        "VirtualUsers", cascade="all,delete", backref="virtual_domains")
+        "VirtualUsers",
+        cascade="all,delete",
+        backref="virtual_domains")
     virtual_aliases = db.relationship(
-        "VirtualAliases", cascade="all,delete", backref="virtual_domains")
+        "VirtualAliases",
+        cascade="all,delete",
+        backref="virtual_domains")
 
     def __repr__(self):
-        return '<virtual_domains(name=\'%s\')>' % (self.name)
+        return '<virtual_domains(name=\'{0}\')>'.format(self.name)
 
     def to_json(self):
-        return {
-            'id': self.id,
-            'name': self.name
-        }
+        return {'id': self.id, 'name': self.name}
 
     def from_json(self, json):
         if not json.get('name', None):
@@ -45,7 +45,7 @@ class VirtualDomains(db.Model):
             self.name = json['name'].lower()
         else:
             raise ValidationError(
-                'The domain "%s" already exists' % json['name'].lower())
+                'The domain "{0}" already exists'.format(json['name'].lower()))
         return self
 
 
@@ -53,20 +53,22 @@ class VirtualUsers(db.Model):
     """ A table to house the email user accounts
     """
     __table_name__ = 'virtual_users'
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8'
-    }
+    __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
-    id = db.Column(db.Integer, primary_key=True,
-                   autoincrement=True, nullable=False)
-    domain_id = db.Column(db.Integer, db.ForeignKey(
-        'virtual_domains.id', ondelete='CASCADE'), nullable=False)
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True,
+                   nullable=False)
+    domain_id = db.Column(db.Integer,
+                          db.ForeignKey(
+                              'virtual_domains.id',
+                              ondelete='CASCADE'),
+                          nullable=False)
     password = db.Column(db.String(106), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
 
     def __repr__(self):
-        return '<virtual_users(email=\'%s\')>' % (self.email)
+        return '<virtual_users(email=\'{0}\')>'.format(self.email)
 
     def to_json(self):
         """ Leaving password out
@@ -82,15 +84,20 @@ class VirtualUsers(db.Model):
             raise ValidationError('The email address was not specified')
         if not json.get('password', None):
             raise ValidationError('The password was not specified')
-        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        minPwdLength = int(Configs.query.filter_by(
+            setting='Minimum Password Length').first().value)
         if len(json['password']) < minPwdLength:
             raise ValidationError(
-            'The password must be at least %s characters long' % minPwdLength)
-        if self.query.filter_by(email=json['email'].lower()).first() is not None:
-            raise ValidationError('"%s" already exists!' % json['email'].lower())
+                'The password must be at least {0} characters long'.format(
+                    minPwdLength))
+        if self.query.filter_by(
+            email=json['email'].lower()).first() is not None:
+            raise ValidationError('"{0}" already exists!'.format(
+                json['email'].lower()))
         # Checks if the domain can be extracted and if the email is at least
         # somewhat in the right format
-        if search('(?<=@).*$', json['email']) and match('.*@.*[.].*$', json['email']):
+        if search('(?<=@).*$', json['email']) and match('.*@.*[.].*$',
+                                                            json['email']):
             domain = search('(?<=@).*$', json['email'].lower()).group(0)
             if VirtualDomains.query.filter_by(name=domain).first() is not None:
                 self.domain_id = VirtualDomains.query.filter_by(
@@ -99,16 +106,20 @@ class VirtualUsers(db.Model):
                 self.password = self.encrypt_password(json['password'])
             else:
                 raise ValidationError(
-                    'The domain "%s" is not managed by this database' % domain)
+                    'The domain "{0}" is not managed by this database'.format(
+                        domain))
         else:
             raise ValidationError(
-                '"%s" is not a valid email address' % json['email'].lower())
+                '"{0}" is not a valid email address'.format(
+                    json['email'].lower()))
         return self
 
     def encrypt_password(self, password):
         salt = (sha1(urandom(16)).hexdigest())[:16]
-        protectedPassword = sha512.encrypt(password, rounds=5000,
-                                           salt=salt, implicit_rounds=True)
+        protectedPassword = sha512.encrypt(password,
+                                           rounds=5000,
+                                           salt=salt,
+                                           implicit_rounds=True)
         return protectedPassword
 
 
@@ -116,20 +127,22 @@ class VirtualAliases(db.Model):
     """ A table to house the email aliases
     """
     __table_name__ = 'virtual_aliases'
-    __table_args__ = {
-        'mysql_engine': 'InnoDB',
-        'mysql_charset': 'utf8'
-    }
+    __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
 
-    id = db.Column(db.Integer, primary_key=True,
-                   autoincrement=True, nullable=False)
-    domain_id = db.Column(db.Integer, db.ForeignKey(
-        'virtual_domains.id', ondelete='CASCADE'), nullable=False)
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True,
+                   nullable=False)
+    domain_id = db.Column(db.Integer,
+                          db.ForeignKey(
+                              'virtual_domains.id',
+                              ondelete='CASCADE'),
+                          nullable=False)
     source = db.Column(db.String(100), unique=True, nullable=False)
     destination = db.Column(db.String(100), nullable=False)
 
     def __repr__(self):
-        return '<virtual_aliases(source=\'%s\')>' % (self.source)
+        return '<virtual_aliases(source=\'{0}\')>'.format(self.source)
 
     def to_json(self):
         return {
@@ -144,8 +157,10 @@ class VirtualAliases(db.Model):
             raise ValidationError('The source email was not specified')
         if not json.get('destination', None):
             raise ValidationError('The destination email was not specified')
-        if self.query.filter_by(source=json['source'], destination=json['destination']).first() is not None:
-            raise ValidationError('"%s" to "%s" already exists!' % (
+        if self.query.filter_by(
+            source=json['source'],
+            destination=json['destination']).first() is not None:
+            raise ValidationError('"{0}" to "{1}" already exists!'.format(
                 json['source'], json['destination']))
         if self.validate_source(json['source'].lower()):
             self.source = json['source'].lower()
@@ -158,36 +173,44 @@ class VirtualAliases(db.Model):
     def validate_source(self, source):
         if match('.*@.*[.].*$', source):
             sourceDomain = search('(?<=@).*$', source).group(0)
-            if VirtualAliases.query.filter_by(source=source).first() is not None:
+            if VirtualAliases.query.filter_by(
+                source=source).first() is not None:
                 raise ValidationError(
-                    'The source alias "%s" already exists' % source)
+                    'The source alias "{0}" already exists'.format(source))
             if VirtualUsers.query.filter_by(email=source).first() is not None:
                 raise ValidationError(
-                    'The source alias "%s" is an existing email address' % source)
-            if VirtualDomains.query.filter_by(name=sourceDomain).first() is None:
+                    'The source alias "{0}" is an existing email address'.format(
+                        source))
+            if VirtualDomains.query.filter_by(
+                name=sourceDomain).first() is None:
                 raise ValidationError(
-                    'The domain "%s" is not managed by this database' % sourceDomain)
+                    'The domain "{0}" is not managed by this database'.format(
+                        sourceDomain))
             return True
         else:
             raise ValidationError(
-                'The source "%s" is not in a valid email format' % source)
+                'The source "{0}" is not in a valid email format'.format(
+                    source))
 
     def validate_destination(self, destination):
         if match('.*@.*[.].*$', destination):
-            destinationDomain = search(
-                '(?<=@).*$', destination).group(0)
-            if VirtualDomains.query.filter_by(name=destinationDomain).first() is None:
+            destinationDomain = search('(?<=@).*$', destination).group(0)
+            if VirtualDomains.query.filter_by(
+                name=destinationDomain).first() is None:
                 raise ValidationError(
-                    'The domain "%s" is not managed by this database' % destinationDomain)
-            if VirtualUsers.query.filter_by(email=destination).first() is not None:
+                    'The domain "{0}" is not managed by this database'.format(
+                        destinationDomain))
+            if VirtualUsers.query.filter_by(
+                email=destination).first() is not None:
                 return True
             else:
-                raise ValidationError \
-                    ('The destination "%s" is not a current email address' %
-                     destination)
+                raise ValidationError(
+                    'The destination "{0}" is not a current email address'.format(
+                        destination))
         else:
             raise ValidationError(
-                'The destination "%s" is not in a valid email format' % destination)
+                'The destination "{0}" is not in a valid email format'.format(
+                    destination))
 
 
 class Admins(db.Model):
@@ -224,16 +247,12 @@ class Admins(db.Model):
         return False
 
     def __repr__(self):
-        return '<swagmail_admins(email=\'%s\')>' % (self.email)
+        return '<swagmail_admins(email=\'{0}\')>'.format(self.email)
 
     def to_json(self):
         """ Leaving password out
         """
-        return {
-            'id': self.id,
-            'name': self.name,
-            'email': self.email
-        }
+        return {'id': self.id, 'name': self.name, 'email': self.email}
 
     def from_json(self, json):
         if not json.get('email', None):
@@ -243,11 +262,14 @@ class Admins(db.Model):
         if not json.get('name', None):
             raise ValidationError('The name was not specified')
         if self.query.filter_by(email=json['email']).first() is not None:
-            raise ValidationError('"%s" already exists' % json['email'].lower())
-        minPwdLength = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+            raise ValidationError('"{0}" already exists'.format(
+                json['email'].lower()))
+        minPwdLength = int(Configs.query.filter_by(
+            setting='Minimum Password Length').first().value)
         if len(json['password']) < minPwdLength:
             raise ValidationError(
-            'The password must be at least %s characters long' % minPwdLength)
+                'The password must be at least {0} characters long'.format(
+                    minPwdLength))
         self.password = bcrypt.generate_password_hash(json['password'])
         self.email = json['email'].lower()
         self.name = json['name']
@@ -267,11 +289,7 @@ class Configs(db.Model):
     def to_json(self):
         """ Returns the database row in JSON
         """
-        return {
-            'id': self.id,
-            'setting': self.setting,
-            'value': self.value
-        }
+        return {'id': self.id, 'setting': self.setting, 'value': self.value}
 
     def from_json(self, json):
         """ Returns a database rwo from JSON input
@@ -281,7 +299,8 @@ class Configs(db.Model):
         if not json.get('value', None):
             raise ValidationError('The value of the setting was not specified')
         if self.query.filter_by(setting=json['setting']).first() is not None:
-            raise ValidationError('The setting "%s" already exists' % json['setting'])
+            raise ValidationError('The setting "{0}" already exists'.format(
+                json['setting']))
         self.setting = json['setting']
         self.value = json['value']
         return self

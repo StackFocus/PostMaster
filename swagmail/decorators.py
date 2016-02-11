@@ -15,7 +15,7 @@ def json_wrap(f):
         status_or_headers = None
         headers = None
         if isinstance(rv, tuple):
-            rv, status_or_headers, headers = rv + (None,) * (3 - len(rv))
+            rv, status_or_headers, headers = rv + (None, ) * (3 - len(rv))
         if isinstance(status_or_headers, (dict, list)):
             headers, status_or_headers = status_or_headers, None
         if not isinstance(rv, dict):
@@ -26,6 +26,7 @@ def json_wrap(f):
         if headers is not None:
             rv.headers.extend(headers)
         return rv
+
     return wrapped
 
 
@@ -34,12 +35,18 @@ def paginate(max_per_page=10):
         @functools.wraps(f)
         def wrapped(*args, **kwargs):
             page = request.args.get('page', 1, type=int)
-            per_page = min(request.args.get('per_page', max_per_page,
-                                            type=int), max_per_page)
+            per_page = min(request.args.get('per_page',
+                                            max_per_page,
+                                            type=int),
+                           max_per_page)
             query = f(*args, **kwargs)
             p = query.paginate(page, per_page)
-            pages = {'page': page, 'per_page': per_page,
-                     'total': p.total, 'pages': p.pages}
+            pages = {
+                'page': page,
+                'per_page': per_page,
+                'total': p.total,
+                'pages': p.pages
+            }
             if p.has_prev:
                 pages['prev'] = url_for(request.endpoint, page=p.prev_num,
                                         per_page=per_page,
@@ -62,5 +69,7 @@ def paginate(max_per_page=10):
                 'items': [item.to_json() for item in p.items],
                 'meta': pages
             })
+
         return wrapped
+
     return decorator
