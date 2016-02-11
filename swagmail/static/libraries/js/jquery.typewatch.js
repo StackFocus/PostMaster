@@ -84,7 +84,7 @@
 
 					var timerCallbackFx = function() {
 						checkElement(timer, overrideBool)
-					}
+					};
 
 					// Clear timer					
 					clearTimeout(timer.timer);

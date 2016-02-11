@@ -5,9 +5,9 @@
 
 function dateFormatFromISO(timestamp) {
     var date = new Date(timestamp);
-    var suffix = (date.getHours() >= 12 ? 'PM' : 'AM')
-    var minutes = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
-    var hourInUsFormat = (date.getHours() + 11) % 12 + 1
+    var suffix = (date.getHours() >= 12 ? 'PM' : 'AM');
+    var minutes = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+    var hourInUsFormat = (date.getHours() + 11) % 12 + 1;
     var time = hourInUsFormat + ':' + minutes + ' ' + suffix;
     return dateString = formatDateNumber(date.getMonth()) + '/' + formatDateNumber(date.getDate()) + '/' + date.getFullYear() + ' ' + time;
 }
@@ -23,7 +23,7 @@ function fillInTable() {
     // Query the API
     $.getJSON(apiURL, function (result) {
 
-        var i = 1
+        var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
             var tableRow = $('#dynamicTableRow' + String(i));
@@ -32,7 +32,7 @@ function fillInTable() {
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Time: ">' + dateFormatFromISO(item.timestamp) + '</td>\
                     <td data-title="Admin: ">' + item.admin + '</td>\
-                    <td data-title="Message: ">' + item.message + '</td>'
+                    <td data-title="Message: ">' + item.message + '</td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
 

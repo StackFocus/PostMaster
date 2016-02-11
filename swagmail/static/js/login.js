@@ -2,7 +2,7 @@
     var bodyHeight = $('#body').height();
     var navHeight = $('#navigation-bar').height();
     var loginRowHeight = $('#loginRow').height();
-    var marginTop = (bodyHeight - navHeight - loginRowHeight) / 3
+    var marginTop = (bodyHeight - navHeight - loginRowHeight) / 3;
     if (marginTop > 10) {
         $('#loginRow').css('margin-top', marginTop);
     }

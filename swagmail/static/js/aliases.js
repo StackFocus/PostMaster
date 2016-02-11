@@ -186,7 +186,7 @@ function fillInTable () {
     // Query the API
     $.getJSON(apiURL, function (result) {
 
-        var i = 1
+        var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
             var tableRow = $('#dynamicTableRow' + String(i));
@@ -205,7 +205,7 @@ function fillInTable () {
         // Clean up the table
         removeEmptyTableRows(i);
         // Set the pagination
-        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages']
+        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages'];
         setPagination(result['meta']['page'], pages, 'aliases');
         //Activate x-editable on new elements and other events
         aliasEventListeners();
@@ -239,7 +239,7 @@ $(document).ready(function () {
         callback: function () { fillInTable() },
         wait: 750,
         captureLength: 2
-    }
+    };
 
     $('#filterRow input').typeWatch(typeWatchOptions);
 });
