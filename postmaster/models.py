@@ -3,7 +3,7 @@ Author: Swagger.pro
 File: models.py
 Purpose: database definitions for SQLAlchemy
 """
-from swagmail import db, bcrypt
+from postmaster import db, bcrypt
 from .errors import ValidationError
 from re import search, match
 from os import urandom
@@ -219,7 +219,7 @@ class VirtualAliases(db.Model):
 class Admins(db.Model):
     """ A table to store the admin users
     """
-    __tablename__ = 'swagmail_admins'
+    __tablename__ = 'postmaster_admins'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     email = db.Column(db.String(120), unique=True)
@@ -250,7 +250,7 @@ class Admins(db.Model):
         return False
 
     def __repr__(self):
-        return '<swagmail_admins(email=\'{0}\')>'.format(self.email)
+        return '<postmaster_admins(email=\'{0}\')>'.format(self.email)
 
     def to_json(self):
         """ Leaving password out
@@ -284,7 +284,7 @@ class Configs(db.Model):
     """ Table to store configuration items
     """
 
-    __tablename__ = 'swagmail_configuration'
+    __tablename__ = 'postmaster_configuration'
     id = db.Column(db.Integer, primary_key=True)
     setting = db.Column(db.String(128), unique=True)
     value = db.Column(db.String(512))

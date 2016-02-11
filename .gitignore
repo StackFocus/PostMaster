@@ -10,7 +10,7 @@ __pycache__/
 
 # C extensions
 *.so
-swagmail.db
+postmaster.db
 migrations/
 # Distribution / packaging
 .Python

@@ -2,10 +2,10 @@ FROM ubuntu:14.04.3
 MAINTAINER Swagger.pro
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN mkdir -p /opt/swagmail/git
-COPY ./ /opt/swagmail/git
-RUN chown -R www-data:www-data /opt/swagmail
-VOLUME ["/opt/swagmail/git"]
+RUN mkdir -p /opt/postmaster/git
+COPY ./ /opt/postmaster/git
+RUN chown -R www-data:www-data /opt/postmaster
+VOLUME ["/opt/postmaster/git"]
 RUN apt-get update
 RUN apt-get install -y \
     python-dev \
@@ -16,14 +16,14 @@ RUN apt-get install -y \
 RUN apt-get clean
 
 RUN /usr/sbin/apache2ctl stop
-RUN virtualenv /opt/swagmail/env
-RUN . /opt/swagmail/env/bin/activate
-WORKDIR /opt/swagmail/git
+RUN virtualenv /opt/postmaster/env
+RUN . /opt/postmaster/env/bin/activate
+WORKDIR /opt/postmaster/git
 RUN pip install -r requirements.txt
 RUN python manage.py clean && python manage.py createdb
 RUN /usr/sbin/a2dissite 000-default.conf
-RUN cp -f ops/apache.conf /etc/apache2/sites-available/swagmail.conf
-RUN /usr/sbin/a2ensite swagmail.conf
+RUN cp -f ops/apache.conf /etc/apache2/sites-available/postmaster.conf
+RUN /usr/sbin/a2ensite postmaster.conf
 
 EXPOSE 80
 

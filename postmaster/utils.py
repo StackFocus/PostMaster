@@ -4,7 +4,7 @@ File: utils.py
 Purpose: General helper utils
 """
 
-from swagmail import models
+from postmaster import models
 
 
 def row2dict(row):

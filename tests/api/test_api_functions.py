@@ -1,4 +1,4 @@
-﻿from swagmail import app
+﻿from postmaster import app
 import string
 import random
 import json
@@ -26,7 +26,7 @@ class TestMailDbFunctions:
 
     def test_aliases_add_fail_not_current(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "pickles@swagmail.com", "destination": "rawr@swagmail.com"}))
+            {"source": "pickles@postmaster.com", "destination": "rawr@postmaster.com"}))
         try:
             json.loads(rv.data)
         except:
@@ -36,7 +36,7 @@ class TestMailDbFunctions:
 
     def test_aliases_add_fail_source_empty(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "", "destination": "rawr@swagmail.com"}))
+            {"source": "", "destination": "rawr@postmaster.com"}))
         try:
             json.loads(rv.data)
         except:
@@ -46,7 +46,7 @@ class TestMailDbFunctions:
 
     def test_aliases_add_fail_destination_empty(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "rawr@swagmail.com", "destination": ""}))
+            {"source": "rawr@postmaster.com", "destination": ""}))
         try:
             json.loads(rv.data)
         except:
@@ -56,7 +56,7 @@ class TestMailDbFunctions:
 
     def test_aliases_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "rawr@swagmail.com", "destination": "email@swagmail.com"}))
+            {"source": "rawr@postmaster.com", "destination": "email@postmaster.com"}))
         try:
             json.loads(rv.data)
         except:
@@ -65,12 +65,12 @@ class TestMailDbFunctions:
 
     def test_aliases_update_source_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/aliases/2", data=json.dumps(
-            {"source": "somealias@swagmail.com"}))
+            {"source": "somealias@postmaster.com"}))
         assert rv.status_code == 200
 
     def test_aliases_update_destination_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/aliases/2", data=json.dumps(
-            {"destination": "email@swagmail.org"}))
+            {"destination": "email@postmaster.org"}))
         assert rv.status_code == 200
 
     def test_alias_update_fail_source_or_destination_not_supplied(self, loggedin_client):
@@ -147,7 +147,7 @@ class TestMailDbFunctions:
 
     def test_users_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/users", data=json.dumps(
-            {"email": "pickles@swagmail.com", "password": "som3passw0rd"}))
+            {"email": "pickles@postmaster.com", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data)
         except:
@@ -183,7 +183,7 @@ class TestMailDbFunctions:
 
     def test_domains_add_fail_already_exists(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/domains", data=json.dumps(
-            {"name": "swagmail.com"}))
+            {"name": "postmaster.com"}))
         try:
             json.loads(rv.data)
         except:
@@ -232,7 +232,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user_admin@swagmail.com", "password": "som3passw0rd", "name": "Test Admin"}))
+            {"email": "user_admin@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -241,7 +241,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_fail_duplicate(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user@swagmail.com", "password": "som3passw0rd", "name": "Test Admin"}))
+            {"email": "user@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -261,7 +261,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_fail_no_password(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user_admin2@swagmail.com", "name": "Test Admin"}))
+            {"email": "user_admin2@postmaster.com", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -271,7 +271,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_fail_no_name(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user_admin2@swagmail.com", "password": "som3passw0rd"}))
+            {"email": "user_admin2@postmaster.com", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data)
         except:
@@ -291,7 +291,7 @@ class TestMailDbFunctions:
 
     def test_admins_update_email_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/admins/2", data=json.dumps(
-            {"email": "newemail@swagmail.com"}))
+            {"email": "newemail@postmaster.com"}))
         assert rv.status_code == 200
 
     def test_admins_update_fail(self, loggedin_client):

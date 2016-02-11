@@ -3,7 +3,7 @@
 usage() {
 cat << EOF
 Usage: $0
-    This script will install SwagMail using Apache or nginx
+    This script will install PostMaster using Apache or nginx
 Options:
     -a : Install using Apache
     -n : Install using Nginx
@@ -93,22 +93,22 @@ then
     exit 1
 fi
 
-echo 'Creating the /opt/swagmail/logs directory'
-mkdir /opt/swagmail/logs
-chown www-data:www-data /opt/swagmail/logs
+echo 'Creating the /opt/postmaster/logs directory'
+mkdir /opt/postmaster/logs
+chown www-data:www-data /opt/postmaster/logs
 
-if ! [ -d '/opt/swagmail/env' ]
+if ! [ -d '/opt/postmaster/env' ]
 then
     echo 'Installing the virtual environment...'
     pip install virtualenv > /dev/null
-    virtualenv /opt/swagmail/env > /dev/null
-    source /opt/swagmail/env/bin/activate
+    virtualenv /opt/postmaster/env > /dev/null
+    source /opt/postmaster/env/bin/activate
 else
-    >&2 echo '/opt/swagmail/env already exists. Please make sure it is removed before rerunning the script'
+    >&2 echo '/opt/postmaster/env already exists. Please make sure it is removed before rerunning the script'
     exit 1
 fi
 
-cd /opt/swagmail/git
+cd /opt/postmaster/git
 echo 'Installing the Python packages required in the virtualenv...'
 pip install -r requirements.txt > /dev/null
 
@@ -136,10 +136,10 @@ then
         a2dissite 000-default.conf > /dev/null
     fi
 
-    echo 'Copying and enabling the standard SwagMail Apache configuration...'
-    cp -f /opt/swagmail/git/ops/apache.conf /etc/apache2/sites-available/swagmail.conf
-    chmod 644 /etc/apache2/sites-available/swagmail.conf
-    a2ensite -q swagmail.conf > /dev/null
+    echo 'Copying and enabling the standard PostMaster Apache configuration...'
+    cp -f /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
+    chmod 644 /etc/apache2/sites-available/postmaster.conf
+    a2ensite -q postmaster.conf > /dev/null
 
     echo 'Restarting Apache...'
     service apache2 restart > /dev/null

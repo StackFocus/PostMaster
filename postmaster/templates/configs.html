@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <script src="{{ url_for('static', filename='js/logs.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/configs.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-    <h2 class="textHeadingManageNoFilter">SwagMail Recent Logs</h2>
+    <h2 class="textHeadingManageNoFilter">PostMaster Configurations</h2>
 </div>
 <div class="row">
     <div id="dynamicTableDiv">
@@ -14,14 +14,16 @@
         <table class="table table-striped table-bordered" id="dynamicTable">
             <thead>
                 <tr>
-                    <th id="timeHeader">Time:</th>
-                    <th id="adminHeader">Admin:</th>
-                    <th id="messageHeader">Message:</th>
+                    <th id="settingHeader">Configuration:</th>
+                    <th id="valueHeader">Value:</th>
                 </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
     </div>
+</div>
+<div class="row">
+    <ul class="pagination hidden" id="pagination"></ul>
 </div>
 {% endblock %}
