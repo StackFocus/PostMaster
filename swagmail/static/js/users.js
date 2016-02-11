@@ -128,15 +128,16 @@ function userEventListeners () {
         e.preventDefault();
     });
 
-    $('#newUserInput, #newPasswordInput').unbind();
+    var newUserInputs = $('#newUserInput, #newPasswordInput');
+    newUserInputs.unbind();
     // When the user clicks out of the errored input field, the red border disappears
-    $('#newUserInput, #newPasswordInput').blur(function () {
+    newUserInputs.blur(function () {
         $('#newUserInput').parent().removeClass('has-error');
         $('#newPasswordInput').parent().removeClass('has-error');
     });
 
     // When in the input field, this triggers the newItemAnchor when pressing enter
-    $('#newUserInput, #newPasswordInput').keyup(function (e) {
+    newUserInputs.keyup(function (e) {
         var key = e.which;
         if (key == 13) {
             $('#newItemAnchor').trigger('click');

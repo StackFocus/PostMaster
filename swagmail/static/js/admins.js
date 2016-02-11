@@ -226,16 +226,17 @@ function adminEventListeners () {
         e.preventDefault();
     });
 
-    $('#newAdminInput, #newAdminPasswordInput, #newAdminNameInput').unbind();
+    var newAdminInputs = $('#newAdminInput, #newAdminPasswordInput, #newAdminNameInput');
+    newAdminInputs.unbind();
     // When the user clicks out of the errored input field, the red border disappears
-    $('#newAdminInput, #newAdminPasswordInput, #newAdminNameInput').blur(function () {
+    newAdminInputs.blur(function () {
         $('#newAdminInput').parent().removeClass('has-error');
         $('#newAdminPasswordInput').parent().removeClass('has-error');
         $('#newAdminNameInput').parent().removeClass('has-error');
     });
 
     // When in the input field, this triggers the newItemAnchor when pressing enter
-    $('#newAdminInput, #newAdminPasswordInput, #newAdminNameInput').keyup(function (e) {
+    newAdminInputs.keyup(function (e) {
         var key = e.which;
         if (key == 13) {
             $('#newItemAnchor').trigger('click');

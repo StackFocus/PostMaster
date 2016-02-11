@@ -158,15 +158,16 @@ function aliasEventListeners() {
         e.preventDefault();
     });
 
-    $('#newAliasSourceInput, #newAliasDestinationInput').unbind();
+    var newAliasInputs = $('#newAliasSourceInput, #newAliasDestinationInput');
+    newAliasInputs.unbind();
     // When the user clicks out of the errored input field, the red border disappears
-    $('#newAliasSourceInput, #newAliasDestinationInput').blur(function () {
+    newAliasInputs.blur(function () {
         $('#newAliasSourceInput').parent().removeClass('has-error');
         $('#newAliasDestinationInput').parent().removeClass('has-error');
     });
 
     // When in the input field, this triggers the newItemAnchor when pressing enter
-    $('#newAliasSourceInput, #newAliasDestinationInput').keyup(function (e) {
+    newAliasInputs.keyup(function (e) {
         var key = e.which;
         if (key == 13) {
             $('#newItemAnchor').trigger('click');
