@@ -38,10 +38,8 @@ h2.textHeading {
 }
 
 #bottomOuterAlertDiv div.alert {
-    margin: 0;
-    margin: auto;
+    margin: 0 auto 1em auto;
     max-width: 800px;
-    margin-bottom: 1em;
     text-align: center;
 }
 
@@ -113,8 +111,7 @@ div.dasboardColumn ul li a {
 
 .loginInput {
     width: 65%;
-    margin: auto;
-    margin-top: 2em;
+    margin: 2em auto auto;
 }
 /* End of Login Page CSS */
 
@@ -237,15 +234,11 @@ ul.pagination li.disabled a:hover {
 /* End of Only Configs Page CSS */
 
 /* Only Logs Page CSS */
-#timeHeader {
+#timeHeader, #adminHeader {
     width: 25%;
 }
 
-#adminHeader {
-    width: 25%;
-}
-
-#timeMessage {
+#messageHeader {
     width: 50%;
 }
 /* End of Only Logs Page CSS */
@@ -378,8 +371,7 @@ ul.pagination li.disabled a:hover {
 
     /* Login Page CSS */
     #loginRow {
-        margin: auto;
-        margin-bottom: 3em;
+        margin: auto auto 3em;
         max-width: 90%;
     }
 

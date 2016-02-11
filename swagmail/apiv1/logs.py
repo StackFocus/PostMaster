@@ -7,7 +7,6 @@ an admin to query the log file
 
 from flask import request, jsonify
 from flask_login import login_required
-from json import loads, dumps
 from . import apiv1
 from utils import get_logs_dict
 

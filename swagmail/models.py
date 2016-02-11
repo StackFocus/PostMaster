@@ -114,7 +114,8 @@ class VirtualUsers(db.Model):
                     json['email'].lower()))
         return self
 
-    def encrypt_password(self, password):
+    @staticmethod
+    def encrypt_password(password):
         salt = (sha1(urandom(16)).hexdigest())[:16]
         protectedPassword = sha512.encrypt(password,
                                            rounds=5000,
@@ -170,7 +171,8 @@ class VirtualAliases(db.Model):
                 '(?<=@).*$', self.destination).group(0)).first().id
         return self
 
-    def validate_source(self, source):
+    @staticmethod
+    def validate_source(source):
         if match('.*@.*[.].*$', source):
             sourceDomain = search('(?<=@).*$', source).group(0)
             if VirtualAliases.query.filter_by(
@@ -192,7 +194,8 @@ class VirtualAliases(db.Model):
                 'The source "{0}" is not in a valid email format'.format(
                     source))
 
-    def validate_destination(self, destination):
+    @staticmethod
+    def validate_destination(destination):
         if match('.*@.*[.].*$', destination):
             destinationDomain = search('(?<=@).*$', destination).group(0)
             if VirtualDomains.query.filter_by(

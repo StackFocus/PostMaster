@@ -7,7 +7,7 @@ Purpose: UI routes for the app
 from flask import render_template, redirect, url_for, request, flash, Blueprint
 from flask_login import login_required, login_user, logout_user, current_user
 from swagmail import app, forms, models, login_manager, bcrypt
-from swagmail.apiv1.utils import login_auditing_enabled, json_logger
+from swagmail.apiv1.utils import json_logger
 
 common = Blueprint('common', __name__)
 
@@ -36,7 +36,7 @@ def index():
     """
 
     return render_template('index.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,9 +72,9 @@ def login():
                         'index'))
 
             json_logger(
-                'auth', admin.email,
+                'auth', loginForm.username.data,
                 'The administrator "{0}" entered an incorrect username or password'.format(
-                    admin.email))
+                    loginForm.username.data))
             flash('The username or password was incorrect', 'error')
             return redirect(url_for('login'))
         else:
@@ -102,7 +102,7 @@ def domains():
     """
 
     return render_template('domains.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())
 
 
 @app.route('/users', methods=["GET"])
@@ -113,7 +113,7 @@ def users():
     """
 
     return render_template('users.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())
 
 
 @app.route('/aliases', methods=["GET"])
@@ -124,7 +124,7 @@ def aliases():
     """
 
     return render_template('aliases.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())
 
 
 @app.route('/admins', methods=["GET"])
@@ -135,7 +135,7 @@ def admins():
     """
 
     return render_template('admins.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())
 
 
 @app.route('/configs', methods=["GET"])
@@ -146,7 +146,7 @@ def configs():
     """
 
     return render_template('configs.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())
 
 
 @app.route('/logs', methods=["GET"])
@@ -157,4 +157,4 @@ def logs():
     """
 
     return render_template('logs.html',
-                           authenticated=(current_user).is_authenticated())
+                           authenticated=current_user.is_authenticated())

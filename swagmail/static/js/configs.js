@@ -78,12 +78,12 @@ function fillInTable () {
     // Query the API
     $.getJSON(apiURL, function (result) {
 
-        var i = 1
+        var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
             var tableRow = $('#dynamicTableRow' + String(i));
             var html = '';
-            var cssClass = item.value == 'True' || item.value == 'False' ? 'configBool' : 'configText'
+            var cssClass = item.value == 'True' || item.value == 'False' ? 'configBool' : 'configText';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Setting: ">' + item.setting + '</td>\
@@ -97,7 +97,7 @@ function fillInTable () {
         // Clean up the table
         removeEmptyTableRows(i);
         // Set the pagination
-        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages']
+        result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages'];
         setPagination(result['meta']['page'], pages, 'configs');
         //Activate x-editable on new elements and other events
         configEventListeners();
