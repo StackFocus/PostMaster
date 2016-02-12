@@ -1,5 +1,5 @@
 ## PostMaster
-[![Build Status](https://travis-ci.org/thatarchguy/SwagMail.svg)](https://travis-ci.org/thatarchguy/SwagMail)![Python](https://img.shields.io/badge/python-2.7-blue.svg)![Flask](http://flask.pocoo.org/static/badges/made-with-flask-s.png)
+[![Build Status](https://travis-ci.com/thatarchguy/PostMaster.svg?token=9fn8V459Z3FjXcLyubG9&branch=master)](https://travis-ci.com/thatarchguy/PostMaster)![Python](https://img.shields.io/badge/python-2.7-blue.svg)![Flask](http://flask.pocoo.org/static/badges/made-with-flask-s.png)
 
 Because managing your mailserver should be easier
 
