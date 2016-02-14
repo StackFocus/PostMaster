@@ -1,5 +1,5 @@
 ﻿// Creates a new administrator via the API
-function newAdmin(email, password, name) {
+function newAdmin(username, password, name) {
 
     $.ajax({
         url: '/api/v1/admins',
@@ -7,7 +7,7 @@ function newAdmin(email, password, name) {
         dataType: 'json',
         contentType: 'application/json',
         data: JSON.stringify({
-            'email': email,
+            'username': username,
             'password': password,
             'name': name
         }),
@@ -48,16 +48,16 @@ function deleteAdmin (id) {
 // Sets the event listeners in the dynamic table
 function adminEventListeners () {
 
-    var adminEmail = $('a.adminEmail');
+    var adminUsername = $('a.adminUsername');
     var adminPassword = $('a.adminPassword');
     var adminName = $('a.adminName');
     var deleteModal = $('#deleteModal');
     var deleteModalBtn = $('#modalDeleteBtn');
     var newItemAnchor = $('#newItemAnchor');
-    adminEmail.unbind();
+    adminUsername.unbind();
     adminPassword.unbind();
     adminName.unbind();
-    adminEmail.tooltip();
+    adminUsername.tooltip();
     adminPassword.tooltip();
     adminName.tooltip();
 
@@ -90,7 +90,7 @@ function adminEventListeners () {
         }
     });
 
-    adminEmail.editable({
+    adminUsername.editable({
         type: 'text',
         mode: 'inline',
         anim: 100,
@@ -102,7 +102,7 @@ function adminEventListeners () {
         },
 
         params: function (params) {
-            return JSON.stringify({ 'email': params.value })
+            return JSON.stringify({ 'username': params.value })
         },
 
         display: function (value) {
@@ -115,7 +115,7 @@ function adminEventListeners () {
         },
 
         success: function () {
-            addStatusMessage('success', 'The administrator\'s email was changed successfully');
+            addStatusMessage('success', 'The administrator\'s username was changed successfully');
         }
     });
 
@@ -263,7 +263,7 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Email: "><a href="#" class="adminEmail" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the email">' + item.email + '</a></td>\
+            html += '<td data-title="Username: "><a href="#" class="adminUsername" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the username">' + item.username + '</a></td>\
                     <td data-title="Password: "><a href="#" class="adminPassword" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
                     <td data-title="Name: "><a href="#" class="adminName" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the name">' + item.name + '</a></td>\
                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';

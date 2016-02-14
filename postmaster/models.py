@@ -97,7 +97,7 @@ class VirtualUsers(db.Model):
         # Checks if the domain can be extracted and if the email is at least
         # somewhat in the right format
         if search('(?<=@).*$', json['email']) and match('.*@.*[.].*$',
-                                                            json['email']):
+                                                        json['email']):
             domain = search('(?<=@).*$', json['email'].lower()).group(0)
             if VirtualDomains.query.filter_by(name=domain).first() is not None:
                 self.domain_id = VirtualDomains.query.filter_by(
@@ -222,8 +222,9 @@ class Admins(db.Model):
     __tablename__ = 'postmaster_admins'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    email = db.Column(db.String(120), unique=True)
+    username = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(64))
+    source = db.Column(db.String(64))
     active = db.Column(db.Boolean, default=True)
 
     def is_active(self):
@@ -250,23 +251,23 @@ class Admins(db.Model):
         return False
 
     def __repr__(self):
-        return '<postmaster_admins(email=\'{0}\')>'.format(self.email)
+        return '<postmaster_admins(username=\'{0}\')>'.format(self.username)
 
     def to_json(self):
         """ Leaving password out
         """
-        return {'id': self.id, 'name': self.name, 'email': self.email}
+        return {'id': self.id, 'name': self.name, 'username': self.username}
 
     def from_json(self, json):
-        if not json.get('email', None):
-            raise ValidationError('The email address was not specified')
+        if not json.get('username', None):
+            raise ValidationError('The username was not specified')
         if not json.get('password', None):
             raise ValidationError('The password was not specified')
         if not json.get('name', None):
             raise ValidationError('The name was not specified')
-        if self.query.filter_by(email=json['email']).first() is not None:
+        if self.query.filter_by(username=json['username']).first() is not None:
             raise ValidationError('"{0}" already exists'.format(
-                json['email'].lower()))
+                json['username'].lower()))
         minPwdLength = int(Configs.query.filter_by(
             setting='Minimum Password Length').first().value)
         if len(json['password']) < minPwdLength:
@@ -274,8 +275,23 @@ class Admins(db.Model):
                 'The password must be at least {0} characters long'.format(
                     minPwdLength))
         self.password = bcrypt.generate_password_hash(json['password'])
-        self.email = json['email'].lower()
+        self.username = json['username'].lower()
         self.name = json['name']
+        self.source = 'local'
+        self.active = True
+        return self
+
+    def ldap_user_from_json(self, json):
+        if not json.get('username', None):
+            raise ValidationError('The username was not specified')
+        if not json.get('name', None):
+            raise ValidationError('The name was not specified')
+        if self.query.filter_by(username=json['username']).first() is not None:
+            raise ValidationError('"{0}" already exists'.format(
+                json['username'].lower()))
+        self.username = json['username']
+        self.name = json['name']
+        self.source = 'ldap'
         self.active = True
         return self
 

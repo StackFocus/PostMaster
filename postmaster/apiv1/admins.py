@@ -22,9 +22,9 @@ def get_admins():
     """ Queries all the admin users in Admins, and returns paginated JSON
     """
     if request.args.get('search'):
-        return Admins.query.filter(Admins.email.ilike(
-            "%{0}%".format(request.args.get('search')))).order_by(Admins.email)
-    return Admins.query.order_by(Admins.email)
+        return Admins.query.filter(Admins.username.ilike(
+            "%{0}%".format(request.args.get('search')))).order_by(Admins.username)
+    return Admins.query.order_by(Admins.username)
 
 
 @apiv1.route("/admins/<int:admin_id>", methods=["GET"])
@@ -47,15 +47,15 @@ def new_admin():
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The administrator "{0}" was created successfully'.format(
-                admin.email))
+                admin.username))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in new_admin: {0}'.format(str(e)))
         raise GenericError('The admininstrator could not be created')
     finally:
@@ -73,15 +73,15 @@ def delete_admin(admin_id):
     db.session.delete(admin)
     try:
         db.session.commit()
-        json_logger('audit', current_user.email,
+        json_logger('audit', current_user.username,
                     'The administrator "{0}" was deleted successfully'.format(
-                        admin.email))
+                        admin.username))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in delete_admin: {0}'.format(str(e)))
         raise GenericError('The administrator could not be deleted')
     finally:
@@ -99,15 +99,15 @@ def update_admin(admin_id):
     admin = Admins.query.get_or_404(admin_id)
     json = request.get_json(force=True)
 
-    if 'email' in json:
-        newEmail = json['email'].lower()
-        if Admins.query.filter_by(email=newEmail).first() is None:
-            auditMessage = 'The administrator "{0}" had their email changed to "{1}"'.format(
-                admin.email, newEmail)
-            admin.email = newEmail
+    if 'username' in json:
+        newUsername = json['username'].lower()
+        if Admins.query.filter_by(username=newUsername).first() is None:
+            auditMessage = 'The administrator "{0}" had their username changed to "{1}"'.format(
+                admin.username, newUsername)
+            admin.username = newUsername
             db.session.add(admin)
         else:
-            ValidationError('The email supplied already exists')
+            ValidationError('The username supplied already exists')
     elif 'password' in json:
         minPwdLength = int(Configs.query.filter_by(
             setting='Minimum Password Length').first().value)
@@ -116,27 +116,27 @@ def update_admin(admin_id):
                 'The password must be at least {0} characters long'.format(
                     minPwdLength))
         auditMessage = 'The administrator "{0}" had their password changed'.format(
-            admin.email)
+            admin.username)
         admin.password = bcrypt.generate_password_hash(json['password'])
         db.session.add(admin)
     elif 'name' in json:
         auditMessage = 'The administrator "{0}" had their name changed to "{1}"'.format(
-            admin.email, admin.name)
+            admin.username, admin.name)
         admin.name = json['name']
         db.session.add(admin)
     else:
         raise ValidationError(
-            'The email, password, or name was not supplied in the request')
+            'The username, password, or name was not supplied in the request')
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, auditMessage)
+        json_logger('audit', current_user.username, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in update_admin: {0}'.format(str(e)))
         raise GenericError('The administrator could not be updated')
     finally:
