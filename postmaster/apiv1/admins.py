@@ -70,6 +70,9 @@ def delete_admin(admin_id):
     """ Deletes an admin user by ID in Admins, and returns HTTP 204 on success
     """
     admin = Admins.query.get_or_404(admin_id)
+    if db.session.query(Admins).count() == 1:
+        raise GenericError(
+            'Error - There needs to be at least one adminstrator.')
     db.session.delete(admin)
     try:
         db.session.commit()
