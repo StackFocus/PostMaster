@@ -42,6 +42,7 @@ function configEventListeners () {
     configTextItems.editable({
         type: 'text',
         mode: 'inline',
+        emptytext: 'Not set',
         anim: 100,
         ajaxOptions: {
             type: 'PUT',
@@ -86,7 +87,7 @@ function fillInTable () {
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Setting: ">' + item.setting + '</td>\
-                    <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + item.value + '</a></td>';
+                    <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + (item.value != null ? item.value : '') + '</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
 

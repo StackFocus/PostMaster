@@ -64,6 +64,64 @@ def getAlias(source):
     return None
 
 
+def add_default_configuration_settings():
+    """ Adds the default configuration settings to the database if they aren't present.
+    This is to be used from manage.py when creating the database.
+    """
+    if not models.Configs.query.filter_by(setting='Minimum Password Length').first():
+        min_pwd_length = models.Configs()
+        min_pwd_length.setting = 'Minimum Password Length'
+        min_pwd_length.value = '8'
+        db.session.add(min_pwd_length)
+
+    if not models.Configs.query.filter_by(setting='Login Auditing').first():
+        login_auditing = models.Configs()
+        login_auditing.setting = 'Login Auditing'
+        login_auditing.value = 'False'
+        db.session.add(login_auditing)
+
+    if not models.Configs.query.filter_by(setting='Mail Database Auditing').first():
+        mail_db_auditing = models.Configs()
+        mail_db_auditing.setting = 'Mail Database Auditing'
+        mail_db_auditing.value = 'False'
+        db.session.add(mail_db_auditing)
+
+    if not models.Configs.query.filter_by(setting='Log File').first():
+        log_file = models.Configs()
+        log_file.setting = 'Log File'
+        db.session.add(log_file)
+
+    if not models.Configs.query.filter_by(setting='Enable LDAP Authentication').first():
+        ldap_auth = models.Configs()
+        ldap_auth.setting = 'Enable LDAP Authentication'
+        ldap_auth.value = 'False'
+        db.session.add(ldap_auth)
+
+    if not models.Configs.query.filter_by(setting='AD Server LDAP String').first():
+        ad_server = models.Configs()
+        ad_server.setting = 'AD Server LDAP String'
+        db.session.add(ad_server)
+
+    if not models.Configs.query.filter_by(setting='AD Domain').first():
+        ad_domain = models.Configs()
+        ad_domain.setting = 'AD Domain'
+        db.session.add(ad_domain)
+
+    if not models.Configs.query.filter_by(setting='AD PostMaster Group').first():
+        ad_group = models.Configs()
+        ad_group.setting = 'AD PostMaster Group'
+        db.session.add(ad_group)
+
+    if not models.Admins.query.first():
+        admin = models.Admins().from_json(
+            {'username': 'user@postmaster.com', 'password': 'password', 'name': 'Default User'})
+        db.session.add(admin)
+
+    try:
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+
 def add_ldap_user_to_db(username, display_name):
     """ Adds an LDAP user stub in the Admins table of the database for flask_login
     """

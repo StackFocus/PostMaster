@@ -4,12 +4,23 @@ File: utils.py
 Purpose: General helper utils
 """
 
-from os import getcwd, path
+from os import getcwd, access, W_OK, path
 from mmap import mmap
 from json import dumps, loads
 from datetime import datetime
 from ..errors import ValidationError
 from postmaster.models import Configs
+
+
+def is_file_writeable(file):
+    """ Returns a bool based on if a file is writable or not
+    """
+    if path.isfile(file):
+        return access(file, W_OK)
+    else:
+        absolute_path = path.abspath(file)
+        dir_of_file = path.dirname(absolute_path)
+        return access(dir_of_file, W_OK)
 
 
 def maildb_auditing_enabled():

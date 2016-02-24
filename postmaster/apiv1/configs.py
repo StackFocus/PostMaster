@@ -7,12 +7,13 @@ allows an admin to update PostMaster configurations
 
 from flask import request
 from flask_login import login_required, current_user
+from os import access, W_OK
 from postmaster import db
 from postmaster.models import Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
-from utils import json_logger
+from utils import json_logger, is_file_writeable
 
 minPwdLengthRange = list()
 for num in range(1, 26):
@@ -54,16 +55,23 @@ def get_config(config_id):
 def update_config(config_id):
     """ Updates a config by ID in Configs, and returns HTTP 200 on success
     """
-    auditMessage = ''
     config = Configs.query.get_or_404(config_id)
     json = request.get_json(force=True)
 
     try:
-        if 'value' in json and (
-                validConfigItems[config.setting] == '*' or
-                json['value'] in validConfigItems[config.setting]):
-            auditMessage = 'The setting "{0}" was set from "{1}" to "{2}"'.format(
-                config.setting, config.value, json['value'])
+        if 'value' in json and (validConfigItems[config.setting] == '*' or
+                                json['value'] in validConfigItems[config.setting]):
+
+            if config.setting == 'Log File' and not is_file_writeable(json['value']):
+                raise ValidationError('The specified log path is not writable')
+
+            if (config.setting == 'Login Auditing' or config.setting == 'Mail Database Auditing') and \
+                    not Configs.query.filter_by(setting='Log File').first().value:
+                raise ValidationError('The log file must be set before auditing can be enabled')
+
+            audit_message = 'The setting "{0}" was set from "{1}" to "{2}"'.format(config.setting,
+                                                                                  config.value,
+                                                                                  json['value'])
             config.value = json['value']
             db.session.add(config)
         else:
@@ -77,7 +85,7 @@ def update_config(config_id):
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.username, auditMessage)
+        json_logger('audit', current_user.username, audit_message)
     except ValidationError as e:
         raise e
     except Exception as e:
