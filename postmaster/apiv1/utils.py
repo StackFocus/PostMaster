@@ -4,7 +4,7 @@ File: utils.py
 Purpose: General helper utils
 """
 
-from os import getcwd, access, W_OK, path
+import os
 from mmap import mmap
 from json import dumps, loads
 from datetime import datetime
@@ -15,12 +15,12 @@ from postmaster.models import Configs
 def is_file_writeable(file):
     """ Returns a bool based on if a file is writable or not
     """
-    if path.isfile(file):
-        return access(file, W_OK)
+    if os.path.isfile(file):
+        return os.access(file, os.W_OK)
     else:
-        absolute_path = path.abspath(file)
-        dir_of_file = path.dirname(absolute_path)
-        return access(dir_of_file, W_OK)
+        absolute_path = os.path.abspath(file)
+        dir_of_file = os.path.dirname(absolute_path)
+        return os.access(dir_of_file, os.W_OK)
 
 
 def maildb_auditing_enabled():
@@ -63,7 +63,7 @@ def json_logger(category, admin, message):
             raise ValidationError(
                 'The log could not be written to  "{0}". \
                 Verify that the path exists and is writeable.'.format(
-                    getcwd().replace('\\', '/') + '/' + logPath))
+                    os.getcwd().replace('\\', '/') + '/' + logPath))
 
 
 def get_logs_dict(numLines=50, reverseOrder=False):
@@ -71,7 +71,7 @@ def get_logs_dict(numLines=50, reverseOrder=False):
     Returns the JSON formatted log file as a dict
     """
     logPath = Configs.query.filter_by(setting='Log File').first().value
-    if path.exists(logPath):
+    if os.path.exists(logPath):
         logFile = open(logPath, mode='r+')
 
         try:
@@ -83,7 +83,7 @@ def get_logs_dict(numLines=50, reverseOrder=False):
             else:
                 raise ValidationError(
                     'There was an error opening "{0}"'.format(
-                        getcwd().replace('\\', '/') + '/' + logPath))
+                        os.getcwd().replace('\\', '/') + '/' + logPath))
 
         newLineCount = 0
         # Assigns currentChar to the last character of the file
@@ -123,4 +123,4 @@ def get_logs_dict(numLines=50, reverseOrder=False):
     else:
         raise ValidationError(
             '"{0}" could not be found.'.format(
-                getcwd().replace('\\', '/') + '/' + logPath))
+                os.getcwd().replace('\\', '/') + '/' + logPath))

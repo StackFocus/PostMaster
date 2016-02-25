@@ -7,7 +7,6 @@ allows an admin to update PostMaster configurations
 
 from flask import request
 from flask_login import login_required, current_user
-from os import access, W_OK
 from postmaster import db
 from postmaster.models import Configs
 from ..decorators import json_wrap, paginate
