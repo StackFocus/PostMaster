@@ -5,47 +5,18 @@ cat << EOF
 Usage: $0
     This script will install PostMaster using Apache or nginx
 Options:
-    -a : Install using Apache
-    -n : Install using Nginx
     -p : Preserves the existing database
 
 examples:
-$0 -a
-$0 -ap
-$0 -n
-$0 -np
+$0
+$0 -p
 EOF
 }
 
-INSTALL_APACHE=false
-INSTALL_NGINX=false
 PRESERVE=false
 
-while getopts ":anp" opt; do
+while getopts ":p" opt; do
     case $opt in
-        a)
-            if [ $INSTALL_NGINX = false ]
-            then
-                INSTALL_APACHE=true
-            else
-                >&2 echo 'You must select either apache or nginx, not both'
-                usage
-                exit 1
-            fi
-            ;;
-        n)
-            if [ $INSTALL_APACHE = false ]
-            then
-                $INSTALL_NGINX=true
-                >&2 echo 'nginx is currently not supported'
-                usage
-                exit 1
-            else
-                >&2 echo 'You must select either apache or nginx, not both'
-                usage
-                exit 1
-            fi
-            ;;
         p)
             PRESERVE=true
             ;;
@@ -57,23 +28,12 @@ while getopts ":anp" opt; do
     esac
 done
 
-if [ $INSTALL_APACHE = false ] && [ $INSTALL_NGINX = false ]
-then
-    >&2 echo 'You must either select -a to install Apache or -n to install with nginx'
-    usage
-    exit 1
-fi
-
 export DEBIAN_FRONTEND=noninteractive
 
 echo 'Updating the aptitude repository...'
 apt-get -y update > /dev/null
 
-packages=('python' 'python-pip' 'python-dev')
-if [ INSTALL_APACHE ]
-then
-    packages+=('apache2' 'libapache2-mod-wsgi')
-fi
+packages=('python' 'python-pip' 'python-dev' 'libldap2-dev' 'libssl-dev' 'libsasl2-dev' 'apache2' 'libapache2-mod-wsgi')
 
 for package in "${packages[@]}"
 do
@@ -89,7 +49,7 @@ done
 echo 'Checking the python version...'
 if [ $(python -V 2>&1 | grep -c "2.7") -eq 0 ]
 then
-    >&2 echo "Please ensure that python 2.7 is installed and is the default python"
+    >&2 echo 'Please ensure that python 2.7 is installed and is the default python version'
     exit 1
 fi
 
@@ -122,28 +82,25 @@ fi
 
 deactivate
 
-if [ $INSTALL_APACHE = true ]
+if [ $(apachectl -M | grep -c 'wsgi_module') == 0 ]
 then
-    if [ $(apachectl -M | grep -c 'wsgi_module') == 0 ]
-    then
-        echo 'Enabling the wsgi module for Apache...'
-        a2enmod -q wsgi > /dev/null
-    fi
-
-    if [ $(apachectl -S | grep -c "000-default.conf") != 0 ]
-    then
-        echo 'Disabling 000-default.conf...'
-        a2dissite 000-default.conf > /dev/null
-    fi
-
-    echo 'Copying and enabling the standard PostMaster Apache configuration...'
-    cp -f /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
-    chmod 644 /etc/apache2/sites-available/postmaster.conf
-    a2ensite -q postmaster.conf > /dev/null
-
-    echo 'Restarting Apache...'
-    service apache2 restart > /dev/null
+    echo 'Enabling the wsgi module for Apache...'
+    a2enmod -q wsgi > /dev/null
 fi
+
+if [ $(apachectl -S | grep -c "000-default.conf") != 0 ]
+then
+    echo 'Disabling 000-default.conf...'
+    a2dissite 000-default.conf > /dev/null
+fi
+
+echo 'Copying and enabling the standard PostMaster Apache configuration...'
+cp -f /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
+chmod 644 /etc/apache2/sites-available/postmaster.conf
+a2ensite -q postmaster.conf > /dev/null
+
+echo 'Restarting Apache...'
+service apache2 restart > /dev/null
 
 unset DEBIAN_FRONTEND
 

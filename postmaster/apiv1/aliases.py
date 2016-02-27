@@ -52,14 +52,14 @@ def new_alias():
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The alias "{0}" was created successfully'.format(alias.source))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in new_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be created')
     finally:
@@ -78,14 +78,14 @@ def delete_alias(alias_id):
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The alias "{0}" was deleted successfully'.format(alias.source))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in delete_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be deleted')
     finally:
@@ -122,13 +122,13 @@ def update_alias(alias_id):
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, auditMessage)
+        json_logger('audit', current_user.username, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in update_alias: {0}'.format(str(e)))
         raise GenericError('The alias could not be updated')
     finally:

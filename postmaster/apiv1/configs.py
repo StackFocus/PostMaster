@@ -22,7 +22,11 @@ validConfigItems = {
     'Login Auditing': ('True', 'False'),
     'Mail Database Auditing': ('True', 'False'),
     'Log File': '*',
-    'Minimum Password Length': minPwdLengthRange
+    'Minimum Password Length': minPwdLengthRange,
+    'Enable LDAP Authentication': ('True', 'False'),
+    'AD Server LDAP String': '*',
+    'AD Domain': '*',
+    'AD PostMaster Group': '*'
 }
 
 
@@ -73,13 +77,13 @@ def update_config(config_id):
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, auditMessage)
+        json_logger('audit', current_user.username, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in update_config: {0}'.format(str(
                 e)))
         raise GenericError('The configuration could not be updated')

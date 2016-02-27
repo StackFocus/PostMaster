@@ -7,14 +7,14 @@
             <script>
                 $(document).ready(function () {
                     //Displays the last flash message received
-                    addStatusMessage('{{messages[-1][0]}}', '{{messages[-1][1]}}');
+                    addStatusMessage('{{messages[-1][0]}}', '{{messages[-1][1] | new_line_to_break}}');
                 });
             </script>
         {% endif %}     
     {% endwith %}
 {% endblock %}
 
-    {% block content %}
+{% block content %}
     <div class="row" id="loginRow">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -25,18 +25,22 @@
                     {{ loginForm.hidden_tag() }}
                     <div class="input-group loginInput">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        {{ loginForm.username(class_='form-control',placeholder='Enter a username') }}
+                        {{ loginForm.username(class_='form-control', required=True, placeholder='Enter a username') }}
                     </div>
                     <div class="input-group loginInput">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        {{ loginForm.password(class_='form-control',placeholder='Enter a password') }}
+                        {{ loginForm.password(class_='form-control', required=True, placeholder='Enter a password') }}
                     </div>
-                    <div class="input-group text-center" style="margin: auto">
-                        <input class="btn btn-primary" id="loginButton" type="submit" value="Login" />
-                        <input class="btn btn-default" style="margin-left: 1.5em" id="loginButton" type="reset" value="Reset" />
+                    <div class="input-group loginInput">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-cloud"></i></span>
+                        {{ loginForm.auth_source(class_='form-control', required=True) }}
+                    </div>
+                    <div id="loginButtons" class="input-group">
+                        <input class="btn btn-primary" type="submit" value="Login" />
+                        <input class="btn btn-default" type="reset" value="Reset" />
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    {% endblock %}
+{% endblock %}

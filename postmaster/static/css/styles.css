@@ -113,6 +113,14 @@ div.dasboardColumn ul li a {
     width: 65%;
     margin: 2em auto auto;
 }
+
+#loginButtons {
+    margin: auto;
+}
+
+#loginButtons input.btn-primary {
+    margin-right: 1.5em;
+}
 /* End of Login Page CSS */
 
 /* Manage Page CSS */
@@ -221,7 +229,7 @@ ul.pagination li.disabled a:hover {
 /* End of Only Alias Page CSS */
 
 /* Only Admin Page CSS */
-#emailAdminHeader, #passwordAdminHeader,
+#usernameAdminHeader, #passwordAdminHeader,
 #nameAdminHeader {
     width: 28.33%;
 }
@@ -332,7 +340,7 @@ ul.pagination li.disabled a:hover {
         width: 95%;
     }
 
-    #loginButton {
+    #loginButtons {
         margin-top: 2em;
         margin-bottom: 1.5em;
     }
@@ -375,10 +383,13 @@ ul.pagination li.disabled a:hover {
         max-width: 90%;
     }
 
-    #loginButton {
+    #loginButtons {
+        margin-top: 2.5em;
+        margin-bottom: 1em;
+    }
+
+    #loginButtons input {
         padding: 0.75em 2em;
-        margin-top: 2em;
-        margin-bottom: 2em;
     }
     /* End of Login Page CSS */
 
