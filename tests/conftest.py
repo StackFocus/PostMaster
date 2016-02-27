@@ -2,6 +2,7 @@
 from postmaster import app, db, models
 app.config['WTF_CSRF_ENABLED'] = False
 
+
 def initialize():
     try:
         db.session.remove()
@@ -12,17 +13,29 @@ def initialize():
         config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'False'})
         config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
         config_log_path = models.Configs().from_json({'setting': 'Log File', 'value': 'postmaster.log'})
+        enable_ldap_auth = models.Configs().from_json({'setting': 'Enable LDAP Authentication', 'value': 'True'})
+        ldap_server = models.Configs().from_json({'setting': 'AD Server LDAP String',
+                                                  'value': 'LDAPS://postmaster.local:636'})
+        domain = models.Configs().from_json({'setting': 'AD Domain', 'value': 'postmaster.local'})
+        ldap_admin_group = models.Configs().from_json({'setting': 'AD PostMaster Group',
+                                                       'value': 'PostMaster Admins'})
 
         try:
             db.session.add(min_pw_length)
             db.session.add(config_login_auditing)
             db.session.add(config_maildb_auditing)
             db.session.add(config_log_path)
+            db.session.add(enable_ldap_auth)
+            db.session.add(ldap_server)
+            db.session.add(domain)
+            db.session.add(ldap_admin_group)
             db.session.commit()
         except:
             return False
 
-        user = models.Admins().from_json({'email': 'user@postmaster.com', 'password': 'password', 'name': 'Default User'})
+        user = models.Admins().from_json({'username': 'user@postmaster.com',
+                                          'password': 'password',
+                                          'name': 'Default User'})
 
         try:
             db.session.add(user)
@@ -30,8 +43,8 @@ def initialize():
         except:
             return False
 
-        domain = models.VirtualDomains().from_json({'name':'postmaster.com'})
-        domain2 = models.VirtualDomains().from_json({'name':'postmaster.org'})
+        domain = models.VirtualDomains().from_json({'name': 'postmaster.com'})
+        domain2 = models.VirtualDomains().from_json({'name': 'postmaster.org'})
 
         try:
             db.session.add(domain)
@@ -75,7 +88,6 @@ def initialize():
 # Create a fresh database
 initialize()
 
-
 @pytest.fixture(scope='module')
 def loggedin_client():
     client = app.test_client()
@@ -83,7 +95,8 @@ def loggedin_client():
         '/login',
         data=dict(
             username='user@postmaster.com',
-            password='password'
+            password='password',
+            auth_source='PostMaster User'
         ),
         follow_redirects=True
     )

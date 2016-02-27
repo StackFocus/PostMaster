@@ -48,14 +48,14 @@ def new_user():
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The user "{0}" was created successfully'.format(user.email))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in new_user: {0}'.format(str(e)))
         raise GenericError('The user could not be created')
     finally:
@@ -79,14 +79,14 @@ def delete_user(user_id):
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The user "{0}" was deleted successfully'.format(user.email))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in delete_user: {0}'.format(str(e)))
         raise GenericError('The user could not be deleted')
     finally:
@@ -118,13 +118,13 @@ def update_user(user_id):
         raise ValidationError('The password was not supplied in the request')
     try:
         db.session.commit()
-        json_logger('audit', current_user.email, auditMessage)
+        json_logger('audit', current_user.username, auditMessage)
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in update_user: {0}'.format(str(e)))
         raise GenericError('The user could not be updated')
     finally:

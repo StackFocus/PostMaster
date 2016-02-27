@@ -4,7 +4,6 @@ class TestUserFunctions:
 
     def test_user_login(self, loggedin_client):
         rv = loggedin_client.get("/", follow_redirects=True)
-        print rv.data
         assert "Logout" in rv.data
 
     def test_domains_page(self, loggedin_client):

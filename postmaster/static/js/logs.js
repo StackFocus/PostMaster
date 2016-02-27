@@ -45,7 +45,8 @@ function fillInTable() {
         manageSpinner(false);
     })
     .fail(function (jqxhr, textStatus, error) {
-
+        // Remove the loading spinner
+        manageSpinner(false);
         addStatusMessage('error', JSON.parse(jqxhr.responseText)['message']);
     });
 }
