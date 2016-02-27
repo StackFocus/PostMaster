@@ -35,6 +35,33 @@ class TestUtilsFunctions:
         assert isinstance(result, dict)
         assert 'items' in result
 
+    @patch('os.access', return_value=True)
+    def test_is_file_writeable_existing_file(self, mock_access):
+        """ Tests the is_file_writeable function when a file exists and is writable.
+        A return value of True is expected
+        """
+        assert is_file_writeable('manage.py') == True
+
+    @patch('os.access', return_value=True)
+    def test_is_file_writeable_nonexisting_file(self, mock_access):
+        """ Tests the is_file_writeable function when a file does not exist but the path is writable.
+        A return value of True is expected
+        """
+        assert is_file_writeable('S0meNonExistenFil3.SomeExtension') == True
+
+    @patch('os.access', return_value=False)
+    def test_is_file_writeable_existing_file_fail(self, mock_access):
+        """ Tests the is_file_writeable function when a file exists and is not writable.
+        A return value of False is expected
+        """
+        assert is_file_writeable('manage.py') == False
+
+    def test_is_file_writeable_nonexisting_file_fail(self):
+        """ Tests the is_file_writeable function when a file does not exist and the path is not writable.
+        A return value of True is expected
+        """
+        assert is_file_writeable('S0meDir/S0meNonExistentFil3.SomeExtension') == False
+
     def test_get_wtforms_errors(self):
         """ Tests the get_wtforms_errors function by posting to /login with missing parameters.
         This also tests the new_line_to_break Jinja2 filter. The expected return value is an
