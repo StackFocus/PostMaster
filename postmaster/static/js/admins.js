@@ -284,7 +284,8 @@ function fillInTable () {
         manageSpinner(false);
     })
     .fail(function (jqxhr, textStatus, error) {
-
+        // Remove the loading spinner
+        manageSpinner(false);
         // If the resource is not found, then redirect to the last page
         if (error == 'NOT FOUND') {
             redirectToLastPage('admins');

@@ -71,7 +71,7 @@ def get_logs_dict(numLines=50, reverseOrder=False):
     Returns the JSON formatted log file as a dict
     """
     logPath = Configs.query.filter_by(setting='Log File').first().value
-    if os.path.exists(logPath):
+    if logPath and os.path.exists(logPath):
         logFile = open(logPath, mode='r+')
 
         try:
@@ -121,6 +121,4 @@ def get_logs_dict(numLines=50, reverseOrder=False):
 
         return {'items': [loads(log) for log in logs], }
     else:
-        raise ValidationError(
-            '"{0}" could not be found.'.format(
-                os.getcwd().replace('\\', '/') + '/' + logPath))
+        raise ValidationError('The log file could not be found')
