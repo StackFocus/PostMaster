@@ -72,7 +72,7 @@ def delete_admin(admin_id):
     admin = Admins.query.get_or_404(admin_id)
     if db.session.query(Admins).count() == 1:
         raise GenericError(
-            'Error - There needs to be at least one adminstrator.')
+            'There needs to be at least one adminstrator')
     db.session.delete(admin)
     try:
         db.session.commit()
