@@ -3,6 +3,7 @@ function configEventListeners () {
 
     var configBoolItems = $('a.configBool');
     var configTextItems = $('a.configText');
+    var configLogFile = $('a.configLogFile');
     var tooltipAnchors = $("#dynamicTable tr td a[title]");
     tooltipAnchors.unbind();
     tooltipAnchors.tooltip();
@@ -63,6 +64,36 @@ function configEventListeners () {
             addStatusMessage('success', 'The setting was changed successfully');
         }
     });
+
+    configLogFile.unbind();
+    configLogFile.editable({
+        type: 'text',
+        mode: 'inline',
+        emptytext: 'Not set',
+        anim: 100,
+        ajaxOptions: {
+            type: 'PUT',
+            dataType: 'JSON',
+            contentType: 'application/json'
+        },
+
+        params: function (params) {
+            return JSON.stringify({ 'value': params.value })
+        },
+
+        error: function (response) {
+            // The jQuery('div />') is a work around to encode all html characters
+            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+        },
+
+        success: function () {
+            // Sets the Mail Database Auditing to True in the UI
+            $('td').filter(function() {
+                return $(this).text() == 'Mail Database Auditing';
+            }).next('td').children().text('True');
+            addStatusMessage('success', 'The setting was changed successfully');
+        }
+    });
 }
 
 
@@ -83,7 +114,16 @@ function fillInTable () {
         $.each(result['items'], function (j, item) {
             var tableRow = $('#dynamicTableRow' + String(i));
             var html = '';
-            var cssClass = item.value == 'True' || item.value == 'False' ? 'configBool' : 'configText';
+
+            if (item.setting == 'Log File') {
+                var cssClass = 'configLogFile'
+            }
+            else if(item.value == 'True' || item.value == 'False') {
+                var cssClass = 'configBool'
+            }
+            else {
+                var cssClass = 'configText'
+            }
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
             html += '<td data-title="Setting: ">' + item.setting + '</td>\

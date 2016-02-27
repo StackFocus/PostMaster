@@ -61,8 +61,12 @@ def update_config(config_id):
         if 'value' in json and (validConfigItems[config.setting] == '*' or
                                 json['value'] in validConfigItems[config.setting]):
 
-            if config.setting == 'Log File' and not is_file_writeable(json['value']):
-                raise ValidationError('The specified log path is not writable')
+            if config.setting == 'Log File':
+                if not is_file_writeable(json['value']):
+                    raise ValidationError('The specified log path is not writable')
+                mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
+                mail_db_auditing.value = 'True'
+                db.session.add(mail_db_auditing)
 
             if (config.setting == 'Login Auditing' or config.setting == 'Mail Database Auditing') and \
                     not Configs.query.filter_by(setting='Log File').first().value:
