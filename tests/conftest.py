@@ -1,7 +1,8 @@
 ﻿import pytest
 from postmaster import app, db, models
-app.config['WTF_CSRF_ENABLED'] = False
 
+app.config.from_object('config.TestConfiguration')
+SQLALCHEMY_DATABASE_URI = app.config['SQLALCHEMY_DATABASE_URI']
 
 def initialize():
     try:

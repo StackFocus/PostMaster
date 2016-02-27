@@ -11,7 +11,7 @@ from postmaster import app, db, models
 from flask_migrate import Migrate, MigrateCommand
 
 manager = Manager(app)
-app.config.from_object('config')
+app.config.from_object('config.BaseConfiguration')
 
 migrate = Migrate(app, db)
 
