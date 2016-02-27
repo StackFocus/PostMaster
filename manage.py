@@ -8,6 +8,7 @@ Purpose: runs the app!
 import os
 from flask_script import Manager
 from postmaster import app, db, models
+from postmaster.utils import add_default_configuration_settings
 from flask_migrate import Migrate, MigrateCommand
 
 manager = Manager(app)
@@ -25,60 +26,7 @@ def createdb():
     os.system('python manage.py db init')
     os.system('python manage.py db migrate')
     os.system('python manage.py db upgrade')
-    try:
-        min_pw_length = models.Configs().from_json(
-            {'setting': 'Minimum Password Length', 'value': '8'})
-        db.session.add(min_pw_length)
-    except:
-        pass
-    try:
-        config_login_auditing = models.Configs().from_json(
-            {'setting': 'Login Auditing', 'value': 'True'})
-        db.session.add(config_login_auditing)
-    except:
-        pass
-    try:
-        config_maildb_auditing = models.Configs().from_json(
-            {'setting': 'Mail Database Auditing', 'value': 'True'})
-        db.session.add(config_maildb_auditing)
-    except:
-        pass
-    try:
-        config_log_path = models.Configs().from_json(
-            {'setting': 'Log File', 'value': '../logs/postmaster.local'})
-        db.session.add(config_log_path)
-    except:
-        pass
-    try:
-        disable_ldap_auth = models.Configs().from_json(
-            {'setting': 'Enable LDAP Authentication', 'value': 'False'})
-        db.session.add(disable_ldap_auth)
-    except:
-        pass
-    try:
-        ldap_server = models.Configs().from_json({'setting': 'AD Server LDAP String',
-                                                  'value': 'LDAPS://postmaster.local:636'})
-        db.session.add(ldap_server)
-    except:
-        pass
-    try:
-        domain = models.Configs().from_json({'setting': 'AD Domain', 'value': 'postmaster.local'})
-        db.session.add(domain)
-    except:
-        pass
-    try:
-        ldap_admin_group = models.Configs().from_json(
-            {'setting': 'AD PostMaster Group', 'value': 'PostMaster Admins'})
-        db.session.add(ldap_admin_group)
-    except:
-        pass
-    try:
-        admin = models.Admins().from_json(
-            {'username': 'user@postmaster.com', 'password': 'password', 'name': 'Default User'})
-        db.session.add(admin)
-    except:
-        pass
-    db.session.commit()
+    add_default_configuration_settings()
 
 
 @manager.shell
