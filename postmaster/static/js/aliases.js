@@ -60,27 +60,8 @@ function aliasEventListeners() {
     destinationAlias.tooltip();
 
     sourceAlias.editable({
-        type: 'text',
-        mode: 'inline',
-        anim: 100,
-
-        ajaxOptions: {
-            type: 'PUT',
-            dataType: 'JSON',
-            contentType: 'application/json'
-        },
-
         params: function (params) {
             return JSON.stringify({'source': params.value})
-        },
-
-        display: function (value) {
-            $(this).html(value.toLowerCase());
-        },
-
-        error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
         },
 
         success: function () {
@@ -89,27 +70,8 @@ function aliasEventListeners() {
     });
 
     destinationAlias.editable({
-        type: 'text',
-        mode: 'inline',
-        anim: 100,
-
-        ajaxOptions: {
-            type: 'PUT',
-            dataType: 'JSON',
-            contentType: 'application/json'
-        },
-
         params: function (params) {
             return JSON.stringify({ 'destination': params.value })
-        },
-
-        display: function (value) {
-            $(this).html(value.toLowerCase());
-        },
-
-        error: function(response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
         },
 
         success: function () {
@@ -230,6 +192,26 @@ $(document).ready(function () {
 
     // Populate the table
     fillInTable();
+
+    // Set the defaults for x-editable
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editable.defaults.anim = 100;
+    $.fn.editable.defaults.type = 'text';
+    $.fn.editable.defaults.ajaxOptions = {
+        type: 'PUT',
+        dataType: 'JSON',
+        contentType: 'application/json'
+    };
+    $.fn.editable.defaults.params = function (params) {
+        return JSON.stringify({ 'value': params.value })
+    };
+    $.fn.editable.defaults.error = function (response) {
+        // The jQuery('div />') is a work around to encode all html characters
+        addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+    };
+    $.fn.editable.defaults.display = function (value) {
+        $(this).html(value.toLowerCase());
+    };
 
     // When hitting the back/forward buttons, reload the table
     $(window).bind("popstate", function () {

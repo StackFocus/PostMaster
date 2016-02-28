@@ -329,7 +329,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
-        assert 'An invalid setting value was supplied' in rv.data
+        assert 'An invalid setting was supplied' in rv.data
 
     def test_configs_min_pwd_update_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
@@ -350,6 +350,50 @@ class TestMailDbFunctions:
             {"value": "s0m3NonExistentDir/new_logfile.txt"}))
         assert rv.status_code == 400
         assert 'The specified log path is not writable' in rv.data
+
+    def test_configs_update_enable_ldap_no_server(self, loggedin_client):
+        """ Tests the update_config function (PUT route for configs) when LDAP is set to enabled
+        but an LDAP server is not configured. A return value of an error is expected.
+        """
+        # Set the AD Server LDAP String to empty
+        ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first()
+        old_ldap_string_value = ldap_string.value
+        ldap_string.value = None
+        db.session.add(ldap_string)
+        db.session.commit()
+
+        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
+            {"value": "True"}))
+
+        # Reverts to the previous AD Server LDAP String
+        ldap_string.value = old_ldap_string_value
+        db.session.add(ldap_string)
+        db.session.commit()
+
+        assert rv.status_code == 400
+        assert 'The LDAP settings must be configured before LDAP authentication is enabled' in rv.data
+
+    def test_configs_update_empty_ldap_server_when_ldap_enabled(self, loggedin_client):
+        """ Tests the update_config function (PUT route for configs) when the LDAP server is set to empty
+        but LDAP is enabled. A return value of an error is expected.
+        """
+        # Enables LDAP Authentication
+        ldap_enabled = Configs.query.filter_by(setting='Enable LDAP Authentication').first()
+        old_ldap_enabled_value = ldap_enabled.value
+        ldap_enabled.value = 'True'
+        db.session.add(ldap_enabled)
+        db.session.commit()
+
+        rv = loggedin_client.put("/api/v1/configs/6", data=json.dumps(
+            {"value": ""}))
+
+        # Reverts to the previous state
+        ldap_enabled.value = old_ldap_enabled_value
+        db.session.add(ldap_enabled)
+        db.session.commit()
+
+        assert rv.status_code == 400
+        assert 'LDAP authentication must be disabled when deleting LDAP configuration items' in rv.data
 
     def test_configs_update_auditing_with_no_log_file_fail(self, loggedin_client):
         """ Tests the update_config function (PUT route for configs) to make sure

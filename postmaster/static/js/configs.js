@@ -1,6 +1,5 @@
 ﻿// Sets the event listeners in the dynamic table
 function configEventListeners () {
-
     var configBoolItems = $('a.configBool');
     var configTextItems = $('a.configText');
     var configLogFile = $('a.configLogFile');
@@ -11,86 +10,21 @@ function configEventListeners () {
     configBoolItems.unbind();
     configBoolItems.editable({
         type: 'select',
-        mode: 'inline',
         showbuttons: false,
-        anim: 100,
         source: [
               {value: 'True', text: 'True'},
               {value: 'False', text: 'False'}
         ],
-
-        ajaxOptions: {
-            type: 'PUT',
-            dataType: 'JSON',
-            contentType: 'application/json'
-        },
-
-        params: function (params) {
-            return JSON.stringify({'value': params.value})
-        },
-
-        error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
-        },
-
-        success: function () {
-            addStatusMessage('success', 'The setting was changed successfully');
-        }
     });
 
     configTextItems.unbind();
-    configTextItems.editable({
-        type: 'text',
-        mode: 'inline',
-        emptytext: 'Not set',
-        anim: 100,
-        ajaxOptions: {
-            type: 'PUT',
-            dataType: 'JSON',
-            contentType: 'application/json'
-        },
-
-        params: function (params) {
-            return JSON.stringify({ 'value': params.value })
-        },
-
-        error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
-        },
-
-        success: function () {
-            addStatusMessage('success', 'The setting was changed successfully');
-        }
-    });
+    configTextItems.editable();
 
     configLogFile.unbind();
     configLogFile.editable({
-        type: 'text',
-        mode: 'inline',
-        emptytext: 'Not set',
-        anim: 100,
-        ajaxOptions: {
-            type: 'PUT',
-            dataType: 'JSON',
-            contentType: 'application/json'
-        },
-
-        params: function (params) {
-            return JSON.stringify({ 'value': params.value })
-        },
-
-        error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
-        },
-
         success: function () {
             // Sets the Mail Database Auditing to True in the UI
-            $('td').filter(function() {
-                return $(this).text() == 'Mail Database Auditing';
-            }).next('td').children().text('True');
+            $('td:contains("Mail Database Auditing")').next('td').children('a').text('True');
             addStatusMessage('success', 'The setting was changed successfully');
         }
     });
@@ -114,11 +48,16 @@ function fillInTable () {
         $.each(result['items'], function (j, item) {
             var tableRow = $('#dynamicTableRow' + String(i));
             var html = '';
+            var boolConfigItems = [
+                'Login Auditing',
+                'Mail Database Auditing',
+                'Enable LDAP Authentication'
+            ];
 
             if (item.setting == 'Log File') {
                 var cssClass = 'configLogFile'
             }
-            else if(item.value == 'True' || item.value == 'False') {
+            else if($.inArray(item.setting, boolConfigItems) != -1) {
                 var cssClass = 'configBool'
             }
             else {
@@ -158,6 +97,27 @@ function fillInTable () {
 $(document).ready(function () {
     // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
+
+    // Set the defaults for x-editable
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editable.defaults.emptytext = 'Not set';
+    $.fn.editable.defaults.anim = 100;
+    $.fn.editable.defaults.type = 'text';
+    $.fn.editable.defaults.ajaxOptions = {
+        type: 'PUT',
+        dataType: 'JSON',
+        contentType: 'application/json'
+    };
+    $.fn.editable.defaults.params = function (params) {
+        return JSON.stringify({ 'value': params.value })
+    };
+    $.fn.editable.defaults.error = function (response) {
+        // The jQuery('div />') is a work around to encode all html characters
+        addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+    };
+    $.fn.editable.defaults.success = function () {
+        addStatusMessage('success', 'The setting was changed successfully');
+    };
 
     // Populate the table
     fillInTable();
