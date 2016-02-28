@@ -1,8 +1,8 @@
-﻿from postmaster import app
-import string
+﻿import string
 import random
 import json
-
+from postmaster import db
+from postmaster.models import Configs
 
 class TestMailDbFunctions:
 
@@ -232,7 +232,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user_admin@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
+            {"username": "user_admin@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -241,7 +241,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_fail_duplicate(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
+            {"username": "user@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -249,7 +249,7 @@ class TestMailDbFunctions:
         assert rv.status_code == 400
         assert "already exists" in rv.data
 
-    def test_admins_add_fail_no_email(self, loggedin_client):
+    def test_admins_add_fail_no_username(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
             {"password": "som3passw0rd", "name": "Test Admin"}))
         try:
@@ -257,11 +257,11 @@ class TestMailDbFunctions:
         except:
             assert False, "Not json"
         assert rv.status_code == 400
-        assert "The email address was not specified" in rv.data
+        assert "The username was not specified" in rv.data
 
     def test_admins_add_fail_no_password(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user_admin2@postmaster.com", "name": "Test Admin"}))
+            {"username": "user_admin2@postmaster.com", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -271,7 +271,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_fail_no_name(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"email": "user_admin2@postmaster.com", "password": "som3passw0rd"}))
+            {"username": "user_admin2@postmaster.com", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data)
         except:
@@ -291,14 +291,14 @@ class TestMailDbFunctions:
 
     def test_admins_update_email_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/admins/2", data=json.dumps(
-            {"email": "newemail@postmaster.com"}))
+            {"username": "newemail@postmaster.com"}))
         assert rv.status_code == 200
 
     def test_admins_update_fail(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/admins/2", data=json.dumps(
             {"randomkey": "random_value"}))
         assert rv.status_code == 400
-        assert "The email, password, or name was not supplied in the request" in rv.data
+        assert "The username, password, or name was not supplied in the request" in rv.data
 
     def test_admins_delete_pass(self, loggedin_client):
         rv = loggedin_client.delete("/api/v1/admins/2", follow_redirects=True)
@@ -341,3 +341,54 @@ class TestMailDbFunctions:
             {"value": "9999"}))
         assert rv.status_code == 400
         assert 'An invalid minimum password length was supplied.' in rv.data
+
+    def test_configs_update_log_file_fail(self, loggedin_client):
+        """ Tests the update_config function (PUT route for configs) when a new log file
+        path is specified but isn't writeable. A return value of an error is expected.
+        """
+        rv = loggedin_client.put("/api/v1/configs/4", data=json.dumps(
+            {"value": "s0m3NonExistentDir/new_logfile.txt"}))
+        assert rv.status_code == 400
+        assert 'The specified log path is not writable' in rv.data
+
+    def test_configs_update_auditing_with_no_log_file_fail(self, loggedin_client):
+        """ Tests the update_config function (PUT route for configs) to make sure
+        audit settings cannot be set when the log file path is not set.
+        """
+        # Sets Login Auditing to False
+        login_auditing = Configs.query.filter_by(setting='Login Auditing').first()
+        old_login_auditing_value = login_auditing.value
+        login_auditing.value = 'False'
+        db.session.add(login_auditing)
+        # Sets Mail Database Auditing to False
+        mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
+        old_mail_db_auditing = mail_db_auditing.value
+        mail_db_auditing.value = 'False'
+        db.session.add(mail_db_auditing)
+        # Sets the Log File to None
+        log_file = Configs.query.filter_by(setting='Log File').first()
+        old_log_file_value = log_file.value
+        log_file.value = None
+        db.session.add(log_file)
+        db.session.commit()
+
+        # Attempts to enable Login Auditing
+        login_auditing_rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+            {"value": "True"}))
+        # Attempts to enable Mail Database Auditing
+        mail_db_auditing_rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+            {"value": "True"}))
+
+        # Reverts changes made to the database previously
+        login_auditing.value = old_login_auditing_value
+        mail_db_auditing.value = old_mail_db_auditing
+        log_file.value = old_log_file_value
+        db.session.add(login_auditing)
+        db.session.add(mail_db_auditing)
+        db.session.add(log_file)
+        db.session.commit()
+
+        assert login_auditing_rv.status_code == 400
+        assert 'The log file must be set before auditing can be enabled' in login_auditing_rv.data
+        assert mail_db_auditing_rv.status_code == 400
+        assert 'The log file must be set before auditing can be enabled' in mail_db_auditing_rv.data

@@ -48,14 +48,14 @@ def new_domain():
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The domain "{0}" was created successfully'.format(domain.name))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in new_domain: {0}'.format(str(e)))
         raise GenericError('The domain could not be created')
     finally:
@@ -74,14 +74,14 @@ def delete_domain(domain_id):
     try:
         db.session.commit()
         json_logger(
-            'audit', current_user.email,
+            'audit', current_user.username,
             'The domain "{0}" was deleted successfully'.format(domain.name))
     except ValidationError as e:
         raise e
     except Exception as e:
         db.session.rollback()
         json_logger(
-            'error', current_user.email,
+            'error', current_user.username,
             'The following error occurred in delete_domain: {0}'.format(str(
                 e)))
         raise GenericError('The domain could not be deleted')
