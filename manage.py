@@ -12,7 +12,7 @@ from postmaster.utils import add_default_configuration_settings
 from flask_migrate import Migrate, MigrateCommand
 
 manager = Manager(app)
-app.config.from_object('config')
+app.config.from_object('config.BaseConfiguration')
 
 migrate = Migrate(app, db)
 

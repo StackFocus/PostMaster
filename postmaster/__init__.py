@@ -11,7 +11,7 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
-app.config.from_object('config')
+app.config.from_object('config.BaseConfiguration')
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
