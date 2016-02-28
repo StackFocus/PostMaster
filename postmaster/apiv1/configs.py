@@ -12,7 +12,7 @@ from postmaster.models import Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
-from utils import json_logger, is_file_writeable
+from utils import json_logger, is_file_writeable, is_config_update_valid
 
 minPwdLengthRange = list()
 for num in range(1, 26):
@@ -57,33 +57,12 @@ def update_config(config_id):
     config = Configs.query.get_or_404(config_id)
     json = request.get_json(force=True)
 
-    try:
-        if 'value' in json and (validConfigItems[config.setting] == '*' or
-                                json['value'] in validConfigItems[config.setting]):
-
-            if config.setting == 'Log File':
-                if not is_file_writeable(json['value']):
-                    raise ValidationError('The specified log path is not writable')
-                mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
-                mail_db_auditing.value = 'True'
-                db.session.add(mail_db_auditing)
-
-            if (config.setting == 'Login Auditing' or config.setting == 'Mail Database Auditing') and \
-                    not Configs.query.filter_by(setting='Log File').first().value:
-                raise ValidationError('The log file must be set before auditing can be enabled')
-
-            audit_message = 'The setting "{0}" was set from "{1}" to "{2}"'.format(config.setting,
-                                                                                  config.value,
-                                                                                  json['value'])
-            config.value = json['value']
-            db.session.add(config)
-        else:
-            if config.setting == 'Minimum Password Length':
-                raise ValidationError(
-                    'An invalid minimum password length was supplied.\
-                    The value must be between 1-25.')
-            raise ValidationError('An invalid setting value was supplied')
-    except KeyError:
+    if 'value' in json and is_config_update_valid(config.setting, json['value']):
+        audit_message = 'The setting "{0}" was set from "{1}" to "{2}"'.format(config.setting, config.value,
+                                                                               json['value'])
+        config.value = json['value']
+        db.session.add(config)
+    else:
         raise ValidationError('An invalid setting was supplied')
 
     try:

@@ -62,7 +62,10 @@ function addStatusMessage(category, message) {
         </div>\
     ').hide().fadeIn();
 
-    setTimeout(function () { $('#bottomAlert' + alertId + ' button.close').trigger('click'); }, ((category == 'success') ? 5000 : 8000));
+    setTimeout(function () {
+        $('#bottomAlert' + alertId).fadeOut(function() {$(this).remove()}); },
+        ((category == 'success') ? 5000 : 8000)
+    );
 }
 
 
