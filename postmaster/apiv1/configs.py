@@ -67,8 +67,7 @@ def update_config(config_id):
                 mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
                 mail_db_auditing.value = 'True'
                 db.session.add(mail_db_auditing)
-
-            if (config.setting == 'Login Auditing' or config.setting == 'Mail Database Auditing') and \
+            elif (config.setting == 'Login Auditing' or config.setting == 'Mail Database Auditing') and \
                     not Configs.query.filter_by(setting='Log File').first().value:
                 raise ValidationError('The log file must be set before auditing can be enabled')
 
