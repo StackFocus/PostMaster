@@ -329,7 +329,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
-        assert 'An invalid setting was supplied' in rv.data
+        assert 'An invalid setting value was supplied' in rv.data
 
     def test_configs_min_pwd_update_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(

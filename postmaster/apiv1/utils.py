@@ -5,6 +5,7 @@ Purpose: General helper utils
 """
 
 import os
+from re import match
 from mmap import mmap
 from json import dumps, loads
 from datetime import datetime
@@ -24,66 +25,47 @@ def is_file_writeable(file):
         return os.access(dir_of_file, os.W_OK)
 
 
-def is_config_update_valid(setting, value):
+def is_config_update_valid(setting, value, valid_value_regex):
     """ A helper function for the update_config function on the /configs/<int:config_id> PUT route.
     A bool is returned based on if the users input is valid.
     """
-    minPwdLengthRange = list()
-    for num in range(1, 26):
-        minPwdLengthRange.append(str(num))
+    if match(valid_value_regex, value):
 
-    validConfigItems = {
-        'Login Auditing': ('True', 'False'),
-        'Mail Database Auditing': ('True', 'False'),
-        'Log File': '*',
-        'Minimum Password Length': minPwdLengthRange,
-        'Enable LDAP Authentication': ('True', 'False'),
-        'AD Server LDAP String': '*',
-        'AD Domain': '*',
-        'AD PostMaster Group': '*'
-    }
+        if setting == 'Log File':
+            if not is_file_writeable(value):
+                raise ValidationError('The specified log path is not writable')
+            else:
+                # Enables Mail Database Auditing when the log file is set
+                mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
+                mail_db_auditing.value = 'True'
+                db.session.add(mail_db_auditing)
 
-    try:
-        if validConfigItems[setting] == '*' or value in validConfigItems[setting]:
+        elif setting == 'Login Auditing' or setting == 'Mail Database Auditing':
+            log_file = Configs.query.filter_by(setting='Log File').first().value
 
-            if setting == 'Log File':
-                if not value or not is_file_writeable(value):
-                    raise ValidationError('The specified log path is not writable')
-                else:
-                    # Enables Mail Database Auditing when the log file is set
-                    mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
-                    mail_db_auditing.value = 'True'
-                    db.session.add(mail_db_auditing)
+            if not log_file:
+                raise ValidationError('The log file must be set before auditing can be enabled')
 
-            elif setting == 'Login Auditing' or setting == 'Mail Database Auditing':
-                log_file = Configs.query.filter_by(setting='Log File').first().value
+        elif setting == 'Enable LDAP Authentication':
+            ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
+            ad_domain = Configs.query.filter_by(setting='AD Domain').first().value
+            ad_group = Configs.query.filter_by(setting='AD PostMaster Group').first().value
 
-                if not log_file:
-                    raise ValidationError('The log file must be set before auditing can be enabled')
+            if not (ldap_string and ad_domain and ad_group):
+                raise ValidationError('The LDAP settings must be configured before LDAP authentication is enabled')
 
-            elif setting == 'Enable LDAP Authentication':
-                ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
-                ad_domain = Configs.query.filter_by(setting='AD Domain').first().value
-                ad_group = Configs.query.filter_by(setting='AD PostMaster Group').first().value
+        elif setting == 'AD Server LDAP String' or setting == 'AD Domain' or setting == 'AD PostMaster Group':
+            ldap_enabled = Configs.query.filter_by(setting='Enable LDAP Authentication').first().value
 
-                if not (ldap_string and ad_domain and ad_group):
-                    raise ValidationError('The LDAP settings must be configured before LDAP authentication is enabled')
+            if ldap_enabled == 'True' and not value:
+                raise ValidationError('LDAP authentication must be disabled when deleting LDAP configuration items')
 
-            elif setting == 'AD Server LDAP String' or setting == 'AD Domain' or setting == 'AD PostMaster Group':
-                ldap_enabled = Configs.query.filter_by(setting='Enable LDAP Authentication').first().value
+        return True
+    else:
+        if setting == 'Minimum Password Length':
+            raise ValidationError('An invalid minimum password length was supplied. The value must be between 1-25.')
 
-                if ldap_enabled == 'True' and not value:
-                    raise ValidationError('LDAP authentication must be disabled when deleting LDAP configuration items')
-
-            return True
-        else:
-            if setting == 'Minimum Password Length':
-                raise ValidationError('An invalid minimum password length was supplied. \
-                The value must be between 1-25.')
-
-            raise ValidationError('An invalid setting value was supplied')
-    except KeyError:
-        raise ValidationError('An invalid setting was supplied')
+        raise ValidationError('An invalid setting value was supplied')
 
     return False
 

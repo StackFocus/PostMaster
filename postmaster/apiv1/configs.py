@@ -12,22 +12,7 @@ from postmaster.models import Configs
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
-from utils import json_logger, is_file_writeable, is_config_update_valid
-
-minPwdLengthRange = list()
-for num in range(1, 26):
-    minPwdLengthRange.append(str(num))
-
-validConfigItems = {
-    'Login Auditing': ('True', 'False'),
-    'Mail Database Auditing': ('True', 'False'),
-    'Log File': '*',
-    'Minimum Password Length': minPwdLengthRange,
-    'Enable LDAP Authentication': ('True', 'False'),
-    'AD Server LDAP String': '*',
-    'AD Domain': '*',
-    'AD PostMaster Group': '*'
-}
+from utils import json_logger, is_config_update_valid
 
 
 @apiv1.route("/configs", methods=["GET"])
@@ -57,13 +42,13 @@ def update_config(config_id):
     config = Configs.query.get_or_404(config_id)
     json = request.get_json(force=True)
 
-    if 'value' in json and is_config_update_valid(config.setting, json['value']):
+    if 'value' in json and is_config_update_valid(config.setting, json['value'], config.regex):
         audit_message = 'The setting "{0}" was set from "{1}" to "{2}"'.format(config.setting, config.value,
                                                                                json['value'])
         config.value = json['value']
         db.session.add(config)
     else:
-        raise ValidationError('An invalid setting was supplied')
+        raise ValidationError('An invalid setting value was supplied')
 
     try:
         db.session.commit()
