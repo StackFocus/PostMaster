@@ -312,7 +312,7 @@ class Configs(db.Model):
         return {'id': self.id, 'setting': self.setting, 'value': self.value, 'regex': self.regex}
 
     def from_json(self, json):
-        """ Returns a database rwo from JSON input
+        """ Returns a database row from JSON input
         """
         if not json.get('setting', None):
             raise ValidationError('The setting was not specified')
