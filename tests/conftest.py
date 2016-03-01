@@ -1,5 +1,6 @@
 ﻿import pytest
 from postmaster import app, db, models
+from postmaster.utils import add_default_configuration_settings
 
 app.config.from_object('config.TestConfiguration')
 SQLALCHEMY_DATABASE_URI = app.config['SQLALCHEMY_DATABASE_URI']
@@ -9,37 +10,27 @@ def initialize():
         db.session.remove()
         db.drop_all()
         db.create_all()
-
-        min_pw_length = models.Configs().from_json({'setting': 'Minimum Password Length', 'value': '8'})
-        config_login_auditing = models.Configs().from_json({'setting': 'Login Auditing', 'value': 'False'})
-        config_maildb_auditing = models.Configs().from_json({'setting': 'Mail Database Auditing', 'value': 'True'})
-        config_log_path = models.Configs().from_json({'setting': 'Log File', 'value': 'postmaster.log'})
-        enable_ldap_auth = models.Configs().from_json({'setting': 'Enable LDAP Authentication', 'value': 'True'})
-        ldap_server = models.Configs().from_json({'setting': 'AD Server LDAP String',
-                                                  'value': 'LDAPS://postmaster.local:636'})
-        domain = models.Configs().from_json({'setting': 'AD Domain', 'value': 'postmaster.local'})
-        ldap_admin_group = models.Configs().from_json({'setting': 'AD PostMaster Group',
-                                                       'value': 'PostMaster Admins'})
+        add_default_configuration_settings()
+        config_maildb_auditing = models.Configs.query.filter_by(setting='Mail Database Auditing').first()
+        config_maildb_auditing.value = 'True'
+        config_log_path = models.Configs.query.filter_by(setting='Log File').first()
+        config_log_path.value = 'postmaster.log'
+        enable_ldap_auth = models.Configs.query.filter_by(setting='Enable LDAP Authentication').first()
+        enable_ldap_auth.value = 'True'
+        ldap_server = models.Configs.query.filter_by(setting='AD Server LDAP String').first()
+        ldap_server.value = 'LDAPS://postmaster.local:636'
+        domain = models.Configs.query.filter_by(setting='AD Domain').first()
+        domain.value = 'postmaster.local'
+        ldap_admin_group = models.Configs.query.filter_by(setting='AD PostMaster Group').first()
+        ldap_admin_group.value = 'PostMaster Admins'
 
         try:
-            db.session.add(min_pw_length)
-            db.session.add(config_login_auditing)
             db.session.add(config_maildb_auditing)
             db.session.add(config_log_path)
             db.session.add(enable_ldap_auth)
             db.session.add(ldap_server)
             db.session.add(domain)
             db.session.add(ldap_admin_group)
-            db.session.commit()
-        except:
-            return False
-
-        user = models.Admins().from_json({'username': 'user@postmaster.com',
-                                          'password': 'password',
-                                          'name': 'Default User'})
-
-        try:
-            db.session.add(user)
             db.session.commit()
         except:
             return False

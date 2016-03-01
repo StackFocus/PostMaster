@@ -304,22 +304,26 @@ class Configs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     setting = db.Column(db.String(128), unique=True)
     value = db.Column(db.String(512))
+    regex = db.Column(db.String(256))
 
     def to_json(self):
         """ Returns the database row in JSON
         """
-        return {'id': self.id, 'setting': self.setting, 'value': self.value}
+        return {'id': self.id, 'setting': self.setting, 'value': self.value, 'regex': self.regex}
 
     def from_json(self, json):
-        """ Returns a database rwo from JSON input
+        """ Returns a database row from JSON input
         """
         if not json.get('setting', None):
             raise ValidationError('The setting was not specified')
         if not json.get('value', None):
             raise ValidationError('The value of the setting was not specified')
+        if not json.get('regex', None):
+            raise ValidationError('The regex for valid setting values was not specified')
         if self.query.filter_by(setting=json['setting']).first() is not None:
             raise ValidationError('The setting "{0}" already exists'.format(
                 json['setting']))
         self.setting = json['setting']
         self.value = json['value']
+        self.regex = json['regex']
         return self
