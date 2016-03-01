@@ -6,6 +6,8 @@ Purpose: runs the app!
 """
 
 import os
+import fileinput
+from re import sub, match
 from flask_script import Manager
 from postmaster import app, db, models
 from postmaster.utils import add_default_configuration_settings
@@ -51,6 +53,13 @@ def clean():
                     "rm -rf migrations"]
     for command in commands:
         os.system(command)
+
+
+@manager.command
+def generatekey():
+    """Replaces the SECRET_KEY in config.py with a new random one"""
+    for line in fileinput.input('config.py', inplace=True):
+        print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', os.urandom(24).encode('hex'), line.rstrip()))
 
 
 if __name__ == "__main__":

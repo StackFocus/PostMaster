@@ -80,6 +80,8 @@ else
     echo 'Preserving the existing database'
 fi
 
+python manage.py generatekey
+
 deactivate
 
 if [ $(apachectl -M | grep -c 'wsgi_module') == 0 ]
