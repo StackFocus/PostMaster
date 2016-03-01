@@ -26,7 +26,7 @@ RUN /usr/sbin/apache2ctl stop
 RUN virtualenv -p /usr/bin/python2.7 /opt/postmaster/env
 WORKDIR /opt/postmaster/git
 RUN /opt/postmaster/env/bin/pip install -r requirements.txt
-RUN source /opt/postmaster/env/bin/activate && python manage.py clean && python manage.py createdb
+RUN source /opt/postmaster/env/bin/activate && python manage.py clean && python manage.py createdb && python manage.py generatekey
 RUN chown -R www-data:www-data /opt/postmaster
 RUN /usr/sbin/a2dissite 000-default.conf
 RUN cp -f ops/apache.conf /etc/apache2/sites-available/postmaster.conf
