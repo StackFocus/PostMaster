@@ -13,10 +13,13 @@ $ python manage.py runserver
 $ py.test tests/
 ```
 
-### Docker!
+### Docker
 ```
-$ docker build .
-$ docker run -p 0.0.0.0:80:80 -d [image id]
+$ mkdir /opt/postmaster_data
+$ chown root:root /opt/postmaster_data && chmod 770 /opt/postmaster_data
+$ docker build -t postmaster .
+$ docker run -p 0.0.0.0:80:80 -v /opt/postmaster_data:/opt/postmaster/git/db \
+             -e DB_URI=mysql://user:password@mailserver.domain:3306/servermail -d postmaster
 ```
 
 ### Screenshots

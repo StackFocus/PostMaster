@@ -29,11 +29,13 @@ while getopts ":p" opt; do
 done
 
 export DEBIAN_FRONTEND=noninteractive
+debconf-set-selections <<< 'mysql-server mysql-server/root_password password vagrant'
+debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password vagrant'
 
 echo 'Updating the aptitude repository...'
 apt-get -y update > /dev/null
 
-packages=('python' 'python-pip' 'python-dev' 'libldap2-dev' 'libssl-dev' 'libsasl2-dev' 'apache2' 'libapache2-mod-wsgi')
+packages=('python' 'python-pip' 'python-dev' 'libldap2-dev' 'libssl-dev' 'libsasl2-dev' 'apache2' 'libapache2-mod-wsgi' 'mysql-server' 'libmysqlclient-dev')
 
 for package in "${packages[@]}"
 do
@@ -74,7 +76,10 @@ pip install -r requirements.txt > /dev/null
 
 if [ $PRESERVE = false ]
 then
+    echo 'Creating the database...'
     python manage.py clean
+    mysql -u root -pvagrant -e "CREATE DATABASE servermail"
+    python manage.py setdburi 'mysql://root:vagrant@localhost:3306/servermail'
     python manage.py createdb
 else
     echo 'Preserving the existing database'
