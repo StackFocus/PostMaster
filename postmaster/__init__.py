@@ -12,7 +12,7 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 
-if environ.get('POSTMASTER_DEV'):
+if environ.get('POSTMASTER_DEV') == 'TRUE':
     app.config.from_object('config.DevConfiguration')
 else:
     app.config.from_object('config.BaseConfiguration')

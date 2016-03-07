@@ -70,6 +70,7 @@ echo 'Copying and enabling the standard PostMaster Apache configuration...'
 cp -f /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
 chmod 644 /etc/apache2/sites-available/postmaster.conf
 a2ensite -q postmaster.conf > /dev/null
+echo 'export POSTMASTER_DEV=TRUE' >> /etc/apache2/envvars
 
 echo 'Restarting Apache...'
 service apache2 restart > /dev/null
