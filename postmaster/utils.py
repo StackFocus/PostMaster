@@ -72,44 +72,52 @@ def add_default_configuration_settings():
         min_pwd_length = models.Configs()
         min_pwd_length.setting = 'Minimum Password Length'
         min_pwd_length.value = '8'
+        min_pwd_length.regex = '^([1-9]|[1][0-9]|[2][0-5])$'
         db.session.add(min_pwd_length)
 
     if not models.Configs.query.filter_by(setting='Login Auditing').first():
         login_auditing = models.Configs()
         login_auditing.setting = 'Login Auditing'
         login_auditing.value = 'False'
+        login_auditing.regex = '^(True|False)$'
         db.session.add(login_auditing)
 
     if not models.Configs.query.filter_by(setting='Mail Database Auditing').first():
         mail_db_auditing = models.Configs()
         mail_db_auditing.setting = 'Mail Database Auditing'
         mail_db_auditing.value = 'False'
+        mail_db_auditing.regex = '^(True|False)$'
         db.session.add(mail_db_auditing)
 
     if not models.Configs.query.filter_by(setting='Log File').first():
         log_file = models.Configs()
         log_file.setting = 'Log File'
+        log_file.regex = '^(.+)$'
         db.session.add(log_file)
 
     if not models.Configs.query.filter_by(setting='Enable LDAP Authentication').first():
         ldap_auth = models.Configs()
         ldap_auth.setting = 'Enable LDAP Authentication'
         ldap_auth.value = 'False'
+        ldap_auth.regex = '^(True|False)$'
         db.session.add(ldap_auth)
 
     if not models.Configs.query.filter_by(setting='AD Server LDAP String').first():
         ad_server = models.Configs()
         ad_server.setting = 'AD Server LDAP String'
+        ad_server.regex = '^(.*)$'
         db.session.add(ad_server)
 
     if not models.Configs.query.filter_by(setting='AD Domain').first():
         ad_domain = models.Configs()
         ad_domain.setting = 'AD Domain'
+        ad_domain.regex = '^(.*)$'
         db.session.add(ad_domain)
 
     if not models.Configs.query.filter_by(setting='AD PostMaster Group').first():
         ad_group = models.Configs()
         ad_group.setting = 'AD PostMaster Group'
+        ad_group.regex = '^(.*)$'
         db.session.add(ad_group)
 
     if not models.Admins.query.first():

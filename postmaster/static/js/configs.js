@@ -3,11 +3,9 @@ function configEventListeners () {
     var configBoolItems = $('a.configBool');
     var configTextItems = $('a.configText');
     var configLogFile = $('a.configLogFile');
-    var tooltipAnchors = $("#dynamicTable tr td a[title]");
-    tooltipAnchors.unbind();
-    tooltipAnchors.tooltip();
 
     configBoolItems.unbind();
+    configBoolItems.tooltip();
     configBoolItems.editable({
         type: 'select',
         showbuttons: false,
@@ -18,9 +16,11 @@ function configEventListeners () {
     });
 
     configTextItems.unbind();
+    configTextItems.tooltip();
     configTextItems.editable();
 
     configLogFile.unbind();
+    configLogFile.tooltip();
     configLogFile.editable({
         success: function () {
             // Sets the Mail Database Auditing to True in the UI
