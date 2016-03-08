@@ -1,33 +1,4 @@
 #!/bin/bash
-
-usage() {
-cat << EOF
-Usage: $0
-    This script will install PostMaster using Apache or nginx
-Options:
-    -p : Preserves the existing database
-
-examples:
-$0
-$0 -p
-EOF
-}
-
-PRESERVE=false
-
-while getopts ":p" opt; do
-    case $opt in
-        p)
-            PRESERVE=true
-            ;;
-        \?)
-            >&2 echo "Invalid option: -$optarg"
-            usage
-            exit 1
-            ;;
-    esac
-done
-
 export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections <<< 'mysql-server mysql-server/root_password password vagrant'
 debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password vagrant'
@@ -74,17 +45,11 @@ cd /opt/postmaster/git
 echo 'Installing the Python packages required in the virtualenv...'
 pip install -r requirements.txt > /dev/null
 
-if [ $PRESERVE = false ]
-then
-    echo 'Creating the database...'
-    python manage.py clean
-    mysql -u root -pvagrant -e "CREATE DATABASE servermail"
-    python manage.py setdburi 'mysql://root:vagrant@localhost:3306/servermail'
-    python manage.py createdb
-else
-    echo 'Preserving the existing database'
-fi
-
+echo 'Creating the database...'
+python manage.py clean
+mysql -u root -pvagrant -e "CREATE DATABASE servermail"
+python manage.py setdburi 'mysql://root:vagrant@localhost:3306/servermail'
+python manage.py createdb
 python manage.py generatekey
 
 deactivate
@@ -105,6 +70,7 @@ echo 'Copying and enabling the standard PostMaster Apache configuration...'
 cp -f /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
 chmod 644 /etc/apache2/sites-available/postmaster.conf
 a2ensite -q postmaster.conf > /dev/null
+echo 'export POSTMASTER_DEV=TRUE' >> /etc/apache2/envvars
 
 echo 'Restarting Apache...'
 service apache2 restart > /dev/null
