@@ -23,6 +23,4 @@ class TestConfiguration(BaseConfiguration):
 
 
 class DevConfiguration(BaseConfiguration):
-    basedir = path.abspath(path.dirname(__file__))
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(basedir, 'postmaster.db')
     DEBUG = True
