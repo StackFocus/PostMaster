@@ -9,8 +9,9 @@ from os import path
 class BaseConfiguration(object):
     HOST_NAME = 'mail.swagger.pro'
     # Make this random (used to generate session keys)
-    SECRET_KEY = '1c11d7ec3eb95e6ddb497d792452ced7ab2f3f0e41d11a20'
+    SECRET_KEY = 'e9987dce48df3ce98542529fd074d9e9f9cd40e66fc6c4c2'
     basedir = path.abspath(path.dirname(__file__))
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = 'mysql://root:vagrant@localhost:3306/servermail'
     SQLALCHEMY_MIGRATE_REPO = path.join(basedir, 'db_repository')
 
