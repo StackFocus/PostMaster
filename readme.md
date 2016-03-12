@@ -23,3 +23,25 @@ $ docker run -p 0.0.0.0:80:80 -v /opt/postmaster_data:/opt/postmaster/git/db \
 ```
 
 ### Screenshots
+
+
+#### Dashboard:
+![Dashboard](docs/imgs/Dashboard.png?raw=true)
+
+#### Domains:
+![Domains](docs/imgs/Domains.png?raw=true)
+
+#### Users:
+![Users](docs/imgs/Users.png?raw=true)
+
+#### Aliases:
+![Aliases](docs/imgs/Aliases.png?raw=true)
+
+#### Configurations:
+![Configurations](docs/imgs/Configurations.png?raw=true)
+
+#### Search:
+![Search](docs/imgs/Search.png?raw=true)
+
+#### Mobile:
+![Mobile](docs/imgs/Mobile.png?raw=true)
