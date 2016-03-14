@@ -1,4 +1,9 @@
-## PostMaster [![Build Status](https://travis-ci.com/thatarchguy/PostMaster.svg?token=9fn8V459Z3FjXcLyubG9&branch=master)](https://travis-ci.com/thatarchguy/PostMaster) [![Dependency Status](https://gemnasium.com/9de3737c45004fea3d1a3b7041c841f2.svg)](https://gemnasium.com/thatarchguy/PostMaster) ![Python](https://img.shields.io/badge/python-2.7-blue.svg) ![Flask](http://flask.pocoo.org/static/badges/made-with-flask-s.png)
+<style>
+div.wy-nav-content {
+    max-width: 1100px;
+}
+</style>
+# PostMaster Documentation
 
 ### Overview
 
@@ -22,22 +27,22 @@ paid support is available for the developers of PostMaster to customize it to wo
 ### Screenshots
 
 #### Dashboard:
-![Dashboard](docs/imgs/Dashboard.png?raw=true)
+[![Dashboard](imgs/Dashboard.png)](imgs/Dashboard.png)
 
 #### Domains:
-![Domains](docs/imgs/Domains.png?raw=true)
+[![Domains](imgs/Domains.png)](imgs/Domains.png)
 
 #### Users:
-![Users](docs/imgs/Users.png?raw=true)
+[![Users](imgs/Users.png)](imgs/Users.png)
 
 #### Aliases:
-![Aliases](docs/imgs/Aliases.png?raw=true)
+[![Aliases](imgs/Aliases.png)](imgs/Aliases.png)
 
 #### Configurations:
-![Configurations](docs/imgs/Configurations.png?raw=true)
+[![Configurations](imgs/Configurations.png)](imgs/Configurations.png)
 
 #### Search:
-![Search](docs/imgs/Search.png?raw=true)
+[![Search](imgs/Search.png)](imgs/Search.png)
 
 #### Mobile:
-![Mobile](docs/imgs/Mobile.png?raw=true)
+[![Mobile](imgs/Mobile.png)](imgs/Mobile.png)

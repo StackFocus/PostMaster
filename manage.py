@@ -27,7 +27,8 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 
 @manager.command
 def createdb():
-    """Runs the db init, db migrate, db upgrade commands automatically"""
+    """Runs the db init, db migrate, db upgrade commands automatically,
+    and adds the default configuration settings if they are missing"""
     if not os.path.isdir('db/migrations'):
         flask_migrate.init(directory='db/migrations')
     flask_migrate.migrate(directory='db/migrations')
@@ -43,7 +44,7 @@ def make_shell_context():
 
 @manager.command
 def clean():
-    """Cleans the codebase"""
+    """Cleans the codebase, including database migration scripts"""
     if os.name == 'nt':
         commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"",  # pylint: disable=anomalous-backslash-in-string, line-too-long
                     "powershell.exe -Command \"@('postmaster.db', 'db', 'postmaster.log') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]  # pylint: disable=anomalous-backslash-in-string, line-too-long
