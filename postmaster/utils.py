@@ -122,7 +122,7 @@ def add_default_configuration_settings():
 
     if not models.Admins.query.first():
         admin = models.Admins().from_json(
-            {'username': 'user@postmaster.com', 'password': 'password', 'name': 'Default User'})
+            {'username': 'admin', 'password': 'PostMaster', 'name': 'Default Admin'})
         db.session.add(admin)
 
     try:
