@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Configurations Page - PostMaster</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Configurations Page";
+    var mkdocs_page_input_path = "Configuration\Configurations Page.md";
+    var mkdocs_page_url = "/Configuration/Configurations Page/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PostMaster</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Configuration</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Command%20Line%20Configuration/">Command Line Configuration</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Configurations Page</a>
+        
+            <ul>
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Installation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Installation/Docker/">Docker</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Installation/Ubuntu%2014.04/">Ubuntu 14.04</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Installation/Windows%20Server%202012%20R2/">Windows Server 2012 R2</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PostMaster</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Configuration &raquo;</li>
+        
+      
+    
+    <li>Configurations Page</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <style>
+div.wy-nav-content {
+    max-width: 1100px;
+}
+</style>
+
+<p><strong>Minimum Password Length</strong> specifies the minimum password length that all mail users and administrators must adhere to.</p>
+<p><strong>Login Auditing</strong> determines whether login and logout events are recorded in the log file. In order to enable this, the "Log File" setting must be configured.</p>
+<p><strong>Mail Database Auditing</strong> determines whether changes to domains, users, aliases, administrators, and configuration settings should be recorded in the log file.
+In order to enable this, the "Log File" setting must be configured.</p>
+<p><strong>Log File</strong> specifies a file path to where the log file should be. The path can be relative or absolute, but the file location must be writable by the web server.
+When configuring this setting, "Mail Database Auditing" will be turned on automatically.</p>
+<p><strong>Enable LDAP Authentication</strong> determines whether Active Directory LDAP authentication is turned on or off. In order to enable LDAP authentication,
+the "AD Server LDAP String", "AD Domain", and "AD PostMaster Group" must be configured.</p>
+<p><strong>AD Server LDAP String</strong> specifies the LDAP string used to connect to Active Directory. For instance, if you are using LDAPS and you have a Domain called postmaster.local,
+you can specify "LDAPS://postmaster.local:636", since postmaster.local should be a round robin to all of your Domain Controllers. You can also chose to target a specific Domain Controller
+such as "LDAPS://dc1.postmaster.local:636". Although not recommended, you can also use LDAP without SSL by specifying something like "LDAP://postmaster.local".</p>
+<p><strong>AD Domain</strong> specifies the fully qualified domain name of your Active Directory Domain (i.e. postmaster.local).</p>
+<p><strong>AD PostMaster Group</strong> specifies the Active Directory group name that Active Directory users must be a member of in order to be an administrator of PostMaster.
+This setting's value must be the same as the "Group name (pre-Windows 2000)" value of the desired group as shown in the screenshot below.</p>
+<p><a href="../../imgs/AD_Group.png"><img alt="PostMaster Active Directory Group" src="../../imgs/AD_Group.png" /></a></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../Installation/Docker/" class="btn btn-neutral float-right" title="Docker">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../Command%20Line%20Configuration/" class="btn btn-neutral" title="Command Line Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../Command%20Line%20Configuration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../Installation/Docker/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

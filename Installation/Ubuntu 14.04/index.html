@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Ubuntu 14.04 - PostMaster</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Ubuntu 14.04";
+    var mkdocs_page_input_path = "Installation\Ubuntu 14.04.md";
+    var mkdocs_page_url = "/Installation/Ubuntu 14.04/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PostMaster</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Configuration</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Configuration/Command%20Line%20Configuration/">Command Line Configuration</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Configuration/Configurations%20Page/">Configurations Page</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Installation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Docker/">Docker</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Ubuntu 14.04</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#prerequisites">Prerequisites</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#mysql-preparation">MySQL Preparation</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#installation">Installation</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Windows%20Server%202012%20R2/">Windows Server 2012 R2</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PostMaster</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Installation &raquo;</li>
+        
+      
+    
+    <li>Ubuntu 14.04</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <style>
+div.wy-nav-content {
+    max-width: 1100px;
+}
+</style>
+
+<h3 id="prerequisites">Prerequisites</h3>
+<ol>
+<li>An Ubuntu 14.04 mail server configured with the guide from <a href="https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin">DigitalOcean</a> or <a href="https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql">Linode</a>.
+Any other MySQL configuration requires edits to PostMaster's database models. Paid support for this is available.</li>
+<li>If you are installing PostMaster on a separate server, you'll need a clean Ubuntu 14.04 installation.</li>
+</ol>
+<h3 id="mysql-preparation">MySQL Preparation</h3>
+<ol>
+<li>
+<p>Start by logging into the MySQL server that your mail server uses:</p>
+<pre><code>mysql -u root -p
+</code></pre>
+</li>
+<li>
+<p>Once you've logged into MySQL, create a PostMaster MySQL user that has privileges to edit the tables for the servermail database.
+If you are installing PostMaster on a server other than where your mail server's MySQL server is installed,
+replace '127.0.0.1' with the server's IP address or DNS that is going to host PostMaster:</p>
+<pre><code>GRANT ALL PRIVILEGES ON servermail.* TO 'postmasteruser'@'127.0.0.1' IDENTIFIED BY 'password_changeme';
+</code></pre>
+</li>
+<li>
+<p>Exit from MySQL:</p>
+<pre><code>exit
+</code></pre>
+</li>
+<li>
+<p>If you are installing PostMaster on a server other than where your mail server's MySQL server is installed, make sure that
+bind-address is set 0.0.0.0 and not 127.0.0.1 in:</p>
+<pre><code>/etc/mysql/my.cnf
+</code></pre>
+</li>
+</ol>
+<h3 id="installation">Installation</h3>
+<ol>
+<li>
+<p>Switch to the server that will host PostMaster if applicable, and login as root:</p>
+<pre><code>sudo su -
+</code></pre>
+</li>
+<li>
+<p>Update the apititude package list:</p>
+<pre><code>apt-get update
+</code></pre>
+</li>
+<li>
+<p>Install the required packages for PostMaster:</p>
+<pre><code>apt-get install git python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server libmysqlclient-dev
+</code></pre>
+</li>
+<li>
+<p>Make sure you are running Python 2.7 as your default Python installation, as PostMaster relies on Python 2.7:</p>
+<pre><code>python -V
+</code></pre>
+</li>
+<li>
+<p>Create the required directories for PostMaster:</p>
+<pre><code>mkdir /opt/postmaster
+mkdir /opt/postmaster/logs
+mkdir /opt/postmaster/git
+</code></pre>
+</li>
+<li>
+<p>Download the PostMaster sourcecode from GitHub:</p>
+<pre><code>git clone https://github.com/thatarchguy/PostMaster.git /opt/postmaster/git
+</code></pre>
+</li>
+<li>
+<p>Provide the proper permissions on the PostMaster files:</p>
+<pre><code>chown -R www-data:www-data /opt/postmaster
+chmod -R 550 /opt/postmaster
+chmod 770 /opt/postmaster/logs
+</code></pre>
+</li>
+<li>
+<p>A python virtual environment is now required.
+This allows you to separate the system installed python packages from PostMaster's required python packages:</p>
+<pre><code>pip install virtualenv
+virtualenv /opt/postmaster/env
+</code></pre>
+</li>
+<li>
+<p>Start using new python virtual environment</p>
+<pre><code>source /opt/postmaster/env/bin/activate
+</code></pre>
+</li>
+<li>
+<p>Install the Python packages required by PostMaster into the python virtual environment:</p>
+<pre><code>cd /opt/postmaster/git
+pip install -r requirements.txt
+</code></pre>
+</li>
+<li>
+<p>PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+Make sure to replace "password_changeme" with the actual password supplied in step 2 of MySQL Preparation, and if needed,
+replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:</p>
+<pre><code>cd /opt/postmaster/git
+python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
+</code></pre>
+</li>
+<li>
+<p>PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
+To start the migration, run the following command:</p>
+<pre><code>python manage.py createdb
+</code></pre>
+</li>
+<li>
+<p>PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:</p>
+<pre><code>python manage.py generatekey
+</code></pre>
+</li>
+<li>
+<p>You may now exit from the python virtual environment:</p>
+<pre><code>deactivate
+</code></pre>
+</li>
+<li>
+<p>Disable the default Apache site:</p>
+<pre><code>a2dissite 000-default.conf
+</code></pre>
+</li>
+<li>
+<p>Copy the default PostMaster Apache site configuration and give it the appropriate permissions.
+It is highly recommended that you implement SSL before using PostMaster in production:</p>
+<pre><code>cp /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
+chmod 644 /etc/apache2/sites-available/postmaster.conf
+chown root:root /etc/apache2/sites-available/postmaster.conf
+</code></pre>
+</li>
+<li>
+<p>Enable the PostMaster Apache site:</p>
+<pre><code>a2ensite postmaster.conf
+</code></pre>
+</li>
+<li>
+<p>Restart Apache for the changes to take effect:</p>
+<pre><code>service apache2 restart
+</code></pre>
+</li>
+<li>
+<p>PostMaster should now be running on your Ubuntu server.
+Simply use the username "user@postmaster.com" and the password "password" to login.
+You can change your username and password from Manage -&gt; Administrators.</p>
+</li>
+<li>
+<p>Please keep in mind that the /opt/postmaster/git/db/migrations folder should be backed up after installation/updates.
+This is because PostMaster uses database migrations to safely upgrade the database schema,
+and this folder contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
+If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.</p>
+</li>
+</ol>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Windows%20Server%202012%20R2/" class="btn btn-neutral float-right" title="Windows Server 2012 R2">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../Docker/" class="btn btn-neutral" title="Docker"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../Docker/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../Windows%20Server%202012%20R2/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

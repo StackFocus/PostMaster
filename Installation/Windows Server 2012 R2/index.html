@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Windows Server 2012 R2 - PostMaster</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Windows Server 2012 R2";
+    var mkdocs_page_input_path = "Installation\Windows Server 2012 R2.md";
+    var mkdocs_page_url = "/Installation/Windows Server 2012 R2/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> PostMaster</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Configuration</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Configuration/Command%20Line%20Configuration/">Command Line Configuration</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Configuration/Configurations%20Page/">Configurations Page</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Installation</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Docker/">Docker</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Ubuntu%2014.04/">Ubuntu 14.04</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Windows Server 2012 R2</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#prerequisites">Prerequisites</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#mysql-preparation">MySQL Preparation</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#installation">Installation</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">PostMaster</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Installation &raquo;</li>
+        
+      
+    
+    <li>Windows Server 2012 R2</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <style>
+div.wy-nav-content {
+    max-width: 1100px;
+}
+</style>
+
+<h3 id="prerequisites">Prerequisites</h3>
+<ol>
+<li>An Ubuntu 14.04 mail server configured with the guide from <a href="https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin">DigitalOcean</a> or <a href="https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql">Linode</a>.
+Any other MySQL configuration requires edits to PostMaster's database models. Paid support for this is available.</li>
+<li>A clean Windows Server 2012 R2 installation with Administrative access</li>
+</ol>
+<h3 id="mysql-preparation">MySQL Preparation</h3>
+<ol>
+<li>
+<p>Start by logging into the MySQL server that your mail server uses:</p>
+<pre><code>mysql -u root -p
+</code></pre>
+</li>
+<li>
+<p>Once you've logged into MySQL, create a PostMaster MySQL user that has privileges to edit the tables for the servermail database.
+If you are installing PostMaster on a server other than where your mail server's MySQL server is installed,
+replace '127.0.0.1' with the server's IP address or DNS that is going to host PostMaster:</p>
+<pre><code>GRANT ALL PRIVILEGES ON servermail.* TO 'postmasteruser'@'127.0.0.1' IDENTIFIED BY 'password_changeme';
+</code></pre>
+</li>
+<li>
+<p>Exit from MySQL:</p>
+<pre><code>exit
+</code></pre>
+</li>
+<li>
+<p>If you are installing PostMaster on a server other than where your mail server's MySQL server is installed, make sure that
+bind-address is set 0.0.0.0 and not 127.0.0.1 in:</p>
+<pre><code>/etc/mysql/my.cnf
+</code></pre>
+</li>
+</ol>
+<h3 id="installation">Installation</h3>
+<ol>
+<li>
+<p>To install IIS and FastCGI, open an Administrative PowerShell window and run the following commands:</p>
+<pre><code>Import-Module ServerManager
+Install-WindowsFeature Web-Server, Web-CGI, Web-Mgmt-Console
+</code></pre>
+</li>
+<li>
+<p>To install Python and WFastCGI, Microsoft Web Platform Installer is required. To download it, run the following command:</p>
+<pre><code>Invoke-WebRequest -Uri 'http://download.microsoft.com/download/C/F/F/CFF3A0B8-99D4-41A2-AE1A-496C08BEB904/WebPlatformInstaller_amd64_en-US.msi' -OutFile "$env:SystemDrive\WebPlatformInstaller_amd64_en-US.msi"
+</code></pre>
+</li>
+<li>
+<p>Install Microsoft Web Platform Installer:</p>
+<pre><code>Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $env:SystemDrive\WebPlatformInstaller_amd64_en-US.msi /quiet" -Wait
+</code></pre>
+</li>
+<li>
+<p>Using Microsoft Web Platform Installer, install Python 2.7 and WFastCGI:</p>
+<pre><code>Invoke-Expression "&amp; '$env:ProgramFiles\Microsoft\Web Platform Installer\WebpiCmd.exe' /Install /Products:WFastCgi_21_279 /AcceptEula"
+</code></pre>
+</li>
+<li>
+<p>Delete the Microsoft Web Platform Installer installation file:</p>
+<pre><code>Remove-Item "$env:SystemDrive\WebPlatformInstaller_amd64_en-US.msi" -Force
+</code></pre>
+</li>
+<li>
+<p>In order to download the source code for PostMaster, a git client is required. To download git, run the following command:</p>
+<pre><code>Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.7.2.windows.1/Git-2.7.2-64-bit.exe' -OutFile "$env:SystemDrive\Git-2.7.2-64-bit.exe"
+</code></pre>
+</li>
+<li>
+<p>Install git:</p>
+<pre><code>Start-Process -FilePath "$env:SystemDrive\Git-2.7.2-64-bit.exe" -ArgumentList '/VERYSILENT' -Wait
+</code></pre>
+</li>
+<li>
+<p>Delete the git installation file:</p>
+<pre><code>Remove-Item "$env:SystemDrive\Git-2.7.2-64-bit.exe" -Force
+</code></pre>
+</li>
+<li>
+<p>Create a directory to contain PostMaster:</p>
+<pre><code>New-Item "$env:SystemDrive\PostMaster" -Type Directory
+</code></pre>
+</li>
+<li>
+<p>Create a directory to contain PostMaster logs:</p>
+<pre><code>New-Item "$env:SystemDrive\PostMaster\logs" -Type Directory
+</code></pre>
+</li>
+<li>
+<p>Download the PostMaster source code:</p>
+<pre><code>&amp; "$env:ProgramFiles\Git\bin\git.exe" clone 'https://github.com/thatarchguy/PostMaster.git' "$env:SystemDrive\PostMaster\git"
+</code></pre>
+</li>
+<li>
+<p>PostMaster will write logs to C:\PostMaster\logs\postmaster.log, but since IIS does not have access to create that file, it must be done manually with the following command:</p>
+<pre><code>New-Item "$env:SystemDrive\PostMaster\logs\postmaster.log" -Type File
+</code></pre>
+</li>
+<li>
+<p>In order for PostMaster's files to be secured, the proper permissions must be set. The following command will grant only IIS read access,
+and Administrators full control on PostMaster's files:</p>
+<pre><code>cmd.exe /C "icacls $env:SystemDrive\PostMaster /inheritance:r /grant BUILTIN\IIS_IUSRS:(OI)(CI)(RX) /grant BUILTIN\Administrators:(OI)(CI)F /grant SYSTEM:(OI)(CI)(F)"
+</code></pre>
+</li>
+<li>
+<p>In order for PhoenixPass to be able to write to the log file created earlier, IIS requires write access. To do so, use the following command:</p>
+<pre><code>cmd.exe /C "icacls $env:SystemDrive\PostMaster\logs\postmaster.log /grant BUILTIN\IIS_IUSRS:(M)"
+</code></pre>
+</li>
+<li>
+<p>A python virtual environment is now required. This allows you to separate the system installed python packages from PostMaster's required python packages.
+This is done with the following command:</p>
+<pre><code>&amp; "$env:SystemDrive\Python27\Scripts\pip.exe" install virtualenv
+</code></pre>
+</li>
+<li>
+<p>Create a Python virtualenv for PostMaster:</p>
+<pre><code>&amp; "$env:SystemDrive\Python27\Scripts\virtualenv.exe" -p "$env:SystemDrive\Python27\python.exe" "$env:SystemDrive\PostMaster\env"
+</code></pre>
+</li>
+<li>
+<p>To use the newly created virtual environment in your PowerShell window, run the following command:</p>
+<pre><code>&amp; "$env:SystemDrive\PostMaster\env\Scripts\activate.ps1"
+</code></pre>
+</li>
+<li>
+<p>PostMaster requires the Python module "python-ldap". Because it is difficult to compile it manually on Windows, this tutorial will use a precompiled version. To download it, use the following command:</p>
+<pre><code>Invoke-WebRequest -Uri 'https://pypi.python.org/packages/2.7/p/python-ldap/python_ldap-2.4.25-cp27-none-win32.whl#md5=aef7058690dd740d9333af35c270d03a' -OutFile "$env:SystemDrive\python_ldap-2.4.25-cp27-none-win32.whl"
+</code></pre>
+</li>
+<li>
+<p>Install "python-ldap":</p>
+<pre><code>pip install "$env:SystemDrive\python_ldap-2.4.25-cp27-none-win32.whl"
+</code></pre>
+</li>
+<li>
+<p>Remove the "python-ldap" installation file:</p>
+<pre><code>Remove-Item "$env:SystemDrive\python_ldap-2.4.25-cp27-none-win32.whl" -Force
+</code></pre>
+</li>
+<li>
+<p>PostMaster requires the Python module "mysqlclient". Because it is difficult to compile it manually on Windows, this tutorial will use a precompiled version. To download it, use the following command:</p>
+<pre><code>Invoke-WebRequest -Uri 'https://pypi.python.org/packages/cp27/m/mysqlclient/mysqlclient-1.3.7-cp27-none-win32.whl#md5=e9e726fd6f1912af78e2bf6ab56c02f3' -OutFile "$env:SystemDrive\mysqlclient-1.3.7-cp27-none-win32.whl"
+</code></pre>
+</li>
+<li>
+<p>Install "mysqlclient":</p>
+<pre><code>pip install "$env:SystemDrive\mysqlclient-1.3.7-cp27-none-win32.whl"
+</code></pre>
+</li>
+<li>
+<p>Remove the "mysqlclient" installation file:</p>
+<pre><code>Remove-Item "$env:SystemDrive\mysqlclient-1.3.7-cp27-none-win32.whl" -Force
+</code></pre>
+</li>
+<li>
+<p>Install the Python packages that PostMaster requires:</p>
+<pre><code>pip install -r "$env:SystemDrive\PostMaster\git\requirements.txt"
+</code></pre>
+</li>
+<li>
+<p>Copy wfastcgi.py, created by Microsoft Web Platform Installer earlier, to C:\PostMaster\git:</p>
+<pre><code>Copy-Item -Path "$env:SystemDrive\Python27\Scripts\wfastcgi.py" "$env:SystemDrive\PostMaster\git"
+</code></pre>
+</li>
+<li>
+<p>At this point, PostMaster requires an IIS site. You can either use the "Default Web Site" and change the virtual directory to C:\PostMaster\git,
+or create a new site that points to that directory. This tutorial will use the Default Web Site. To change the virtual directory, use the following commands:</p>
+<pre><code>Import-Module WebAdministration
+Set-ItemProperty 'IIS:\Sites\Default Web Site\' -Name physicalPath -Value "$env:SystemDrive\PostMaster\git"
+</code></pre>
+</li>
+<li>
+<p>Now, IIS needs to know how to run PostMaster. The following commands configure FastCGI to be able to use the Python virtual environment created earlier and run PostMaster
+(If you are using a site other than "Default Web Site", change that value in the commands below):</p>
+<pre><code>Import-Module WebAdministration
+Set-WebConfiguration -Filter '/system.webServer/handlers/@AccessPolicy' -Value 'Read, Script' -PSPath 'IIS:\' -Location 'Default Web Site'
+Add-WebConfiguration -Filter '/system.webServer/handlers' -Value @{name='PythonHandler'; path='*'; verb='*'; modules='FastCgiModule'; scriptProcessor="$env:SystemDrive\PostMaster\env\Scripts\python.exe|$env:SystemDrive\PostMaster\git\wfastcgi.py"; resourceType='Unspecified'} -PSPath 'IIS:\' -Location 'Default Web Site'
+Add-WebConfiguration -Filter '/system.webServer/fastCgi' -Value @{fullPath="$env:SystemDrive\PostMaster\env\Scripts\python.exe"; arguments="$env:SystemDrive\PostMaster\git\wfastcgi.py"}
+Add-WebConfiguration -Filter "/system.webServer/fastCgi/application[@fullPath='$env:SystemDrive\PostMaster\env\Scripts\python.exe' and @arguments='$env:SystemDrive\PostMaster\git\wfastcgi.py']/environmentVariables" -Value @{name='PYTHONPATH'; value="$env:SystemDrive\PostMaster\git"} -AtIndex 0
+Add-WebConfiguration -Filter "/system.webServer/fastCgi/application[@fullPath='$env:SystemDrive\PostMaster\env\Scripts\python.exe' and @arguments='$env:SystemDrive\PostMaster\git\wfastcgi.py']/environmentVariables" -Value @{name='WSGI_HANDLER'; value='app.app'} -AtIndex 1
+</code></pre>
+</li>
+<li>
+<p>PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+Make sure to replace "password_changeme" and "127.0.0.1' with the actual values supplied in step 2 of MySQL Preparation, and if needed,
+replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:</p>
+<pre><code>cd C:\Postmaster\git
+python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
+</code></pre>
+</li>
+<li>
+<p>PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
+To start the migration, run the following command:</p>
+<pre><code>python manage.py createdb
+</code></pre>
+</li>
+<li>
+<p>PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:</p>
+<pre><code>python manage.py generatekey
+</code></pre>
+</li>
+<li>
+<p>You may now exit the Python virtual environment:</p>
+<pre><code>deactivate
+</code></pre>
+</li>
+<li>
+<p>Restart IIS to make sure all the changes take effect:</p>
+<pre><code>iisreset
+</code></pre>
+</li>
+<li>
+<p>At this point it is highly recommended that you implement SSL before using PostMaster in production.</p>
+</li>
+<li>
+<p>PostMaster should now be running on your Windows Server.
+Simply use the username "user@postmaster.com" and the password "password" to login.
+You can change your username and password from Manage -&gt; Administrators.</p>
+</li>
+</ol>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../Ubuntu%2014.04/" class="btn btn-neutral" title="Ubuntu 14.04"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../Ubuntu%2014.04/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+
+</body>
+</html>
