@@ -116,8 +116,7 @@ It is highly recommended that you implement SSL before using PostMaster in produ
 
         service apache2 restart
 
-19. PostMaster should now be running on your Ubuntu server.
-Simply use the username "user@postmaster.com" and the password "password" to login.
+19. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.
 
 20. Please keep in mind that the /opt/postmaster/git/db/migrations folder should be backed up after installation/updates.

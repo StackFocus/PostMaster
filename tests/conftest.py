@@ -86,8 +86,8 @@ def loggedin_client():
     client.post(
         '/login',
         data=dict(
-            username='user@postmaster.com',
-            password='password',
+            username='admin',
+            password='PostMaster',
             auth_source='PostMaster User'
         ),
         follow_redirects=True

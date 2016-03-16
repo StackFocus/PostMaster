@@ -67,5 +67,5 @@ Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what
         docker run -p 0.0.0.0:80:80 -v /opt/postmaster_data:/opt/postmaster/git/db \
              -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail -d postmaster
 
-7. PostMaster should now be running. Simply use the username "user@postmaster.com" and the password "password" to login.
+7. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.
