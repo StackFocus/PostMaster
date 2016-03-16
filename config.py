@@ -7,7 +7,11 @@ from os import path
 
 
 class BaseConfiguration(object):
-    HOST_NAME = 'mail.swagger.pro'
+    # We disable CSRF because it interferes with logging in
+    # from anywhere but the form on the login page.
+    # We introduce very little risk by disabling this.
+    WTF_CSRF_ENABLED = False
+    HOST_NAME = 'mail.postermaster.example'
     # Make this random (used to generate session keys)
     SECRET_KEY = 'e9987dce48df3ce98542529fd074d9e9f9cd40e66fc6c4c2'
     basedir = path.abspath(path.dirname(__file__))
@@ -23,4 +27,5 @@ class TestConfiguration(BaseConfiguration):
 
 
 class DevConfiguration(BaseConfiguration):
+    WTF_CSRF_ENABLED = False
     DEBUG = True
