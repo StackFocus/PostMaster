@@ -241,7 +241,7 @@ class TestMailDbFunctions:
 
     def test_admins_add_fail_duplicate(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"username": "user@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
+            {"username": "admin", "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data)
         except:
@@ -289,7 +289,7 @@ class TestMailDbFunctions:
             {"name": "Some New Name"}))
         assert rv.status_code == 200
 
-    def test_admins_update_email_pass(self, loggedin_client):
+    def test_admins_update_username_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/admins/2", data=json.dumps(
             {"username": "newemail@postmaster.com"}))
         assert rv.status_code == 200
