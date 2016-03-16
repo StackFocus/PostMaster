@@ -1,2 +1,5 @@
 site_name: PostMaster
 theme: readthedocs
+theme_dir: 'theme_edit'
+repo_url: https://github.com/stackfocus/postmaster
+repo_name: GitHub
