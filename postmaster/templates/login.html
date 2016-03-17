@@ -22,7 +22,6 @@
             </div>
             <div class="panel-body">
                 <form action="/login" method="POST" class="form-horizontal">
-                    {{ loginForm.hidden_tag() }}
                     <div class="input-group loginInput">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         {{ loginForm.username(class_='form-control', required=True, placeholder='Enter a username') }}
