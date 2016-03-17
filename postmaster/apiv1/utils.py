@@ -1,5 +1,5 @@
 """
-Author: Swagger.pro
+Author: StackFocus
 File: utils.py
 Purpose: General helper utils
 """

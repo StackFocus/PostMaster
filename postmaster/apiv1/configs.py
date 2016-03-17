@@ -1,5 +1,5 @@
 """
-Author: Swagger.pro
+Author: StackFocus
 File: configs.py
 Purpose: The configs API for PostMaster which
 allows an admin to update PostMaster configurations

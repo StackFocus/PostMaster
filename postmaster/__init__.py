@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: __init__.py
 Purpose: initializes the application
 """

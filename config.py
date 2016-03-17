@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: config.py
 Purpose: config for the app
 """

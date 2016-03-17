@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: common.py
 Purpose: UI routes for the app
 """

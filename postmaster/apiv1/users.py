@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: users.py
 Purpose: The users API for PostMaster which allows
 an admin to create, delete, and update users

@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: models.py
 Purpose: database definitions for SQLAlchemy
 """

@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: domains.py
 Purpose: The domains API for PostMaster which allows
 an admin to create, and delete domains

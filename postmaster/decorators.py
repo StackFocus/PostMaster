@@ -1,5 +1,5 @@
 """
-Author: Swagger.pro
+Author: StackFocus
 File: decorators.py
 Purpose: defines decorators for the app
 """
