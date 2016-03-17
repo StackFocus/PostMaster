@@ -1,5 +1,5 @@
 FROM ubuntu:14.04.3
-MAINTAINER Swagger.pro
+MAINTAINER StackFocus
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN ln -snf /bin/bash /bin/sh

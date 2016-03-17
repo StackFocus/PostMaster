@@ -1,6 +1,6 @@
 ﻿#!flask/bin/python
 """
-Author: Swagger.pro
+Author: StackFocus
 File: app.py
 Purpose: Manages the app
 """

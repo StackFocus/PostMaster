@@ -1,5 +1,5 @@
 """
-Author: Swagger.pro
+Author: StackFocus
 File: errors.py
 Purpose: defines error handling functions
 """

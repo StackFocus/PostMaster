@@ -1,5 +1,5 @@
 ﻿"""
-Author: Swagger.pro
+Author: StackFocus
 File: aliases.py
 Purpose: The aliases API for PostMaster which allows
 an admin to create, delete, and update aliases

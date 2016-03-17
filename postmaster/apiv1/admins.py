@@ -1,5 +1,5 @@
 """
-Author: Swagger.pro
+Author: StackFocus
 File: admins.py
 Purpose: The admins API for PostMaster which allows
 an admin to create, delete, and update admins
