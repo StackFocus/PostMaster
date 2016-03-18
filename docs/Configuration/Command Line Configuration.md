@@ -1,8 +1,3 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
 ### Before You Start
 1. Logged into the server hosting PostMaster as root or as an administrator, enter the Python virtual environment (if necessary, replace the path with your install location):
         

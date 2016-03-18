@@ -1,4 +1,4 @@
-## PostMaster [![Build Status](https://travis-ci.com/thatarchguy/PostMaster.svg?token=9fn8V459Z3FjXcLyubG9&branch=master)](https://travis-ci.com/thatarchguy/PostMaster) [![Dependency Status](https://gemnasium.com/9de3737c45004fea3d1a3b7041c841f2.svg)](https://gemnasium.com/thatarchguy/PostMaster) ![Python](https://img.shields.io/badge/python-2.7-blue.svg) ![Flask](http://flask.pocoo.org/static/badges/made-with-flask-s.png)
+## PostMaster [![Build Status](https://travis-ci.org/StackFocus/PostMaster.svg?branch=master)](https://travis-ci.org/StackFocus/PostMaster) ![Python](https://img.shields.io/badge/python-2.7-blue.svg) ![Flask](http://flask.pocoo.org/static/badges/made-with-flask-s.png)
 
 ### Overview
 
@@ -10,6 +10,8 @@ PostMaster abstracts the domain, user, and alias management of your mail server 
 Although PostMaster was built to work with the database schema instructed in the [DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin) or [Linode](https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql) guides,
 paid support is available for the developers of PostMaster to customize it to work in your environment.
 
+PostMaster is written by Kevin Law and Matthew Prahl.
+
 ### Features
 
 * Add, remove, edit, or search domains, users, and aliases on a Linux mail server database
@@ -18,6 +20,12 @@ paid support is available for the developers of PostMaster to customize it to wo
 * Active Directory LDAP login support
 * Friendly REST APIs to automate tasks
 * Runs on Linux, Docker, and Windows
+
+### Documentation
+
+* [Installation and Configuration](https://stackfocus.github.io/PostMaster/)
+* [API Basic Usage](http://stackfocus.github.io/PostMaster/API/API%20Usage/)
+* [OpenAPI Specification](https://stackfocus.github.io/PostMaster/API/openAPI-spec.html)
 
 ### Screenshots
 

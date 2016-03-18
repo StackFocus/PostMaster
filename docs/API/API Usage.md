@@ -1,9 +1,9 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
-##### Curl Example
+### API Documentation
+
+* [OpenAPI Specification (Swagger)](/API/openAPI-spec.html)  
+* [OpenAPI Specification File (Swagger)](/API/openAPI-spec.yml)
+
+### Curl Example
 
 For local PostMaster authentication, use the following command (session.txt is used to store your login session):  
 ```bash
@@ -20,7 +20,7 @@ Once you are logged in, you can use the following command to query the API:
 curl https://postmaster.example.local/api/v1/domains -b session.txt
 ```
 
-##### PowerShell Example (v3+)
+### PowerShell Example (v3+)
 For local PostMaster authentication, use the following command (session is a variable used to store your login session):  
 ```powershell
 Invoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'PostMaster'; auth_source = 'PostMaster User'}
@@ -35,8 +35,3 @@ Once you are logged in, you can use the following command to query the API:
 ```powershell
 Invoke-RestMethod -Uri 'http://postmaster.example.local/api/v1/domains' -WebSession $session
 ```
-
-### API Documentation
-
-**API Spec:** [OpenAPI (Swagger)](/Api/openAPI-spec.html)  
-**API Spec File:** [OpenAPI (Swagger)](/Api/openAPI-spec.yml)

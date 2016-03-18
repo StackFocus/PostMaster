@@ -1,8 +1,3 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
 # PostMaster Documentation
 
 ### Overview
@@ -14,6 +9,8 @@ PostMaster abstracts the domain, user, and alias management of your mail server 
 
 Although PostMaster was built to work with the database schema instructed in the [DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin) or [Linode](https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql) guides,
 paid support is available for the developers of PostMaster to customize it to work in your environment.
+
+PostMaster is written by Kevin Law and Matthew Prahl.
 
 ### Features
 
