@@ -1,0 +1,612 @@
+---
+  swagger: "2.0"
+  info:
+    description: "This is the API spec for PostMaster."
+    version: "1.0.0"
+    title: "OpenAPI PostMaster"
+    contact:
+      email: "hello@stackfocus.org"
+  basePath: "/api/v1"
+  tags:
+    -
+      name: "admins"
+      description: "Manage the local administrators of the application"
+    -
+      name: "aliases"
+      description: "Manage the email aliases"
+    -
+      name: "configs"
+      description: "Manage the configuration items for the application"
+    -
+      name: "domains"
+      description: "Manage the email domains the application can control"
+    -
+      name: "logs"
+      description: "Get the last 50 log entries"
+    -
+      name: "users"
+      description: "Manage the email users"
+  schemes:
+    - "http"
+  paths:
+    /admins:
+      get:
+        tags:
+          - "admins"
+        summary: "Get all the administrators"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "search"
+            in: "query"
+            description: "Search query to filter the administrators returned"
+            required: false
+            type: "string"
+            format: "string"
+        responses:
+          200:
+            description: "The requested administrators were returned"
+      post:
+        tags:
+          - "admins"
+        summary: "Create an administrator"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            in: "body"
+            name: "admin"
+            description: "The administrator object to create"
+            required: true
+            schema:
+              $ref: "#/definitions/admin"
+        responses:
+          201:
+            description: "The administrator was created"
+          404:
+            description: "The administrator was not found"
+
+    /admins/{admin_id}:
+      get:
+        tags:
+          - "admins"
+        summary: "Get a specific administrator"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "admin_id"
+            in: "path"
+            description: "The ID of the administrator to return"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          200:
+            description: "The administrator was returned"
+          404:
+            description: "The administrator was not found"
+      put:
+        tags:
+          - "admins"
+        summary: "Update an existing administrator"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "admin_id"
+            in: "path"
+            description: "The ID of the administrator to update"
+            required: true
+            type: "integer"
+            format: "int64"
+          -
+            in: "body"
+            name: "admin"
+            description: "The attributes of the administrator to update"
+            required: true
+            schema:
+              $ref: "#/definitions/admin"
+        responses:
+          200:
+            description: "The administrator was updated"
+          404:
+            description: "The administrator was not found"
+      delete:
+        tags:
+          - "admins"
+        summary: "Delete a specific administrator"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "admin_id"
+            in: "path"
+            description: "The ID of administrator to delete"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          204:
+            description: "The administrator was deleted"
+          404:
+            description: "The administrator was not found"
+
+
+    /aliases:
+      get:
+        tags:
+          - "aliases"
+        summary: "Get all the aliases"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "search"
+            in: "query"
+            description: "Search query to filter the aliases returned"
+            required: false
+            type: "string"
+            format: "string"
+        responses:
+          200:
+            description: "The requested aliases were returned"
+      post:
+        tags:
+          - "aliases"
+        summary: "Create an alias"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            in: "body"
+            name: "alias"
+            description: "The alias object to create"
+            required: true
+            schema:
+              $ref: "#/definitions/alias"
+        responses:
+          201:
+            description: "The alias was created"
+          404:
+            description: "The alias was not found"
+
+    /aliases/{alias_id}:
+      get:
+        tags:
+          - "aliases"
+        summary: "Get a specific alias"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "alias_id"
+            in: "path"
+            description: "The ID of the alias to return"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          200:
+            description: "The alias was returned"
+          404:
+            description: "The alias was not found"
+      put:
+        tags:
+          - "aliases"
+        summary: "Update an existing alias"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "alias_id"
+            in: "path"
+            description: "The ID of the alias to update"
+            required: true
+            type: "integer"
+            format: "int64"
+          -
+            in: "body"
+            name: "alias"
+            description: "The attributes of the alias to update"
+            required: true
+            schema:
+              $ref: "#/definitions/alias"
+        responses:
+          200:
+            description: "The alias was updated"
+          404:
+            description: "The alias was not found"
+      delete:
+        tags:
+          - "aliases"
+        summary: "Delete a specific alias"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "alias_id"
+            in: "path"
+            description: "The ID of the alias to delete"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          204:
+            description: "The alias was deleted"
+          404:
+            description: "The alias was not found"
+
+
+    /domains:
+      get:
+        tags:
+          - "domains"
+        summary: "Get all the domains"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "search"
+            in: "query"
+            description: "Search query to filter the domains returned"
+            required: false
+            type: "string"
+            format: "string"
+        responses:
+          200:
+            description: "The requested domains were returned"
+      post:
+        tags:
+          - "domains"
+        summary: "Create a domain"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            in: "body"
+            name: "domain"
+            description: "The domain object to create"
+            required: true
+            schema:
+              $ref: "#/definitions/domain"
+        responses:
+          201:
+            description: "The domain was created"
+          404:
+            description: "The domain was not found"
+
+    /domains/{domain_id}:
+      get:
+        tags:
+          - "domains"
+        summary: "Get a specific domain"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "domain_id"
+            in: "path"
+            description: "The ID of the domain to return"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          200:
+            description: "The domain was returned"
+          404:
+            description: "The domain was not found"
+      delete:
+        tags:
+          - "domains"
+        summary: "Delete a specific domain"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "domain_id"
+            in: "path"
+            description: "The ID of the domain to delete"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          204:
+            description: "The domain was deleted"
+          404:
+            description: "The domain was not found"
+
+
+    /users:
+      get:
+        tags:
+          - "users"
+        summary: "Get all the users"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "search"
+            in: "query"
+            description: "Search query to filter the users returned"
+            required: false
+            type: "string"
+            format: "string"
+        responses:
+          200:
+            description: "The requested users were returned"
+      post:
+        tags:
+          - "users"
+        summary: "Create a user"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            in: "body"
+            name: "user"
+            description: "The user object to create"
+            required: true
+            schema:
+              $ref: "#/definitions/user"
+        responses:
+          201:
+            description: "The user was created"
+          404:
+            description: "The user was not found"
+
+    /users/{user_id}:
+      get:
+        tags:
+          - "users"
+        summary: "Get a specific user"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "user_id"
+            in: "path"
+            description: "The ID of the user to return"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          200:
+            description: "The user was returned"
+          404:
+            description: "The user was not found"
+      put:
+        tags:
+          - "users"
+        summary: "Update an existing user"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "user_id"
+            in: "path"
+            description: "The ID of user to update"
+            required: true
+            type: "integer"
+            format: "int64"
+          -
+            in: "body"
+            name: "user"
+            description: "The attributes of the user to update"
+            required: true
+            schema:
+              $ref: "#/definitions/user"
+        responses:
+          200:
+            description: "THe user was updated"
+          404:
+            description: "The user was not found"
+      delete:
+        tags:
+          - "users"
+        summary: "Delete a specific user"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "user_id"
+            in: "path"
+            description: "The ID of the user to delete"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          204:
+            description: "The user was deleted"
+          404:
+            description: "The user was not found"
+
+
+    /configs:
+      get:
+        tags:
+          - "configs"
+        summary: "Get all the configuration items"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: "The configuration items were returned"
+    /configs/{config_id}:
+      get:
+        tags:
+          - "configs"
+        summary: "Get a specific configuration item"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "config_id"
+            in: "path"
+            description: "The ID of configuration item to return"
+            required: true
+            type: "integer"
+            format: "int64"
+        responses:
+          200:
+            description: "The configuration item was returned"
+          404:
+            description: "The configuration item was not found"
+      put:
+        tags:
+          - "configs"
+        summary: "Update an existing configuration item"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "config_id"
+            in: "path"
+            description: "The ID of the configuration item to return"
+            required: true
+            type: "integer"
+            format: "int64"
+          -
+            in: "body"
+            name: "config"
+            description: "The configuration item value to update"
+            required: true
+            schema:
+              $ref: "#/definitions/config"
+        responses:
+          200:
+            description: "The configuration item was updated"
+          404:
+            description: "The configuration item was not found"
+
+
+    /logs:
+      get:
+        tags:
+          - "logs"
+        summary: "Get the last 50 logs in the log file"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: "The last 50 logs in the log file were returned"
+
+
+  definitions:
+    admin:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          format: "string"
+        username:
+          type: "string"
+          format: "string"
+          example: "matt"
+        password:
+          type: "string"
+          format: "password"
+          example: "hunter2"
+    alias:
+      type: "object"
+      properties:
+        source:
+          type: "string"
+          format: "email"
+          example: "some_alias@example.com"
+        destination:
+          type: "string"
+          format: "email"
+          example: "the_real_mailbox@example.com"
+    domain:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          format: "domaiun"
+          example: "example.com"
+    user:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          format: "email"
+          example: "the_real_mailbox@example.com"
+        password:
+          type: "string"
+          format: "password"
+          example: "hunter2"
+    config:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+          format: "string"
+          example: "/var/log/postmaster.log"
