@@ -61,22 +61,22 @@
             "title": "Mobile:"
         }, 
         {
-            "location": "/API/API Overview/", 
+            "location": "/API/Getting Started/", 
             "text": "API Documentation\n\n\nAPI Spec:\n \nOpenAPI (Swagger)\n\n\nAPI Spec File:\n \nOpenAPI (Swagger)\n\n\nCurl Example\n\n\nFor local PostMaster authentication, use the following command (session.txt is used to store your login session):  \n\n\ncurl https://postmaster.example.local/login --data 'username=admin\npassword=PostMaster\nauth_source=PostMaster User' -c session.txt\n\n\n\n\nFor LDAP authentication, set auth_source with the value from the \"AD Domain\" setting on the configurations page (session.txt is used to store your login session):\n\n\ncurl https://postmaster.example.local/login --data 'username=user@example.local\npassword=password\nauth_source=example.local' -c session.txt\n\n\n\n\nOnce you are logged in, you can use the following command to query the API:\n\n\ncurl https://postmaster.example.local/api/v1/domains -b session.txt\n\n\n\n\nPowerShell Example (v3+)\n\n\nFor local PostMaster authentication, use the following command (session is a variable used to store your login session):  \n\n\nInvoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'PostMaster'; auth_source = 'PostMaster User'}\n\n\n\n\nFor LDAP authentication, set auth_source with the value from the \"AD Domain\" setting on the configurations page (session is a variable used to store your login session):\n\n\nInvoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'password'; auth_source = 'example.local'}\n\n\n\n\nOnce you are logged in, you can use the following command to query the API:\n\n\nInvoke-RestMethod -Uri 'http://postmaster.example.local/api/v1/domains' -WebSession $session", 
-            "title": "API Overview"
+            "title": "Getting Started"
         }, 
         {
-            "location": "/API/API Overview/#api-documentation", 
+            "location": "/API/Getting Started/#api-documentation", 
             "text": "API Spec:   OpenAPI (Swagger)  API Spec File:   OpenAPI (Swagger)", 
             "title": "API Documentation"
         }, 
         {
-            "location": "/API/API Overview/#curl-example", 
+            "location": "/API/Getting Started/#curl-example", 
             "text": "For local PostMaster authentication, use the following command (session.txt is used to store your login session):    curl https://postmaster.example.local/login --data 'username=admin password=PostMaster auth_source=PostMaster User' -c session.txt  For LDAP authentication, set auth_source with the value from the \"AD Domain\" setting on the configurations page (session.txt is used to store your login session):  curl https://postmaster.example.local/login --data 'username=user@example.local password=password auth_source=example.local' -c session.txt  Once you are logged in, you can use the following command to query the API:  curl https://postmaster.example.local/api/v1/domains -b session.txt", 
             "title": "Curl Example"
         }, 
         {
-            "location": "/API/API Overview/#powershell-example-v3", 
+            "location": "/API/Getting Started/#powershell-example-v3", 
             "text": "For local PostMaster authentication, use the following command (session is a variable used to store your login session):    Invoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'PostMaster'; auth_source = 'PostMaster User'}  For LDAP authentication, set auth_source with the value from the \"AD Domain\" setting on the configurations page (session is a variable used to store your login session):  Invoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'password'; auth_source = 'example.local'}  Once you are logged in, you can use the following command to query the API:  Invoke-RestMethod -Uri 'http://postmaster.example.local/api/v1/domains' -WebSession $session", 
             "title": "PowerShell Example (v3+)"
         }, 
