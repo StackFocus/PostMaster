@@ -1,8 +1,3 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
 ### Prerequisites
 1. An Ubuntu 14.04 mail server configured with the guide from [DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin) or [Linode](https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql).
 Any other MySQL configuration requires edits to PostMaster's database models. Paid support for this is available.
@@ -53,7 +48,7 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
 6. Download the PostMaster sourcecode from GitHub:
 
-        git clone https://github.com/thatarchguy/PostMaster.git /opt/postmaster/git
+        git clone https://github.com/StackFocus/PostMaster.git /opt/postmaster/git
 
 7. Provide the proper permissions on the PostMaster files:
 

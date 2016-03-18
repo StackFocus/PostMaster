@@ -1,8 +1,3 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
 **Minimum Password Length** specifies the minimum password length that all mail users and administrators must adhere to.
 
 **Login Auditing** determines whether login and logout events are recorded in the log file. In order to enable this, the "Log File" setting must be configured.

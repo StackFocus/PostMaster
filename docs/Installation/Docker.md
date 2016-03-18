@@ -1,8 +1,3 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
 ### Overview
 PostMaster is a Docker friendly application, however, it does require a data volume.
 This is because PostMaster uses database migrations to safely upgrade the database schema.
@@ -51,7 +46,7 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
 4. Download the PostMaster sourcecode from GitHub:
 
-        git clone https://github.com/thatarchguy/PostMaster.git ~/postmaster
+        git clone https://github.com/StackFocus/PostMaster.git ~/postmaster
 
 5. Build the Docker image:
 

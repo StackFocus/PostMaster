@@ -1,8 +1,3 @@
-<style>
-div.wy-nav-content {
-    max-width: 1100px;
-}
-</style>
 ### Prerequisites
 1. An Ubuntu 14.04 mail server configured with the guide from [DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin) or [Linode](https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql).
 Any other MySQL configuration requires edits to PostMaster's database models. Paid support for this is available.
@@ -72,7 +67,7 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
 10. Download the PostMaster source code:
 
-        & "$env:ProgramFiles\Git\bin\git.exe" clone 'https://github.com/thatarchguy/PostMaster.git' "$env:SystemDrive\PostMaster\git"
+        & "$env:ProgramFiles\Git\bin\git.exe" clone 'https://github.com/StackFocus/PostMaster.git' "$env:SystemDrive\PostMaster\git"
 
 11. PostMaster will write logs to C:\PostMaster\logs\postmaster.log, but since IIS does not have access to create that file, it must be done manually with the following command:
 
