@@ -50,47 +50,47 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
         git clone https://github.com/StackFocus/PostMaster.git /opt/postmaster/git
 
-7. Provide the proper permissions on the PostMaster files:
-
-        chown -R www-data:www-data /opt/postmaster
-        chmod -R 550 /opt/postmaster
-        chmod 770 /opt/postmaster/logs
-
-8. A python virtual environment is now required.
+7. A python virtual environment is now required.
 This allows you to separate the system installed python packages from PostMaster's required python packages:
 
         pip install virtualenv
         virtualenv /opt/postmaster/env
 
-9. Start using new python virtual environment
+8. Start using new python virtual environment
 
         source /opt/postmaster/env/bin/activate
 
-10. Install the Python packages required by PostMaster into the python virtual environment:
+9. Install the Python packages required by PostMaster into the python virtual environment:
 
         cd /opt/postmaster/git
         pip install -r requirements.txt
 
-11. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+10. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
 Make sure to replace "password_changeme" with the actual password supplied in step 2 of MySQL Preparation, and if needed,
 replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:
 
         cd /opt/postmaster/git
         python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
  
-12. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+11. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
         python manage.py createdb
 
-13. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
+12. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 
         python manage.py generatekey
 
-14. You may now exit from the python virtual environment:
+13. You may now exit from the python virtual environment:
 
         deactivate
+        
+14. Provide the proper permissions on the PostMaster files:
+
+        chown -R www-data:www-data /opt/postmaster
+        chmod -R 550 /opt/postmaster
+        chmod 770 /opt/postmaster/logs
 
 15. Disable the default Apache site:
 

@@ -14,6 +14,12 @@
 
         python manage.py [command]
 
+4. Some of the commands modify files and may end up changing the ownership of the files on Linux/Unix operating systems.
+Use the following commands to restore the proper permissions on the PostMaster files:
+
+        chown -R www-data:www-data /opt/postmaster
+        chmod -R 550 /opt/postmaster
+
 ### Command Line Commands
 
 **setdburi** sets the MySQL database URI that PostMaster uses to connect to the MySQL server used by your mail server.

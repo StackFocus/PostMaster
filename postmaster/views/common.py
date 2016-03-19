@@ -50,7 +50,7 @@ def index():
     """ Function to return index page
     """
 
-    return render_template('index.html',
+    return render_template('index.html', title='PostMaster Dashboard',
                            authenticated=current_user.is_authenticated)
 
 
@@ -65,9 +65,7 @@ def login():
         return redirect(url_for('index'))
     else:
         if request.method == 'GET':
-            return render_template('login.html',
-                                   title='PostMaster Management Login',
-                                   loginForm=login_form)
+            return render_template('login.html', title='PostMaster Login', loginForm=login_form)
         elif login_form.validate_on_submit():
             login_user(login_form.admin, remember=False)
             json_logger(
@@ -103,7 +101,7 @@ def domains():
     Manages domains in the database
     """
 
-    return render_template('domains.html',
+    return render_template('domains.html', title='PostMaster Domains',
                            authenticated=current_user.is_authenticated)
 
 
@@ -114,7 +112,7 @@ def users():
     Manages users/email accounts in the database
     """
 
-    return render_template('users.html',
+    return render_template('users.html', title='PostMaster Users',
                            authenticated=current_user.is_authenticated)
 
 
@@ -125,7 +123,7 @@ def aliases():
     Manages aliases in the database
     """
 
-    return render_template('aliases.html',
+    return render_template('aliases.html', title='PostMaster Aliases',
                            authenticated=current_user.is_authenticated)
 
 
@@ -136,7 +134,7 @@ def admins():
     Manages admins in the database
     """
 
-    return render_template('admins.html',
+    return render_template('admins.html', title='PostMaster Administrators',
                            authenticated=current_user.is_authenticated)
 
 
@@ -147,7 +145,7 @@ def configs():
     Manages configs in the database
     """
 
-    return render_template('configs.html',
+    return render_template('configs.html', title='PostMaster Configurations',
                            authenticated=current_user.is_authenticated)
 
 
@@ -158,5 +156,5 @@ def logs():
     Displays logs from the log file
     """
 
-    return render_template('logs.html',
+    return render_template('logs.html', title='PostMaster Logs',
                            authenticated=current_user.is_authenticated)
