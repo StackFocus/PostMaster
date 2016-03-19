@@ -26,7 +26,7 @@ pbr==1.8.1
 py==1.4.31
 pycparser==2.14
 pylint==1.5.4
-pytest==2.9.0
+pytest==2.9.1
 pytest-cov==2.2.1
 python-editor==0.5
 python-ldap==2.4.25
