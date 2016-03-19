@@ -248,13 +248,6 @@ mkdir /opt/postmaster/git
 </code></pre>
 </li>
 <li>
-<p>Provide the proper permissions on the PostMaster files:</p>
-<pre><code>chown -R www-data:www-data /opt/postmaster
-chmod -R 550 /opt/postmaster
-chmod 770 /opt/postmaster/logs
-</code></pre>
-</li>
-<li>
 <p>A python virtual environment is now required.
 This allows you to separate the system installed python packages from PostMaster's required python packages:</p>
 <pre><code>pip install virtualenv
@@ -295,6 +288,13 @@ To start the migration, run the following command:</p>
 <li>
 <p>You may now exit from the python virtual environment:</p>
 <pre><code>deactivate
+</code></pre>
+</li>
+<li>
+<p>Provide the proper permissions on the PostMaster files:</p>
+<pre><code>chown -R www-data:www-data /opt/postmaster
+chmod -R 550 /opt/postmaster
+chmod 770 /opt/postmaster/logs
 </code></pre>
 </li>
 <li>
@@ -351,7 +351,7 @@ If this folder is missing, PostMaster can't tell what state your database is in,
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-03-18 01:12:53.843000<p>
+    <p>Documentation generated on 2016-03-19 14:47:12.615000<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
