@@ -1,5 +1,5 @@
 alembic==0.8.5
-astroid==1.4.4
+astroid==1.4.5
 bcrypt==2.0.0
 cffi==1.5.2
 colorama==0.3.7
@@ -25,13 +25,13 @@ passlib==1.6.5
 pbr==1.8.1
 py==1.4.31
 pycparser==2.14
-pylint==1.5.4
+pylint==1.5.5
 pytest==2.9.1
 pytest-cov==2.2.1
 python-editor==0.5
 python-ldap==2.4.25
 six==1.10.0
 SQLAlchemy==1.0.12
-Werkzeug==0.11.4
+Werkzeug==0.11.5
 wrapt==1.10.6
 WTForms==2.1
