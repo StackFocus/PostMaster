@@ -11,14 +11,13 @@ function newUser(email, password) {
             'password': password
         }),
 
-        success: function (data) {
+        success: function (response) {
             addStatusMessage('success', 'The user was added successfully');
             fillInTable();
         },
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
 }
@@ -31,14 +30,13 @@ function deleteUser (id) {
         url: '/api/v1/users/' + id,
         type: 'delete',
 
-        success: function (data) {
+        success: function (response) {
             addStatusMessage('success', 'The user was successfully removed');
             fillInTable();
         },
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
 }
@@ -74,8 +72,7 @@ function userEventListeners () {
         },
 
         error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         },
 
         success: function () {
@@ -164,7 +161,7 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Email: ">' + item.email + '</td>\
+            html += '<td data-title="Email: ">' + filterText(item.email) + '</td>\
                     <td data-title="Password: "><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;

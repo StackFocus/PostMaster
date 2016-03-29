@@ -8,14 +8,13 @@ function newDomain(name) {
             contentType: 'application/json',
             data: JSON.stringify({ 'name': name }),
 
-            success: function (data) {
+            success: function (response) {
                 addStatusMessage('success', 'The domain was added successfully.');
                 fillInTable();
             },
 
-            error: function (data) {
-                // The jQuery('div />') is a work around to encode all html characters
-                addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+            error: function (response) {
+                addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
             }
         });
     }
@@ -33,14 +32,13 @@ function deleteDomain (id) {
             type: 'delete',
             contentType: 'application/json',
 
-            success: function (data) {
+            success: function (response) {
                 addStatusMessage('success', 'The domain was successfully removed.');
                 fillInTable();
             },
 
-            error: function (data) {
-                // The jQuery('div />') is a work around to encode all html characters
-                addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+            error: function (response) {
+                addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
             }
         });
     }
@@ -130,7 +128,7 @@ function fillInTable(filter) {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-pk="' + item.id + '" data-title="Domain: ">' + item.name + '</td>\
+            html += '<td data-pk="' + item.id + '" data-title="Domain: ">' + filterText(item.name) + '</td>\
                      <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);

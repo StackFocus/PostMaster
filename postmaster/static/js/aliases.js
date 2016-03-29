@@ -12,14 +12,13 @@ function newAlias(source, destination) {
             'destination': destination
         }),
 
-        success: function (data) {
+        success: function (response) {
             addStatusMessage('success', 'The alias was added successfully');
             fillInTable();
         },
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
 }
@@ -37,9 +36,8 @@ function deleteAlias (id) {
             fillInTable();
         },
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
 }
@@ -156,8 +154,8 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Source: "><a href="#" class="sourceAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the source of the alias">' + item.source + '</td>\
-                    <td data-title="Destination: "><a href="#" class="destinationAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the destination of the alias">' + item.destination + '</td>\
+            html += '<td data-title="Source: "><a href="#" class="sourceAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the source of the alias">' + filterText(item.source) + '</td>\
+                    <td data-title="Destination: "><a href="#" class="destinationAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the destination of the alias">' + filterText(item.destination) + '</td>\
                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
@@ -206,11 +204,10 @@ $(document).ready(function () {
         return JSON.stringify({ 'value': params.value })
     };
     $.fn.editable.defaults.error = function (response) {
-        // The jQuery('div />') is a work around to encode all html characters
-        addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+        addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
     };
     $.fn.editable.defaults.display = function (value) {
-        $(this).html(value.toLowerCase());
+        $(this).html(filterText(value.toLowerCase()));
     };
 
     // When hitting the back/forward buttons, reload the table

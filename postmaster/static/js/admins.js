@@ -12,14 +12,13 @@ function newAdmin(username, password, name) {
             'name': name
         }),
 
-        success: function (data) {
+        success: function (response) {
             addStatusMessage('success', 'The administrator was added successfully');
             fillInTable();
         },
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
 }
@@ -32,14 +31,13 @@ function deleteAdmin (id) {
         url: '/api/v1/admins/' + id,
         type: 'delete',
 
-        success: function (data) {
+        success: function (response) {
             addStatusMessage('success', 'The administrator was successfully removed');
             fillInTable();
         },
 
-        error: function (data) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(data.responseText).message).html());
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
 }
@@ -61,35 +59,6 @@ function adminEventListeners () {
     adminPassword.tooltip();
     adminName.tooltip();
 
-    adminPassword.editable({
-        type: 'password',
-        mode: 'inline',
-        anim: 100,
-
-        ajaxOptions: {
-            type: 'PUT',
-            dataType: 'JSON',
-            contentType: 'application/json'
-        },
-
-        params: function (params) {
-            return JSON.stringify({'password': params.value})
-        },
-
-        display: function () {
-            $(this).html('●●●●●●●●');
-        },
-
-        error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
-        },
-
-        success: function () {
-            addStatusMessage('success', 'The administrator\'s password was changed successfully');
-        }
-    });
-
     adminUsername.editable({
         type: 'text',
         mode: 'inline',
@@ -106,12 +75,11 @@ function adminEventListeners () {
         },
 
         display: function (value) {
-            $(this).html(value.toLowerCase());
+            $(this).html(filterText(value.toLowerCase()));
         },
 
         error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         },
 
         success: function () {
@@ -139,8 +107,7 @@ function adminEventListeners () {
         },
 
         error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         },
 
         success: function () {
@@ -163,9 +130,12 @@ function adminEventListeners () {
             return JSON.stringify({ 'name': params.value })
         },
 
+        display: function (value) {
+            $(this).html(filterText(value));
+        },
+
         error: function (response) {
-            // The jQuery('div />') is a work around to encode all html characters
-            addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         },
 
         success: function () {
@@ -263,9 +233,9 @@ function fillInTable () {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Username: "><a href="#" class="adminUsername" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the username">' + item.username + '</a></td>\
+            html += '<td data-title="Username: "><a href="#" class="adminUsername" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the username">' + filterText(item.username) + '</a></td>\
                     <td data-title="Password: "><a href="#" class="adminPassword" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td data-title="Name: "><a href="#" class="adminName" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the name">' + item.name + '</a></td>\
+                    <td data-title="Name: "><a href="#" class="adminName" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the name">' + filterText(item.name) + '</a></td>\
                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
