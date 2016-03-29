@@ -30,9 +30,9 @@ function fillInTable() {
             var html = '';
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Time: ">' + dateFormatFromISO(item.timestamp) + '</td>\
-                    <td data-title="Admin: ">' + item.admin + '</td>\
-                    <td data-title="Message: ">' + item.message + '</td>';
+            html += '<td data-title="Time: ">' + filterText(dateFormatFromISO(item.timestamp)) + '</td>\
+                    <td data-title="Admin: ">' + filterText(item.admin) + '</td>\
+                    <td data-title="Message: ">' + filterText(item.message) + '</td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
 
@@ -47,7 +47,7 @@ function fillInTable() {
     .fail(function (jqxhr, textStatus, error) {
         // Remove the loading spinner
         manageSpinner(false);
-        addStatusMessage('error', JSON.parse(jqxhr.responseText)['message']);
+        addStatusMessage('error', filterText(JSON.parse(jqxhr.responseText)['message']));
     });
 }
 

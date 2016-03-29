@@ -3,7 +3,6 @@ from postmaster import app, db, models
 from postmaster.utils import add_default_configuration_settings
 
 app.config.from_object('config.TestConfiguration')
-SQLALCHEMY_DATABASE_URI = app.config['SQLALCHEMY_DATABASE_URI']
 
 def initialize():
     try:

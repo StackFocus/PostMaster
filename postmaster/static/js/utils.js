@@ -16,6 +16,25 @@ function getUrlVars() {
 }
 
 
+// Inspired from https://github.com/janl/mustache.js/blob/master/mustache.js
+function filterText(text) {
+     var entityMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+    };
+
+    return String(text).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
+      return entityMap[s];
+    });
+}
+
+
 function changePage(obj, e) {
 
     if (history.pushState) {

@@ -17,7 +17,11 @@ function configEventListeners () {
 
     configTextItems.unbind();
     configTextItems.tooltip();
-    configTextItems.editable();
+    configTextItems.editable({
+        display: function (value) {
+            $(this).html(filterText(value));
+        }
+    });
 
     configLogFile.unbind();
     configLogFile.tooltip();
@@ -26,6 +30,9 @@ function configEventListeners () {
             // Sets the Mail Database Auditing to True in the UI
             $('td:contains("Mail Database Auditing")').next('td').children('a').text('True');
             addStatusMessage('success', 'The setting was changed successfully');
+        },
+        display: function (value) {
+            $(this).html(filterText(value));
         }
     });
 }
@@ -65,8 +72,8 @@ function fillInTable () {
             }
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Setting: ">' + item.setting + '</td>\
-                    <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + (item.value != null ? item.value : '') + '</a></td>';
+            html += '<td data-title="Setting: ">' + filterText(item.setting) + '</td>\
+                    <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + (item.value != null ? filterText(item.value) : '') + '</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
 
@@ -112,8 +119,7 @@ $(document).ready(function () {
         return JSON.stringify({ 'value': params.value })
     };
     $.fn.editable.defaults.error = function (response) {
-        // The jQuery('div />') is a work around to encode all html characters
-        addStatusMessage('error', jQuery('<div />').text(jQuery.parseJSON(response.responseText).message).html());
+        addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
     };
     $.fn.editable.defaults.success = function () {
         addStatusMessage('success', 'The setting was changed successfully');
