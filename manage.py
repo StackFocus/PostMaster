@@ -30,9 +30,9 @@ def createdb():
     """Runs the db init, db migrate, db upgrade commands automatically,
     and adds the default configuration settings if they are missing"""
     if not os.path.isdir('db/migrations'):
-        flask_migrate.init(directory='db/migrations')
-    flask_migrate.migrate(directory='db/migrations')
-    flask_migrate.upgrade(directory='db/migrations')
+        flask_migrate.init(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
+    flask_migrate.migrate(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
+    flask_migrate.upgrade(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
     add_default_configuration_settings()
 
 
