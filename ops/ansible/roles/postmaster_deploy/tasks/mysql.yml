@@ -1,0 +1,26 @@
+---
+# mysql setup
+
+- name: Set MySQL root password before installing
+  sudo: yes
+  debconf: name='mysql-server' question='mysql-server/root_password' value='vagrant' vtype='password'
+
+- name: Confirm MySQL root password before installing
+  sudo: yes
+  debconf: name='mysql-server' question='mysql-server/root_password_again' value='vagrant' vtype='password'
+
+- name: Installing MySQL
+  sudo: yes
+  apt: pkg=mysql-server state=latest
+
+- name: Install mysql-python globally for this next command :(
+  pip: name=MySQL-python
+  sudo: yes
+
+- name: Create default database for mysql
+  mysql_db: name=servermail state=present login_user=root login_password=vagrant
+
+- name: Migrate tables
+  command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py createdb
+  args:
+    creates: /opt/postmaster/git/db/migrations
