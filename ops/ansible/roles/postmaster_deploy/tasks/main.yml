@@ -2,7 +2,7 @@
 
 - name: Install main list of packages
   apt: pkg={{item}} state=installed update_cache=true
-  sudo: yes
+  become: yes
   with_items:
     - git
     - python
@@ -20,11 +20,11 @@
 
 - name: Create virtualenv directory
   file: path=/opt/postmaster/env state=directory owner={{remote_user}} group={{remote_user}} mode=0775 recurse=yes
-  sudo: yes
+  become: yes
 
 - name: Create logs directory
   file: path=/opt/postmaster/logs state=directory owner={{remote_user}} group=www-data mode=0775 recurse=yes
-  sudo: yes
+  become: yes
 
 - pip: requirements=/opt/postmaster/git/requirements.txt virtualenv=/opt/postmaster/env
 
@@ -35,21 +35,21 @@
   apache2_module: state=present name=wsgi
 
 - name: Copy apache2 vhost config over
-  sudo: yes
+  become: yes
   copy: src=apache2/postmaster.conf dest=/etc/apache2/sites-available/postmaster.conf mode=0644
 
 - name: Disable default vhost
   command: a2dissite 000-default.conf
-  sudo: yes
+  become: yes
 
 - name: Enable new vhost
   command: a2ensite postmaster.conf
-  sudo: yes
+  become: yes
 
 - name: Ensure apache is started and enabled to start at boot.
-  sudo: yes
+  become: yes
   service: name=apache2 state=restarted enabled=yes
 
 - name: Ensure apache is reloaded
-  sudo: yes
+  become: yes
   service: name=apache2 state=reloaded
