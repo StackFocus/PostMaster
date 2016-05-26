@@ -12,10 +12,6 @@
   become: yes
   service: name=nginx state=reloaded
 
-- name: reload uwsgi
-  become: yes
-  service: name=uwsgi state=reloaded
-
 - name: reload apache
   become: yes
   service: name=apache2 state=reloaded
@@ -23,7 +19,3 @@
 - name: restart apache
   become: yes
   service: name=nginx state=restarted
-
-- name: restart uwsgi
-  become: yes
-  service: name=apache2 state=restarted

@@ -1,3 +1,3 @@
 ---
-remote_user: "ubuntu"
+remote_user: "postmaster"
 provision_type: ""

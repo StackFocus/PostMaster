@@ -1,5 +1,8 @@
 ---
 
+- name: Create PostMaster User
+  user: name={{remote_user}} comment="PostMaster Service Account"
+
 - name: Install main list of packages
   apt: pkg={{item}} state=installed update_cache=true
   become: yes
@@ -34,13 +37,14 @@
 - name: Enable wsgi module for apache2
   apache2_module: state=present name=wsgi
 
+- name: Check whether to copy the apache2 vhost file
+  stat: path=/etc/apache2/sites-available/postmaster.conf
+  register: apache2_config
+
 - name: Copy apache2 vhost config over
   become: yes
   copy: src=apache2/postmaster.conf dest=/etc/apache2/sites-available/postmaster.conf mode=0644
-
-- name: Disable default vhost
-  command: a2dissite 000-default.conf
-  become: yes
+  when: apache2_config.stat.exists == False
 
 - name: Enable new vhost
   command: a2ensite postmaster.conf

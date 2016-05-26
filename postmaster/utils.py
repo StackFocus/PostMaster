@@ -130,6 +130,7 @@ def add_default_configuration_settings():
     except Exception:
         db.session.rollback()
 
+
 def add_ldap_user_to_db(username, display_name):
     """ Adds an LDAP user stub in the Admins table of the database for flask_login
     """
