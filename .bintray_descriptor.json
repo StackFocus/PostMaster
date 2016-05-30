@@ -13,8 +13,8 @@
         "public_stats": true
     },
     "version": {
-        "name": "1.0.0",
-        "desc": "Abbey Road"
+        "name": "1.0.1",
+        "desc": "Yesterday and Today"
     },
     "files":
         [  {"includePattern": "./(.*\.deb)", "uploadPattern": "$1",
