@@ -12,6 +12,7 @@ after_success:
 
 before_deploy:
   - gem install fpm
+  - chmod 777 build_release.sh
   - ./build_release.sh
 
 deploy:
