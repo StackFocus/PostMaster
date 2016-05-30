@@ -17,6 +17,6 @@
         "desc": "Abbey Road"
     },
     "files":
-        [ {"includePattern": "(*.deb)", "uploadPattern": "$1"} ],
+        [ {"includePattern": "(.*\.deb)", "uploadPattern": "$1"} ],
     "publish": true
 }
