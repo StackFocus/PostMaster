@@ -23,12 +23,27 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
         /etc/mysql/my.cnf
 
-### Installation
+### Package Installation
+The PostMaster package can be found on Bintray at [https://bintray.com/stackfocus/deb/PostMaster](https://bintray.com/stackfocus/deb/PostMaster)
+
+This installation method works best on a fresh installation of the operating system.
+
+1. Run this command to add to the `/etc/apt/sources.list`:
+
+        echo "deb https://dl.bintray.com/stackfocus/deb {distribution} {components}" | sudo tee -a /etc/apt/sources.list
+
+2. Install the PostMaster package:
+
+        apt-get update && apt-get install postmaster
+
+3. PostMaster should now be running on port 8082. Simply use the username "admin" and the password "PostMaster" to login. You can change your username and password from Manage -> Administrators.
+
+### Manual Installation
 1. Switch to the server that will host PostMaster if applicable, and login as root:
 
         sudo su -
 
-2. Update the apititude package list:
+2. Update the aptitude package list:
 
         apt-get update
 
@@ -71,7 +86,7 @@ replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Prep
 
         cd /opt/postmaster/git
         python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
- 
+
 11. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
@@ -85,7 +100,7 @@ To start the migration, run the following command:
 13. You may now exit from the python virtual environment:
 
         deactivate
-        
+
 14. Provide the proper permissions on the PostMaster files:
 
         chown -R www-data:www-data /opt/postmaster

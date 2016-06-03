@@ -37,9 +37,9 @@ RUN source /opt/postmaster/env/bin/activate && python manage.py clean
 RUN chown -R www-data:www-data /opt/postmaster
 RUN chmod +x /opt/postmaster/git/ops/docker.sh
 RUN /usr/sbin/a2dissite 000-default.conf
-RUN cp -f ops/apache.conf /etc/apache2/sites-available/postmaster.conf
+RUN cp -f ops/ansible/roles/postmaster_deploy/files/apache2/apache.conf /etc/apache2/sites-available/postmaster.conf
 RUN /usr/sbin/a2ensite postmaster.conf
 
-EXPOSE 80
+EXPOSE 8082
 
 ENTRYPOINT /opt/postmaster/git/ops/docker.sh

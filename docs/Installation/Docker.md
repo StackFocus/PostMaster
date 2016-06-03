@@ -59,7 +59,7 @@ The -p has the Docker host serve port 80 of the PostMaster container. Change thi
 The -e specifies the value of the DB_URI environment variable, which is the URI that PostMaster will use to connect to your mail server's MySQL server.
 Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what you configured in step 2 of MySQL Preparation:
 
-        docker run -p 0.0.0.0:80:80 -v /opt/postmaster_data:/opt/postmaster/git/db \
+        docker run -p 0.0.0.0:80:8082 -v /opt/postmaster_data:/opt/postmaster/git/db \
              -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail -d postmaster
 
 7. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
