@@ -206,19 +206,16 @@ class TestAdFunctions:
     def test_login_pass(self):
         """ Tests the login function and expects a return value of True
         """
-        result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                   self.test_user[1]['userPassword'][0])
-        assert result is True
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
 
     @manage_mock_ldap
     def test_login_fail(self):
         """ Tests the login function with a wrong password and expects a return value of ADException
         """
-        try:
+        with pytest.raises(ADException) as excinfo:
             self.ad_obj.login(self.test_user[1]['distinguishedName'][0], 'WrongPassword')
-            assert False, 'The login function did not throw the expected exception'
-        except ADException as e:
-            assert e.message == 'The username or password was incorrect'
+        assert excinfo.value.message == 'The username or password was incorrect'
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
@@ -226,11 +223,9 @@ class TestAdFunctions:
     def test_get_loggedin_user(self, mock_whoami_s):
         """ Tests the get_loggedin_user function and expects the return value to be testUser
         """
-        login_result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                         self.test_user[1]['userPassword'][0])
-        assert login_result is True
-        loggedin_user_result = self.ad_obj.get_loggedin_user()
-        assert loggedin_user_result == 'testUser'
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
+        assert self.ad_obj.get_loggedin_user() == 'testUser'
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
@@ -239,11 +234,9 @@ class TestAdFunctions:
         """ Tests the get_loggedin_user_display_name function which expects the return
         value of Test User
         """
-        login_result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                         self.test_user[1]['userPassword'][0])
-        assert login_result is True
-        loggedin_user_display_name_result = self.ad_obj.get_loggedin_user_display_name()
-        assert loggedin_user_display_name_result == 'Test User'
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
+        assert self.ad_obj.get_loggedin_user_display_name() == 'Test User'
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser2')
@@ -252,11 +245,9 @@ class TestAdFunctions:
         """ Tests the get_loggedin_user_display_name function on a user which does not have the
         displayName attribute specified. It expects the return of the name attribute which is testUser2
         """
-        login_result = self.ad_obj.login(self.test_user2[1]['distinguishedName'][0],
-                                         self.test_user2[1]['userPassword'][0])
-        assert login_result is True
-        loggedin_user_display_name_result = self.ad_obj.get_loggedin_user_display_name()
-        assert loggedin_user_display_name_result == 'testUser2'
+        assert self.ad_obj.login(self.test_user2[1]['distinguishedName'][0],
+                                 self.test_user2[1]['userPassword'][0]) == True
+        assert self.ad_obj.get_loggedin_user_display_name() == 'testUser2'
 
     @manage_mock_ldap
     def test_sid2str(self):
@@ -275,13 +266,11 @@ class TestAdFunctions:
         distinguished name can be found when passing the sAMAccountName of testUser. The distinguished
         name of Domain Users is expected as the return value
         """
-        login_result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                         self.test_user[1]['userPassword'][0])
-        assert login_result is True
-        domain_users_primary_group_dn = self.ad_obj.get_primary_group_dn_of_user(
-            self.test_user[1]['sAMAccountName'][0])
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
         # MockLdap returns the result as lowercase which is why upper is needed for the assert
-        assert domain_users_primary_group_dn.upper() == 'CN=Domain Users,CN=Users,DC=postmaster,DC=local'.upper()
+        assert self.ad_obj.get_primary_group_dn_of_user(self.test_user[1]['sAMAccountName'][0]).upper() == \
+            'CN=Domain Users,CN=Users,DC=postmaster,DC=local'.upper()
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
@@ -290,12 +279,11 @@ class TestAdFunctions:
         """ Tests the get_distinguished_name function and expects the return value
         of the users's distinguished name
         """
-        login_result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                         self.test_user[1]['userPassword'][0])
-        assert login_result is True
-        distinguished_name = self.ad_obj.get_distinguished_name(self.test_user[1]['sAMAccountName'][0])
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
         # MockLdap returns the result as lowercase which is why upper is needed for the assert
-        assert distinguished_name.upper() == self.test_user[1]['distinguishedName'][0].upper()
+        assert self.ad_obj.get_distinguished_name(self.test_user[1]['sAMAccountName'][0]).upper() == \
+               self.test_user[1]['distinguishedName'][0].upper()
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
