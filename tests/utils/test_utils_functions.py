@@ -1,4 +1,5 @@
 ﻿import functools
+import pytest
 from mockldap import MockLdap
 from mock import patch
 from postmaster import app
@@ -89,14 +90,19 @@ def manage_mock_ldap(f):
     return wrapped
 
 
-def mocked_nested_group_members_query():
-    """ Returns mocked output of the memberOf:1.2.840.113556.1.4.1941 LDAP query
+def mocked_nested_group_membership_query():
+    """ Returns mocked output of the member:1.2.840.113556.1.4.1941 LDAP query
     """
-    return [('cn=testuser,cn=users,dc=postmaster,dc=local', {}),
-            ('cn=someuser,cn=users,dc=postmaster,dc=local', {}),
-            (None, ['ldaps://ForestDnsZones.postmaster.local/DC=ForestDnsZones,DC=postmaster,DC=local']),
-            (None, ['ldaps://DomainDnsZones.postmaster.local/DC=DomainDnsZones,DC=postmaster,DC=local']),
+    return [('CN=Some Group,OU=Groups,DC=postmaster,DC=local',
+             {'distinguishedName': ['CN=Some Group,OU=Groups,DC=postmaster,DC=local']}),
+            ('CN=PostMaster Admins,OU=Groups,DC=postmaster,DC=local',
+             {'distinguishedName': ['CN=ADReset Users,OU=Groups,DC=postmaster,DC=local']}),
+            (None,
+             ['ldaps://ForestDnsZones.postmaster.local/DC=ForestDnsZones,DC=postmaster,DC=local']),
+            (None,
+             ['ldaps://DomainDnsZones.postmaster.local/DC=DomainDnsZones,DC=postmaster,DC=local']),
             (None, ['ldaps://postmaster.local/CN=Configuration,DC=postmaster,DC=local'])]
+
 
 
 def mocked_get_nested_group_members():
@@ -293,62 +299,58 @@ class TestAdFunctions:
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
-    @patch('mockldap.ldapobject.LDAPObject.search_s', return_value=mocked_nested_group_members_query())
+    # This must be patched as this type of query is only valid in Active Directory
+    @patch('mockldap.ldapobject.LDAPObject.search_s', return_value=mocked_nested_group_membership_query())
     @manage_mock_ldap
-    def test_get_nested_group_members(self, mock_nested_group_members_query, mock_whoami_s):
-        """ Tests the get_nested_group_members function and expects the return value
+    def test_check_nested_group_membership(self, mock_nested_group_membership_query, mock_whoami_s):
+        """ Tests the check_nested_group_membership function and expects the return value
         of the users's distinguished name
         """
-        login_result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                         self.test_user[1]['userPassword'][0])
-        assert login_result is True
-        nested_groups = self.ad_obj.get_nested_group_members(self.post_master_admins_group[1]['distinguishedName'][0])
-        assert nested_groups == mocked_get_nested_group_members()
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
+        assert self.ad_obj.check_nested_group_membership(self.post_master_admins_group[1]['distinguishedName'][0],
+                                                         self.test_user[1]['distinguishedName'][0]) is True
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
-    @patch('postmaster.utils.AD.get_nested_group_members', return_value=mocked_get_nested_group_members())
+    # Simpler to patch this in order to reduce the overall amount of patches
+    @patch('postmaster.utils.AD.check_nested_group_membership', return_value=True)
     @manage_mock_ldap
-    def test_check_group_membership_pass_memberof(self, mock_get_nested_group_members, mock_whoami_s):
+    def test_check_group_membership_pass_memberof(self, mock_check_nested_group_membership, mock_whoami_s):
         """ Tests the check_group_membership function and that the user's group membership matches
         the administrative LDAP group specified in the database. A return value of True is expected
         """
-        login_result = self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
-                                         self.test_user[1]['userPassword'][0])
-        assert login_result is True
-        group_membership_result = self.ad_obj.check_group_membership()
-        assert group_membership_result is True
+        assert self.ad_obj.login(self.test_user[1]['distinguishedName'][0],
+                                 self.test_user[1]['userPassword'][0]) is True
+        assert self.ad_obj.check_group_membership() is True
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser2')
-    @patch('postmaster.utils.AD.get_nested_group_members', return_value=mocked_get_nested_group_members())
+    # Simpler to patch this in order to reduce the overall amount of patches
+    @patch('postmaster.utils.AD.check_nested_group_membership', return_value=False)
     @manage_mock_ldap
-    def test_check_group_membership_pass_primary_group(self, mock_get_nested_group_members, mock_whoami_s):
+    def test_check_group_membership_pass_primary_group(self, mock_check_nested_group_membership, mock_whoami_s):
         """ Tests the check_group_membership function and that the user's primaryGroupID matches
         the administrative LDAP group specified in the database. A return value of True is expected
         """
-        login_result = self.ad_obj.login(self.test_user2[1]['distinguishedName'][0],
-                                         self.test_user2[1]['userPassword'][0])
-        assert login_result is True
-        group_membership_result = self.ad_obj.check_group_membership()
-        assert group_membership_result is True
+        assert self.ad_obj.login(self.test_user2[1]['distinguishedName'][0],
+                                 self.test_user2[1]['userPassword'][0]) is True
+        assert self.ad_obj.check_group_membership() is True
 
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser3')
-    @patch('postmaster.utils.AD.get_nested_group_members', return_value=mocked_get_nested_group_members())
+    # Simpler to patch this in order to reduce the overall amount of patches
+    @patch('postmaster.utils.AD.check_nested_group_membership', return_value=False)
     @manage_mock_ldap
-    def test_check_group_membership_fail(self, mock_get_nested_group_members, mock_whoami_s):
+    def test_check_group_membership_fail(self, mock_check_nested_group_membership, mock_whoami_s):
         """ Tests the check_group_membership function and that the user is not authorized
         to use Post Master. A return value of ADException is expected
         """
-        login_result = self.ad_obj.login(self.test_user3[1]['distinguishedName'][0],
-                                         self.test_user3[1]['userPassword'][0])
-        assert login_result is True
-        try:
+        assert self.ad_obj.login(self.test_user3[1]['distinguishedName'][0],
+                                 self.test_user3[1]['userPassword'][0]) is True
+        with pytest.raises(ADException) as excinfo:
             self.ad_obj.check_group_membership()
-            assert False, 'The check_group_membership function did not throw the expected exception'
-        except ADException as e:
-            assert e.message == 'The user account is not authorized to login to PostMaster'
+        assert excinfo.value.message == 'The user account is not authorized to login to PostMaster'
 
     def test_add_ldap_user_to_db(self):
         """ Tests the add_ldap_user_to_db function and expects that the database
@@ -363,9 +365,10 @@ class TestAdFunctions:
     # Mocks the actual value returned from AD versus another LDAP directory
     @patch('mockldap.ldapobject.LDAPObject.whoami_s', return_value='POSTMASTER\\testUser')
     @patch('postmaster.utils.AD')
-    @patch('postmaster.utils.AD.get_nested_group_members', return_value=mocked_get_nested_group_members())
+    # Simpler to patch this in order to reduce the overall amount of patches
+    @patch('postmaster.utils.AD.check_nested_group_membership', return_value=True)
     @manage_mock_ldap
-    def test_validate_wtforms_password(self, mock_get_nested_group_members, mock_ad, mock_whoami_s):
+    def test_validate_wtforms_password(self, mock_check_nested_group_membership, mock_ad, mock_whoami_s):
         """ Tests the validate_wtforms_password function by logging in with an authorized LDAP user,
         and expects the Dashboard page (view when logged in) to be returned
         """
