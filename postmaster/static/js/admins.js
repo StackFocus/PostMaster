@@ -42,16 +42,13 @@ function deleteAdmin (id) {
     });
 }
 
-
-// Sets the event listeners in the dynamic table
-function adminEventListeners () {
+// Sets the event listeners for x-editable
+function editableAdminEventListeners() {
 
     var adminUsername = $('a.adminUsername');
     var adminPassword = $('a.adminPassword');
     var adminName = $('a.adminName');
-    var deleteModal = $('#deleteModal');
-    var deleteModalBtn = $('#modalDeleteBtn');
-    var newItemAnchor = $('#newItemAnchor');
+
     adminUsername.unbind();
     adminPassword.unbind();
     adminName.unbind();
@@ -142,20 +139,39 @@ function adminEventListeners () {
             addStatusMessage('success', 'The administrator\'s name was changed successfully');
         }
     });
+}
 
-    deleteModal.unbind('show.bs.modal');
+// Sets the event listeners in the dynamic table
+function adminEventListeners () {
+
+    var deleteModal = $('#deleteModal');
+    var deleteModalBtn = $('#modalDeleteBtn');
+    var newItemAnchor = $('#newItemAnchor');
+    
+    // When hitting the back/forward buttons, reload the table
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
+
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    };
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
+
     deleteModal.on('show.bs.modal', function (e) {
         deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
     });
 
-    deleteModalBtn.unbind('click');
     deleteModalBtn.on('click', function (e) {
         deleteModal.modal('hide');
         deleteAdmin($(this).attr('data-pk'));
     });
 
     // When the Add button is clicked, it will POST to the API
-    newItemAnchor.unbind();
     newItemAnchor.on('click', function (e) {
 
         // Close any status messages
@@ -197,7 +213,6 @@ function adminEventListeners () {
     });
 
     var newAdminInputs = $('#newAdminInput, #newAdminPasswordInput, #newAdminNameInput');
-    newAdminInputs.unbind();
     // When the user clicks out of the errored input field, the red border disappears
     newAdminInputs.blur(function () {
         $('#newAdminInput').parent().removeClass('has-error');
@@ -249,7 +264,7 @@ function fillInTable () {
         result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages'];
         setPagination(result['meta']['page'], pages, 'admins');
         //Activate x-editable on new elements and other events
-        adminEventListeners();
+        editableAdminEventListeners();
         // Remove the loading spinner
         manageSpinner(false);
     })
@@ -268,20 +283,9 @@ $(document).ready(function () {
     // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
 
+    // Sets the default event listeners
+    adminEventListeners();
+
     // Populate the table
     fillInTable();
-
-    // When hitting the back/forward buttons, reload the table
-    $(window).bind("popstate", function () {
-        fillInTable();
-    });
-
-    // Set the filter event listener
-    var typeWatchOptions = {
-        callback: function () { fillInTable() },
-        wait: 750,
-        captureLength: 2
-    };
-
-    $('#filterRow input').typeWatch(typeWatchOptions);
 });
