@@ -55,20 +55,31 @@ function domainEventListeners() {
     var deleteModal = $('#deleteModal');
     var deleteModalBtn = $('#modalDeleteBtn');
     var newDomainInput = $('#newDomainInput');
+    
+    // When hitting the back/forward buttons, reload the table
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
 
-    deleteModal.unbind('show.bs.modal');
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    };
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
+
     deleteModal.on('show.bs.modal', function (e) {
         deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
     });
 
-    deleteModalBtn.unbind('click');
     deleteModalBtn.on('click', function (e) {
         deleteModal.modal('hide');
         deleteDomain($(this).attr('data-pk'));
     });
 
     // When the Add button is clicked, it will POST to the API
-    newItemAnchor.unbind();
     newItemAnchor.on('click', function (e) {
 
         // Close any status messages
@@ -94,7 +105,6 @@ function domainEventListeners() {
     });
 
     // When the user clicks out of the errored input field, the red border disappears
-    newDomainInput.unbind();
     newDomainInput.blur(function () {
         newDomainInput.parent().removeClass('has-error');
     });
@@ -141,8 +151,6 @@ function fillInTable(filter) {
         // Set the pagination
         result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages'];
         setPagination(result['meta']['page'], pages, 'domains');
-        // Reactive all event listeners
-        domainEventListeners();
         // Remove the loading spinner
         manageSpinner(false);
     })
@@ -161,20 +169,9 @@ $(document).ready(function () {
     // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
 
+    // Sets the default event listeners
+    domainEventListeners();
+
     // Populate the table
     fillInTable();
-
-    // When hitting the back/forward buttons, reload the table
-    $(window).bind("popstate", function () {
-        fillInTable();
-    });
-
-    // Set the filter event listener
-    var typeWatchOptions = {
-        callback: function () { fillInTable() },
-        wait: 750,
-        captureLength: 2
-    };
-
-    $('#filterRow input').typeWatch(typeWatchOptions);
 });
