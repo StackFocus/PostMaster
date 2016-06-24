@@ -36,7 +36,33 @@ This installation method works best on a fresh installation of the operating sys
 
         apt-get update && apt-get install postmaster
 
-3. PostMaster should now be running on port 8082. Simply use the username "admin" and the password "PostMaster" to login. You can change your username and password from Manage -> Administrators.
+3. Start using the new python virtual environment that PostMaster created
+
+        source /opt/postmaster/env/bin/activate
+
+4. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+Make sure to replace "password_changeme" with the actual password supplied in step 2 of MySQL Preparation, and if needed,
+replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:
+
+        cd /opt/postmaster/git
+        python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
+
+5. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
+To start the migration, run the following command:
+
+        python manage.py createdb
+
+6. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
+
+        python manage.py generatekey
+
+7. You may now exit from the python virtual environment:
+
+        deactivate
+
+8. PostMaster should now be running on port 8082. Simply use the username "admin" and the password "PostMaster" to login.
+You can change your username and password from Manage -> Administrators.
 
 ### Manual Installation
 1. Switch to the server that will host PostMaster if applicable, and login as root:
@@ -71,7 +97,7 @@ This allows you to separate the system installed python packages from PostMaster
         pip install virtualenv
         virtualenv /opt/postmaster/env
 
-8. Start using new python virtual environment
+8. Start using the new python virtual environment
 
         source /opt/postmaster/env/bin/activate
 
