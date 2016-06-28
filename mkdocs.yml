@@ -4,3 +4,16 @@ theme_dir: 'docs/theme_edit'
 extra_css: ['extra.css']
 repo_url: https://github.com/stackfocus/postmaster
 repo_name: GitHub
+pages:
+- Home: index.md
+- Installation:
+    - Docker: Installation/Docker.md
+    - Ubuntu 14.04: Installation/Ubuntu1404.md
+    - Windows Server 2012 R2: Installation/WindowsServer2012R2.md
+- Configuration:
+    - Command Line Configuration: Configuration/CommandLineConfiguration.md
+    - Configurations Page: Configuration/ConfigurationsPage.md
+- API:
+    - API Usage: API/ApiUsage.md
+- Release Notes:
+    - Change Log: ChangeLog.md
