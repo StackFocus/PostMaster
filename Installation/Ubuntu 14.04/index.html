@@ -63,6 +63,13 @@
 <li>
           
             <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../Change%20Log/">Change Log</a>
+        
+    </li>
+<li>
+          
+            <li>
     <ul class="subnav">
     <li><span>API</span></li>
 
@@ -231,7 +238,38 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:</p>
 </code></pre>
 </li>
 <li>
-<p>PostMaster should now be running on port 8082. Simply use the username "admin" and the password "PostMaster" to login. You can change your username and password from Manage -&gt; Administrators.</p>
+<p>Start using the new python virtual environment that PostMaster created</p>
+<pre><code>source /opt/postmaster/env/bin/activate
+</code></pre>
+</li>
+<li>
+<p>PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+Make sure to replace "password_changeme" with the actual password supplied in step 2 of MySQL Preparation, and if needed,
+replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:</p>
+<pre><code>cd /opt/postmaster/git
+python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
+</code></pre>
+</li>
+<li>
+<p>PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
+To start the migration, run the following command:</p>
+<pre><code>python manage.py createdb
+</code></pre>
+</li>
+<li>
+<p>PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:</p>
+<pre><code>python manage.py generatekey
+</code></pre>
+</li>
+<li>
+<p>You may now exit from the python virtual environment:</p>
+<pre><code>deactivate
+</code></pre>
+</li>
+<li>
+<p>PostMaster should now be running on port 8082. Simply use the username "admin" and the password "PostMaster" to login.
+You can change your username and password from Manage -&gt; Administrators.</p>
 </li>
 </ol>
 <h3 id="manual-installation">Manual Installation</h3>
@@ -276,7 +314,7 @@ virtualenv /opt/postmaster/env
 </code></pre>
 </li>
 <li>
-<p>Start using new python virtual environment</p>
+<p>Start using the new python virtual environment</p>
 <pre><code>source /opt/postmaster/env/bin/activate
 </code></pre>
 </li>
@@ -372,7 +410,7 @@ If this folder is missing, PostMaster can't tell what state your database is in,
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-06-08 01:19:57.330000<p>
+    <p>Documentation generated on 2016-06-28 01:48:06.252000<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
