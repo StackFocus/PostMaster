@@ -77,5 +77,17 @@ def setdburi(uri):
         else:
             print(line.rstrip())
 
+
+@manager.command
+def setlogfile(filepath):
+    """Replaces the BaseConfiguration LOG_LOCATION in config.py with one supplied"""
+    base_config_set = False
+    for line in fileinput.input('config.py', inplace=True, backup='.bak'):
+        if not base_config_set and 'LOG_LOCATION' in line:
+            print(sub(r'(?<=LOG_LOCATION = \')(.+)(?=\')', filepath, line.rstrip()))
+            base_config_set = True
+        else:
+            print(line.rstrip())
+
 if __name__ == "__main__":
     manager.run()

@@ -1,5 +1,6 @@
 # Created by https://www.gitignore.io
 site.retry
+*.bak
 
 .vagrant
 .idea
@@ -66,5 +67,3 @@ target/
 
 env/
 *.deb
-
-

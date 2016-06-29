@@ -17,11 +17,13 @@ class BaseConfiguration(object):
     SQLALCHEMY_DATABASE_URI = 'mysql://root:vagrant@localhost:3306/servermail'
     basedir = path.abspath(path.dirname(__file__))
     SQLALCHEMY_MIGRATE_REPO = path.join(basedir, 'db/migrations')
+    LOG_LOCATION = '/opt/postmaster/logs/postmaster.log'
 
 
 class TestConfiguration(BaseConfiguration):
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    LOG_LOCATION = '../logs/postmaster.log'
     DEBUG = True
 
 

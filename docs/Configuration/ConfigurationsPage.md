@@ -1,12 +1,8 @@
 **Minimum Password Length** specifies the minimum password length that all mail users and administrators must adhere to.
 
-**Login Auditing** determines whether login and logout events are recorded in the log file. In order to enable this, the "Log File" setting must be configured.
+**Login Auditing** determines whether login and logout events are recorded in the log file.
 
 **Mail Database Auditing** determines whether changes to domains, users, aliases, administrators, and configuration settings should be recorded in the log file.
-In order to enable this, the "Log File" setting must be configured.
-
-**Log File** specifies a file path to where the log file should be. The path can be relative or absolute, but the file location must be writable by the web server.
-When configuring this setting, "Mail Database Auditing" will be turned on automatically.
 
 **Enable LDAP Authentication** determines whether Active Directory LDAP authentication is turned on or off. In order to enable LDAP authentication,
 the "AD Server LDAP String", "AD Domain", and "AD PostMaster Group" must be configured.

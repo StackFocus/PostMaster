@@ -9,7 +9,7 @@ from re import match
 from mmap import mmap
 from json import loads
 from ..errors import ValidationError
-from postmaster import db
+from postmaster import app
 from postmaster.models import Configs
 
 
@@ -29,23 +29,7 @@ def is_config_update_valid(setting, value, valid_value_regex):
     A bool is returned based on if the users input is valid.
     """
     if match(valid_value_regex, value):
-
-        if setting == 'Log File':
-            if not is_file_writeable(value):
-                raise ValidationError('The specified log path is not writable')
-            else:
-                # Enables Mail Database Auditing when the log file is set
-                mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
-                mail_db_auditing.value = 'True'
-                db.session.add(mail_db_auditing)
-
-        elif setting == 'Login Auditing' or setting == 'Mail Database Auditing':
-            log_file = Configs.query.filter_by(setting='Log File').first().value
-
-            if not log_file:
-                raise ValidationError('The log file must be set before auditing can be enabled')
-
-        elif setting == 'Enable LDAP Authentication':
+        if setting == 'Enable LDAP Authentication':
             ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
             ad_domain = Configs.query.filter_by(setting='AD Domain').first().value
             ad_group = Configs.query.filter_by(setting='AD PostMaster Group').first().value
@@ -66,11 +50,12 @@ def is_config_update_valid(setting, value, valid_value_regex):
 
         raise ValidationError('An invalid setting value was supplied')
 
+
 def get_logs_dict(numLines=50, reverseOrder=False):
     """
     Returns the JSON formatted log file as a dict
     """
-    logPath = Configs.query.filter_by(setting='Log File').first().value
+    logPath = app.config.get('LOG_LOCATION')
     if logPath and os.path.exists(logPath):
         logFile = open(logPath, mode='r+')
 

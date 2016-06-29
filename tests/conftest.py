@@ -12,8 +12,6 @@ def initialize():
         add_default_configuration_settings()
         config_maildb_auditing = models.Configs.query.filter_by(setting='Mail Database Auditing').first()
         config_maildb_auditing.value = 'True'
-        config_log_path = models.Configs.query.filter_by(setting='Log File').first()
-        config_log_path.value = 'postmaster.log'
         enable_ldap_auth = models.Configs.query.filter_by(setting='Enable LDAP Authentication').first()
         enable_ldap_auth.value = 'True'
         ldap_server = models.Configs.query.filter_by(setting='AD Server LDAP String').first()
@@ -25,7 +23,6 @@ def initialize():
 
         try:
             db.session.add(config_maildb_auditing)
-            db.session.add(config_log_path)
             db.session.add(enable_ldap_auth)
             db.session.add(ldap_server)
             db.session.add(domain)
