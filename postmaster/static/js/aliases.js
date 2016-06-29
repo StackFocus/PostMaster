@@ -43,13 +43,11 @@ function deleteAlias (id) {
 }
 
 
-// Sets the event listeners in the dynamic table
-function aliasEventListeners() {
+// Sets the event listeners for x-editable
+function editableAliasEventListeners() {
 
     var sourceAlias = $('a.sourceAlias');
     var destinationAlias = $('a.destinationAlias');
-    var deleteAnchor = $('a.deleteAnchor');
-    var newItemAnchor = $('#newItemAnchor');
 
     sourceAlias.unbind();
     sourceAlias.tooltip();
@@ -76,16 +74,35 @@ function aliasEventListeners() {
             addStatusMessage('success', 'The destination alias was changed successfully');
         }
     });
+}
 
+// Sets the event listeners in the dynamic table
+function aliasEventListeners() {
 
-    deleteAnchor.unbind();
-    deleteAnchor.on('click', function (e) {
+    var sourceAlias = $('a.sourceAlias');
+    var destinationAlias = $('a.destinationAlias');
+    var newItemAnchor = $('#newItemAnchor');
+
+    // When hitting the back/forward buttons, reload the table
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
+
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    };
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
+
+    $('#dynamicTable').on('click', 'a.deleteAnchor', function (e) {
         deleteAlias($(this).attr('data-pk'));
         e.preventDefault();
     });
 
     // When the Add button is clicked, it will POST to the API
-    newItemAnchor.unbind();
     newItemAnchor.on('click', function (e) {
 
         // Close any status messages
@@ -169,7 +186,7 @@ function fillInTable () {
         result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages'];
         setPagination(result['meta']['page'], pages, 'aliases');
         //Activate x-editable on new elements and other events
-        aliasEventListeners();
+        editableAliasEventListeners();
         // Remove the loading spinner
         manageSpinner(false);
     })
@@ -188,8 +205,8 @@ $(document).ready(function () {
     // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
 
-    // Populate the table
-    fillInTable();
+    // Sets the default event listeners
+    aliasEventListeners();
 
     // Set the defaults for x-editable
     $.fn.editable.defaults.mode = 'inline';
@@ -210,17 +227,6 @@ $(document).ready(function () {
         $(this).html(filterText(value.toLowerCase()));
     };
 
-    // When hitting the back/forward buttons, reload the table
-    $(window).bind("popstate", function () {
-        fillInTable();
-    });
-
-    // Set the filter event listener
-    var typeWatchOptions = {
-        callback: function () { fillInTable() },
-        wait: 750,
-        captureLength: 2
-    };
-
-    $('#filterRow input').typeWatch(typeWatchOptions);
+    // Populate the table
+    fillInTable();
 });

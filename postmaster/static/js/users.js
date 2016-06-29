@@ -11,12 +11,12 @@ function newUser(email, password) {
             'password': password
         }),
 
-        success: function (response) {
+        success: function(response) {
             addStatusMessage('success', 'The user was added successfully');
             fillInTable();
         },
 
-        error: function (response) {
+        error: function(response) {
             addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
         }
     });
@@ -24,7 +24,7 @@ function newUser(email, password) {
 
 
 // Deletes a user via the API
-function deleteUser (id) {
+function deleteUser(id) {
 
     $.ajax({
         url: '/api/v1/users/' + id,
@@ -42,13 +42,10 @@ function deleteUser (id) {
 }
 
 
-// Sets the event listeners in the dynamic table
-function userEventListeners () {
+// Sets the event listeners for x-editable
+function editableUserEventListeners() {
 
     var userPassword = $('a.userPassword');
-    var deleteModal = $('#deleteModal');
-    var deleteModalBtn = $('#modalDeleteBtn');
-    var newItemAnchor = $('#newItemAnchor');
     userPassword.unbind();
     userPassword.tooltip();
 
@@ -79,20 +76,40 @@ function userEventListeners () {
             addStatusMessage('success', 'The user\'s password was changed successfully');
         }
     });
+}
 
-    deleteModal.unbind('show.bs.modal');
+
+// Sets the event listeners in the dynamic table
+function userEventListeners() {
+
+    var deleteModal = $('#deleteModal');
+    var deleteModalBtn = $('#modalDeleteBtn');
+    var newItemAnchor = $('#newItemAnchor');
+
+    // When hitting the back/forward buttons, reload the table
+    $(window).bind("popstate", function () {
+        fillInTable();
+    });
+
+    // Set the filter event listener
+    var typeWatchOptions = {
+        callback: function () { fillInTable() },
+        wait: 750,
+        captureLength: 2
+    };
+
+    $('#filterRow input').typeWatch(typeWatchOptions);
+
     deleteModal.on('show.bs.modal', function (e) {
         deleteModalBtn.attr('data-pk', $(e.relatedTarget).data('pk'));
     });
 
-    deleteModalBtn.unbind('click');
     deleteModalBtn.on('click', function (e) {
         deleteModal.modal('hide');
         deleteUser($(this).attr('data-pk'));
     });
 
     // When the Add button is clicked, it will POST to the API
-    newItemAnchor.unbind();
     newItemAnchor.on('click', function (e) {
 
         // Close any status messages
@@ -126,7 +143,6 @@ function userEventListeners () {
     });
 
     var newUserInputs = $('#newUserInput, #newPasswordInput');
-    newUserInputs.unbind();
     // When the user clicks out of the errored input field, the red border disappears
     newUserInputs.blur(function () {
         $('#newUserInput').parent().removeClass('has-error');
@@ -175,8 +191,8 @@ function fillInTable () {
         // Set the pagination
         result['meta']['pages'] == 0 ? pages = 1 : pages = result['meta']['pages'];
         setPagination(result['meta']['page'], pages, 'users');
-        //Activate x-editable on new elements and other events
-        userEventListeners();
+        //Activate x-editable on new elements
+        editableUserEventListeners();
         // Remove the loading spinner
         manageSpinner(false);
     })
@@ -195,21 +211,9 @@ $(document).ready(function () {
     // This stops the browser from caching AJAX (fixes IE)
     $.ajaxSetup({ cache: false });
 
+    // Sets the default event listeners
+    userEventListeners();
+
     // Populate the table
     fillInTable();
-
-    // When hitting the back/forward buttons, reload the table
-    $(window).bind("popstate", function () {
-        fillInTable();
-    });
-
-
-    // Set the filter event listener
-    var typeWatchOptions = {
-        callback: function () { fillInTable() },
-        wait: 750,
-        captureLength: 2
-    };
-
-    $('#filterRow input').typeWatch(typeWatchOptions);
 });
