@@ -4,62 +4,64 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2016-06-27</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
-    <url>
-     <loc>None/Change Log/</loc>
-     <lastmod>2016-06-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    
-
-    
-        
-    <url>
-     <loc>None/API/API Usage/</loc>
-     <lastmod>2016-06-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    
-
-    
-        
-    <url>
-     <loc>None/Configuration/Command Line Configuration/</loc>
-     <lastmod>2016-06-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>None/Configuration/Configurations Page/</loc>
-     <lastmod>2016-06-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
     
 
     
         
     <url>
      <loc>None/Installation/Docker/</loc>
-     <lastmod>2016-06-27</lastmod>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/Installation/Ubuntu 14.04/</loc>
-     <lastmod>2016-06-27</lastmod>
+     <loc>None/Installation/Ubuntu1404/</loc>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>None/Installation/Windows Server 2012 R2/</loc>
-     <lastmod>2016-06-27</lastmod>
+     <loc>None/Installation/WindowsServer2012R2/</loc>
+     <lastmod>2016-06-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>None/Configuration/CommandLineConfiguration/</loc>
+     <lastmod>2016-06-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/Configuration/ConfigurationsPage/</loc>
+     <lastmod>2016-06-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>None/API/ApiUsage/</loc>
+     <lastmod>2016-06-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>None/ChangeLog/</loc>
+     <lastmod>2016-06-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
