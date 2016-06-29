@@ -10,6 +10,7 @@ Improvements:
 * Improved Active Directory authentication performance [GH-118]
 * Cleaned up JavaScript event listeners [GH-120]
 * Vagrant now uses Ansible for configuration instead of a bash script [GH-111]
+* Updated the Python packages to the latest versions [GH-127]
 
 Bug Fixes:
 
