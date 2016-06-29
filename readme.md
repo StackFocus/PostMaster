@@ -23,8 +23,9 @@ PostMaster is written by Kevin Law and Matthew Prahl.
 
 ### Documentation
 
+* [Change Log](https://stackfocus.github.io/PostMaster/ChangeLog/)
 * [Installation and Configuration](https://stackfocus.github.io/PostMaster/)
-* [API Basic Usage](http://stackfocus.github.io/PostMaster/API/API%20Usage/)
+* [API Basic Usage](http://stackfocus.github.io/PostMaster/API/ApiUsage/)
 * [OpenAPI Specification](https://stackfocus.github.io/PostMaster/API/openAPI-spec.html)
 
 ### Screenshots
