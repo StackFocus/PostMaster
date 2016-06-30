@@ -1,7 +1,8 @@
 ﻿import string
 import random
 import json
-from postmaster import db
+from mock import patch
+from postmaster import app, db
 from postmaster.models import Configs
 
 
@@ -322,8 +323,8 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     def test_configs_update_pass(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
-            {"value": "True"}))
+        rv = loggedin_client.put("/api/v1/configs/7", data=json.dumps(
+            {"value": "An Admin Group"}))
         assert rv.status_code == 200
 
     def test_configs_update_fail(self, loggedin_client):
@@ -331,6 +332,36 @@ class TestMailDbFunctions:
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
         assert 'An invalid setting value was supplied' in rv.data
+
+    @patch('os.access', return_value=False)
+    def test_configs_enable_login_auditing_log_write_fail(self, mock_os_access, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 400
+        assert 'The log could not be written to' in rv.data
+
+    @patch('os.access', return_value=True)
+    def test_configs_enable_login_auditing_log_write_pass(self, mock_os_access, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 200
+
+    @patch('os.access', return_value=False)
+    def test_configs_enable_maildb_auditing_log_write_fail(self, mock_os_access, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 400
+        assert 'The log could not be written to' in rv.data
+
+    @patch('os.access', return_value=True)
+    def test_configs_enable_maildb_auditing_log_write_pass(self, mock_os_access, loggedin_client, tmpdir):
+        log_file = tmpdir.join('postmaster.log')
+        app.config['LOG_LOCATION'] = str(log_file)
+        rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+            {"value": "True"}))
+        # Clean up the temp directory created by the test
+        tmpdir.remove()
+        assert rv.status_code == 200
 
     def test_configs_min_pwd_update_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(

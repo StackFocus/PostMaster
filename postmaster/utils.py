@@ -9,7 +9,7 @@ from struct import unpack
 from re import search, sub, IGNORECASE
 from json import dumps
 from datetime import datetime
-from os import getcwd
+from os import path
 from wtforms.validators import StopValidation as WtfStopValidation
 from postmaster import app, db, models, bcrypt
 from postmaster.errors import ValidationError
@@ -32,8 +32,7 @@ def login_auditing_enabled():
 
 
 def json_logger(category, admin, message):
-    """
-    Takes a category (typically error or audit), a log message and the responsible
+    """ Takes a category (typically error or audit), a log message and the responsible
     user. It then appends it with an ISO 8601 UTC timestamp to a JSON formatted log file
     """
     log_path = app.config.get('LOG_LOCATION')
@@ -52,10 +51,8 @@ def json_logger(category, admin, message):
                     sort_keys=True)))
                 log_file.close()
         except IOError:
-            raise ValidationError(
-                'The log could not be written to  "{0}". \
-                Verify that the path exists and is writeable.'.format(
-                    getcwd().replace('\\', '/') + '/' + log_path))
+            raise ValidationError('The log could not be written to "{0}". '
+                                  'Verify that the path exists and is writeable.'.format(path.abspath(log_path)))
 
 
 def add_default_configuration_settings():

@@ -10,8 +10,8 @@ def initialize():
         db.drop_all()
         db.create_all()
         add_default_configuration_settings()
-        config_maildb_auditing = models.Configs.query.filter_by(setting='Mail Database Auditing').first()
-        config_maildb_auditing.value = 'True'
+        admin2 = models.Admins().from_json(
+            {'username': 'admin2', 'password': 'PostMaster2', 'name': 'Some Admin'})
         enable_ldap_auth = models.Configs.query.filter_by(setting='Enable LDAP Authentication').first()
         enable_ldap_auth.value = 'True'
         ldap_server = models.Configs.query.filter_by(setting='AD Server LDAP String').first()
@@ -22,7 +22,7 @@ def initialize():
         ldap_admin_group.value = 'PostMaster Admins'
 
         try:
-            db.session.add(config_maildb_auditing)
+            db.session.add(admin2)
             db.session.add(enable_ldap_auth)
             db.session.add(ldap_server)
             db.session.add(domain)
@@ -73,8 +73,14 @@ def initialize():
 
     return False
 
-# Create a fresh database
-initialize()
+
+# Reinitialize the database before each test
+@pytest.yield_fixture(autouse=True)
+def run_before_tests():
+    # Code that runs before each test
+    initialize()
+    # A test function will be run at this point
+    yield
 
 
 @pytest.fixture(scope='module')

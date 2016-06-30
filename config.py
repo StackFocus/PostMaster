@@ -23,7 +23,6 @@ class BaseConfiguration(object):
 class TestConfiguration(BaseConfiguration):
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
-    LOG_LOCATION = '../logs/postmaster.log'
     DEBUG = True
 
 

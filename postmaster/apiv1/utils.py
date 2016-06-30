@@ -26,10 +26,16 @@ def is_file_writeable(file):
 
 def is_config_update_valid(setting, value, valid_value_regex):
     """ A helper function for the update_config function on the /configs/<int:config_id> PUT route.
-    A bool is returned based on if the users input is valid.
+    A bool is returned based on if the user's input is valid.
     """
     if match(valid_value_regex, value):
-        if setting == 'Enable LDAP Authentication':
+        if setting == 'Login Auditing' or setting == 'Mail Database Auditing':
+            log_path = app.config.get('LOG_LOCATION')
+            if not log_path or not is_file_writeable(log_path):
+                raise ValidationError('The log could not be written to "{0}". '
+                                      'Verify that the path exists and is writeable.'.format(os.path.abspath(log_path)))
+
+        elif setting == 'Enable LDAP Authentication':
             ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
             ad_domain = Configs.query.filter_by(setting='AD Domain').first().value
             ad_group = Configs.query.filter_by(setting='AD PostMaster Group').first().value
