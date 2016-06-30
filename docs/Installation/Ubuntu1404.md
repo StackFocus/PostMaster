@@ -53,6 +53,9 @@ To start the migration, run the following command:
 
         python manage.py createdb
 
+ - If you are coming from an existing database with `virtual_users`, `virtual_domains`, and `virtual_aliases` tables (you followed the mailserver setup guides at the top), then run this command instead of the above:  
+   `python manage.py existingdb`  
+
 6. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 
         python manage.py generatekey
@@ -118,6 +121,9 @@ which means that only the necessary changes to the database are made, and these 
 To start the migration, run the following command:
 
         python manage.py createdb
+
+ - If you are coming from an existing database with `virtual_users`, `virtual_domains`, and `virtual_aliases` tables (you followed the mailserver setup guides at the top), then run this command instead of the above:  
+   `python manage.py existingdb`  
 
 12. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 

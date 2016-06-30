@@ -60,7 +60,7 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 9. Create a directory to contain PostMaster:
 
         New-Item "$env:SystemDrive\PostMaster" -Type Directory
-        
+
 9. Create a directory to contain PostMaster logs:
 
         New-Item "$env:SystemDrive\PostMaster\logs" -Type Directory
@@ -114,7 +114,7 @@ This is done with the following command:
 20. Install "mysqlclient":
 
         pip install "$env:SystemDrive\mysqlclient-1.3.7-cp27-none-win32.whl"
-        
+
 19. Remove the "mysqlclient" installation file:
 
         Remove-Item "$env:SystemDrive\mysqlclient-1.3.7-cp27-none-win32.whl" -Force
@@ -129,7 +129,7 @@ This is done with the following command:
 
 22. At this point, PostMaster requires an IIS site. You can either use the "Default Web Site" and change the virtual directory to C:\PostMaster\git,
 or create a new site that points to that directory. This tutorial will use the Default Web Site. To change the virtual directory, use the following commands:
-        
+
         Import-Module WebAdministration
         Set-ItemProperty 'IIS:\Sites\Default Web Site\' -Name physicalPath -Value "$env:SystemDrive\PostMaster\git"
 
@@ -149,12 +149,15 @@ replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Prep
 
         cd C:\Postmaster\git
         python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
- 
+
 25. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
         python manage.py createdb
+
+ - If you are coming from an existing database with `virtual_users`, `virtual_domains`, and `virtual_aliases` tables (you followed the mailserver setup guides at the top), then run this command instead of the above:  
+   `python manage.py existingdb`  
 
 26. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 

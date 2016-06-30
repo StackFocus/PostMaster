@@ -29,10 +29,36 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 def createdb():
     """Runs the db init, db migrate, db upgrade commands automatically,
     and adds the default configuration settings if they are missing"""
-    if not os.path.isdir('db/migrations'):
-        flask_migrate.init(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
-    flask_migrate.migrate(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
-    flask_migrate.upgrade(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
+    if not os.path.isdir('migrations'):
+        flask_migrate.init()
+        flask_migrate.migrate()
+    flask_migrate.upgrade()
+    add_default_configuration_settings()
+
+
+@manager.command
+def existingdb():
+    """Only use this function if you setup your mailserver
+    database before this application and only have the virtual_* tables.
+
+    It marks the first revision complete, which
+    is the revision that creates the virtual_* tables
+
+    If you run this command down the road, it will error on
+    the next revision e8f52e92abd0 where it creates the postmaster tables.
+    You'll have to stamp the database to the latest revision.
+    `python manage.py db stamp head`
+    """
+    flask_migrate.stamp(revision='bcc85aaa7896')
+    flask_migrate.upgrade()
+    add_default_configuration_settings()
+
+
+@manager.command
+def upgradedb():
+    """Upgrades the existing database to new state and adds
+    default configurations if missing"""
+    flask_migrate.upgrade()
     add_default_configuration_settings()
 
 

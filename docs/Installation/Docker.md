@@ -1,9 +1,4 @@
 ### Overview
-PostMaster is a Docker friendly application, however, it does require a data volume.
-This is because PostMaster uses database migrations to safely upgrade the database schema.
-The data volume contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
-If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.
-In this documentation, the data volume will be hosted in /opt/postmaster_data on the Docker host, but you can alter this in anyway you see fit.
 
 ### Prerequisites
 1. An Ubuntu 14.04 mail server configured with the guide from [DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin) or [Linode](https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql).
@@ -32,35 +27,22 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
 ### Installation
 
-1. Switch to the Docker host, and login as root:
-
-        sudo su -
-
-2. As root, create the following folder on the Docker host to hold PostMaster's data volume:
-
-        mkdir /opt/postmaster_data
-
-3. Provide the appropriate permissions to PostMaster's data volume:
-
-        chown root:root /opt/postmaster_data && chmod 770 /opt/postmaster_data
-
-4. Download the PostMaster sourcecode from GitHub:
+1. Download the PostMaster sourcecode from GitHub:
 
         git clone https://github.com/StackFocus/PostMaster.git ~/postmaster
 
-5. Build the Docker image:
+2. Build the Docker image:
 
         cd ~/postmaster
         docker build -t postmaster .
 
-6. Run a PostMaster Docker container from the created image.
-The -v points to the data volume that was created in step 2.
+3. Run a PostMaster Docker container from the created image.
 The -p has the Docker host serve port 80 of the PostMaster container. Change this to what suits your environment.
 The -e specifies the value of the DB_URI environment variable, which is the URI that PostMaster will use to connect to your mail server's MySQL server.
 Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what you configured in step 2 of MySQL Preparation:
 
-        docker run -p 0.0.0.0:80:8082 -v /opt/postmaster_data:/opt/postmaster/git/db \
+        docker run -p 0.0.0.0:80:8082 \
              -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail -d postmaster
 
-7. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
+4. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.
