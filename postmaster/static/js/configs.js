@@ -2,7 +2,6 @@
 function configEventListeners () {
     var configBoolItems = $('a.configBool');
     var configTextItems = $('a.configText');
-    var configLogFile = $('a.configLogFile');
 
     configBoolItems.unbind();
     configBoolItems.tooltip();
@@ -18,19 +17,6 @@ function configEventListeners () {
     configTextItems.unbind();
     configTextItems.tooltip();
     configTextItems.editable({
-        display: function (value) {
-            $(this).html(filterText(value));
-        }
-    });
-
-    configLogFile.unbind();
-    configLogFile.tooltip();
-    configLogFile.editable({
-        success: function () {
-            // Sets the Mail Database Auditing to True in the UI
-            $('td:contains("Mail Database Auditing")').next('td').children('a').text('True');
-            addStatusMessage('success', 'The setting was changed successfully');
-        },
         display: function (value) {
             $(this).html(filterText(value));
         }
@@ -61,10 +47,7 @@ function fillInTable () {
                 'Enable LDAP Authentication'
             ];
 
-            if (item.setting == 'Log File') {
-                var cssClass = 'configLogFile'
-            }
-            else if($.inArray(item.setting, boolConfigItems) != -1) {
+            if($.inArray(item.setting, boolConfigItems) != -1) {
                 var cssClass = 'configBool'
             }
             else {

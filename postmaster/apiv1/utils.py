@@ -9,7 +9,7 @@ from re import match
 from mmap import mmap
 from json import loads
 from ..errors import ValidationError
-from postmaster import db
+from postmaster import app
 from postmaster.models import Configs
 
 
@@ -26,24 +26,14 @@ def is_file_writeable(file):
 
 def is_config_update_valid(setting, value, valid_value_regex):
     """ A helper function for the update_config function on the /configs/<int:config_id> PUT route.
-    A bool is returned based on if the users input is valid.
+    A bool is returned based on if the user's input is valid.
     """
     if match(valid_value_regex, value):
-
-        if setting == 'Log File':
-            if not is_file_writeable(value):
-                raise ValidationError('The specified log path is not writable')
-            else:
-                # Enables Mail Database Auditing when the log file is set
-                mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
-                mail_db_auditing.value = 'True'
-                db.session.add(mail_db_auditing)
-
-        elif setting == 'Login Auditing' or setting == 'Mail Database Auditing':
-            log_file = Configs.query.filter_by(setting='Log File').first().value
-
-            if not log_file:
-                raise ValidationError('The log file must be set before auditing can be enabled')
+        if setting == 'Login Auditing' or setting == 'Mail Database Auditing':
+            log_path = app.config.get('LOG_LOCATION')
+            if not log_path or not is_file_writeable(log_path):
+                raise ValidationError('The log could not be written to "{0}". '
+                                      'Verify that the path exists and is writeable.'.format(os.path.abspath(log_path)))
 
         elif setting == 'Enable LDAP Authentication':
             ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
@@ -66,11 +56,12 @@ def is_config_update_valid(setting, value, valid_value_regex):
 
         raise ValidationError('An invalid setting value was supplied')
 
+
 def get_logs_dict(numLines=50, reverseOrder=False):
     """
     Returns the JSON formatted log file as a dict
     """
-    logPath = Configs.query.filter_by(setting='Log File').first().value
+    logPath = app.config.get('LOG_LOCATION')
     if logPath and os.path.exists(logPath):
         logFile = open(logPath, mode='r+')
 

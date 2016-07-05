@@ -1,11 +1,11 @@
 ### Before You Start
 1. Logged into the server hosting PostMaster as root or as an administrator, enter the Python virtual environment (if necessary, replace the path with your install location):
-        
+
         Linux:
         source /opt/postmaster/env/bin/activate
         Windows:
         C:\PostMaster\env\Scripts\activate.ps1
-        
+
 2. Once you've entered the Python virtual environment, navigate to the location of manage.py (replace /opt/postmaster/git with your install location):
 
         cd /opt/postmaster/git
@@ -21,6 +21,8 @@ Use the following commands to restore the proper permissions on the PostMaster f
         chmod -R 550 /opt/postmaster
 
 ### Command Line Commands
+
+**setlogfile** sets the location of the logfile. The default is `/opt/postmaster/logs/postmaster.log`.
 
 **setdburi** sets the MySQL database URI that PostMaster uses to connect to the MySQL server used by your mail server.
 

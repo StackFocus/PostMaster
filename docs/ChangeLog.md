@@ -1,5 +1,9 @@
 ### Unreleased
 
+BACKWARDS INCOMPATIBILITIES / NOTES:
+
+* 'Log File' config option is now baked into the application config and cannot be set in the api / webui / database. Use `python manage.py setlogfile <path>` or edit config.py to change the log file location. See [GH-128].
+
 Features:
 
 * Added the ability to install PostMaster via a deb package [GH-111]

@@ -9,9 +9,9 @@ from struct import unpack
 from re import search, sub, IGNORECASE
 from json import dumps
 from datetime import datetime
-from os import getcwd
+from os import path
 from wtforms.validators import StopValidation as WtfStopValidation
-from postmaster import db, models, bcrypt
+from postmaster import app, db, models, bcrypt
 from postmaster.errors import ValidationError
 
 
@@ -32,11 +32,10 @@ def login_auditing_enabled():
 
 
 def json_logger(category, admin, message):
-    """
-    Takes a category (typically error or audit), a log message and the responsible
+    """ Takes a category (typically error or audit), a log message and the responsible
     user. It then appends it with an ISO 8601 UTC timestamp to a JSON formatted log file
     """
-    log_path = models.Configs.query.filter_by(setting='Log File').first().value
+    log_path = app.config.get('LOG_LOCATION')
     if log_path and ((category == 'error') or
        (category == 'audit' and maildb_auditing_enabled()) or
        (category == 'auth' and login_auditing_enabled())):
@@ -52,10 +51,8 @@ def json_logger(category, admin, message):
                     sort_keys=True)))
                 log_file.close()
         except IOError:
-            raise ValidationError(
-                'The log could not be written to  "{0}". \
-                Verify that the path exists and is writeable.'.format(
-                    getcwd().replace('\\', '/') + '/' + log_path))
+            raise ValidationError('The log could not be written to "{0}". '
+                                  'Verify that the path exists and is writeable.'.format(path.abspath(log_path)))
 
 
 def add_default_configuration_settings():
@@ -82,12 +79,6 @@ def add_default_configuration_settings():
         mail_db_auditing.value = 'False'
         mail_db_auditing.regex = '^(True|False)$'
         db.session.add(mail_db_auditing)
-
-    if not models.Configs.query.filter_by(setting='Log File').first():
-        log_file = models.Configs()
-        log_file.setting = 'Log File'
-        log_file.regex = '^(.+)$'
-        db.session.add(log_file)
 
     if not models.Configs.query.filter_by(setting='Enable LDAP Authentication').first():
         ldap_auth = models.Configs()

@@ -1,5 +1,6 @@
 ﻿import functools
 import pytest
+from json import load
 from mockldap import MockLdap
 from mock import patch
 from postmaster import app
@@ -17,10 +18,28 @@ class TestUtilsFunctions:
         result = login_auditing_enabled()
         assert isinstance(result, bool)
 
-    def test_get_logs_dict(self):
+    def test_get_logs_dict(self, tmpdir):
+        # Staging a fake log file
+        log_file = tmpdir.join('postmaster.log')
+        log_file.write('{"admin": "admin", "category": "audit", "message": "The alias \\"rawr@postmaster.com\\" was created successfully", "timestamp": "2016-07-01T00:41:06.330000Z"}\n'
+                       '{"admin": "admin", "category": "audit", "message": "The alias \\"rawr2@postmaster.com\\" was created successfully", "timestamp": "2016-07-01T00:42:06.330000Z"}\n')
+        app.config['LOG_LOCATION'] = str(log_file)
         result = get_logs_dict()
+        # Clean up the temp directory created by the test
+        tmpdir.remove()
         assert isinstance(result, dict)
         assert 'items' in result
+
+    def test_json_logger(self, tmpdir):
+        log_file = tmpdir.join('postmaster.log')
+        app.config['LOG_LOCATION'] = str(log_file)
+        json_logger('error', 'admin', 'This is a test error message')
+        log_contents = load(log_file)
+        # Clean up the temp directory created by the test
+        tmpdir.remove()
+        assert log_contents['admin'] == 'admin'
+        assert log_contents['message'] == 'This is a test error message'
+        assert log_contents['timestamp'] is not None
 
     @patch('os.access', return_value=True)
     def test_is_file_writeable_existing_file(self, mock_access):

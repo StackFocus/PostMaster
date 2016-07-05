@@ -160,20 +160,24 @@ To start the migration, run the following command:
 
         python manage.py generatekey
 
-27. You may now exit the Python virtual environment:
+27. By deafult, PostMaster logs to a Linux based path, run the following command to change the log to the text file created in step 11:
+
+        python manage.py setlogfile "$env:SystemDrive\PostMaster\logs\postmaster.log"
+
+28. You may now exit the Python virtual environment:
 
         deactivate
 
-28. Restart IIS to make sure all the changes take effect:
+29. Restart IIS to make sure all the changes take effect:
 
         iisreset
 
-29. At this point it is highly recommended that you implement SSL before using PostMaster in production.
+30. At this point it is highly recommended that you implement SSL before using PostMaster in production.
 
-29. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
+31. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.
 
-30. Please keep in mind that the C:\PostMaster\git\db\migrations folder should be backed up after installation/updates.
+32. Please keep in mind that the C:\PostMaster\git\db\migrations folder should be backed up after installation/updates.
 This is because PostMaster uses database migrations to safely upgrade the database schema,
 and this folder contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
 If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.

@@ -1,8 +1,10 @@
 ﻿import string
 import random
 import json
-from postmaster import db
+from mock import patch
+from postmaster import app, db
 from postmaster.models import Configs
+
 
 class TestMailDbFunctions:
 
@@ -321,8 +323,8 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     def test_configs_update_pass(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
-            {"value": "True"}))
+        rv = loggedin_client.put("/api/v1/configs/7", data=json.dumps(
+            {"value": "An Admin Group"}))
         assert rv.status_code == 200
 
     def test_configs_update_fail(self, loggedin_client):
@@ -330,6 +332,36 @@ class TestMailDbFunctions:
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
         assert 'An invalid setting value was supplied' in rv.data
+
+    @patch('os.access', return_value=False)
+    def test_configs_enable_login_auditing_log_write_fail(self, mock_os_access, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 400
+        assert 'The log could not be written to' in rv.data
+
+    @patch('os.access', return_value=True)
+    def test_configs_enable_login_auditing_log_write_pass(self, mock_os_access, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 200
+
+    @patch('os.access', return_value=False)
+    def test_configs_enable_maildb_auditing_log_write_fail(self, mock_os_access, loggedin_client):
+        rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+            {"value": "True"}))
+        assert rv.status_code == 400
+        assert 'The log could not be written to' in rv.data
+
+    @patch('os.access', return_value=True)
+    def test_configs_enable_maildb_auditing_log_write_pass(self, mock_os_access, loggedin_client, tmpdir):
+        log_file = tmpdir.join('postmaster.log')
+        app.config['LOG_LOCATION'] = str(log_file)
+        rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+            {"value": "True"}))
+        # Clean up the temp directory created by the test
+        tmpdir.remove()
+        assert rv.status_code == 200
 
     def test_configs_min_pwd_update_pass(self, loggedin_client):
         rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
@@ -342,15 +374,6 @@ class TestMailDbFunctions:
         assert rv.status_code == 400
         assert 'An invalid minimum password length was supplied.' in rv.data
 
-    def test_configs_update_log_file_fail(self, loggedin_client):
-        """ Tests the update_config function (PUT route for configs) when a new log file
-        path is specified but isn't writeable. A return value of an error is expected.
-        """
-        rv = loggedin_client.put("/api/v1/configs/4", data=json.dumps(
-            {"value": "s0m3NonExistentDir/new_logfile.txt"}))
-        assert rv.status_code == 400
-        assert 'The specified log path is not writable' in rv.data
-
     def test_configs_update_enable_ldap_no_server(self, loggedin_client):
         """ Tests the update_config function (PUT route for configs) when LDAP is set to enabled
         but an LDAP server is not configured. A return value of an error is expected.
@@ -362,7 +385,7 @@ class TestMailDbFunctions:
         db.session.add(ldap_string)
         db.session.commit()
 
-        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/4", data=json.dumps(
             {"value": "True"}))
 
         # Reverts to the previous AD Server LDAP String
@@ -384,7 +407,7 @@ class TestMailDbFunctions:
         db.session.add(ldap_enabled)
         db.session.commit()
 
-        rv = loggedin_client.put("/api/v1/configs/6", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
             {"value": ""}))
 
         # Reverts to the previous state
@@ -394,45 +417,3 @@ class TestMailDbFunctions:
 
         assert rv.status_code == 400
         assert 'LDAP authentication must be disabled when deleting LDAP configuration items' in rv.data
-
-    def test_configs_update_auditing_with_no_log_file_fail(self, loggedin_client):
-        """ Tests the update_config function (PUT route for configs) to make sure
-        audit settings cannot be set when the log file path is not set.
-        """
-        # Sets Login Auditing to False
-        login_auditing = Configs.query.filter_by(setting='Login Auditing').first()
-        old_login_auditing_value = login_auditing.value
-        login_auditing.value = 'False'
-        db.session.add(login_auditing)
-        # Sets Mail Database Auditing to False
-        mail_db_auditing = Configs.query.filter_by(setting='Mail Database Auditing').first()
-        old_mail_db_auditing = mail_db_auditing.value
-        mail_db_auditing.value = 'False'
-        db.session.add(mail_db_auditing)
-        # Sets the Log File to None
-        log_file = Configs.query.filter_by(setting='Log File').first()
-        old_log_file_value = log_file.value
-        log_file.value = None
-        db.session.add(log_file)
-        db.session.commit()
-
-        # Attempts to enable Login Auditing
-        login_auditing_rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
-            {"value": "True"}))
-        # Attempts to enable Mail Database Auditing
-        mail_db_auditing_rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
-            {"value": "True"}))
-
-        # Reverts changes made to the database previously
-        login_auditing.value = old_login_auditing_value
-        mail_db_auditing.value = old_mail_db_auditing
-        log_file.value = old_log_file_value
-        db.session.add(login_auditing)
-        db.session.add(mail_db_auditing)
-        db.session.add(log_file)
-        db.session.commit()
-
-        assert login_auditing_rv.status_code == 400
-        assert 'The log file must be set before auditing can be enabled' in login_auditing_rv.data
-        assert mail_db_auditing_rv.status_code == 400
-        assert 'The log file must be set before auditing can be enabled' in mail_db_auditing_rv.data
