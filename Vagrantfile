@@ -15,7 +15,7 @@ ansible-playbook -i "localhost," -c local /opt/postmaster/git/ops/ansible/site.y
 SCRIPT
 
 Vagrant.configure(2) do |config|
-    config.vm.box = "puphpet/ubuntu1404-x64"
+    config.vm.box = "boxcutter/ubuntu1604"
     config.vm.network "forwarded_port", guest: 8082, host: 8080
     config.vm.synced_folder "./", "/opt/postmaster/git"
     config.vm.provision "shell", inline: $script
