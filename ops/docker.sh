@@ -1,4 +1,6 @@
 #!/bin/bash
+# Remove any remnants of apache if it didn't shut down properly
+rm -f /var/run/apache2/apache2.pid
 
 if [ -f /.mysql_db_created ]; then
     unset DB_URI
