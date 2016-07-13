@@ -4,6 +4,7 @@ File: models.py
 Purpose: database definitions for SQLAlchemy
 """
 from postmaster import db, bcrypt
+from datetime import datetime
 from .errors import ValidationError
 from re import search, match
 from os import urandom
@@ -226,6 +227,9 @@ class Admins(db.Model):
     password = db.Column(db.String(64))
     source = db.Column(db.String(64))
     active = db.Column(db.Boolean, default=True)
+    failed_attempts = db.Column(db.Integer)
+    last_failed_date = db.Column(db.DateTime)
+    unlock_date = db.Column(db.DateTime)
 
     def is_active(self):
         """ Returns if user is active
@@ -256,7 +260,9 @@ class Admins(db.Model):
     def to_json(self):
         """ Leaving password out
         """
-        return {'id': self.id, 'name': self.name, 'username': self.username}
+        return {'id': self.id, 'name': self.name, 'username': self.username, 'failed_attempts': self.failed_attempts,
+                'last_failed_date': self.last_failed_date, 'unlock_date': self.unlock_date,
+                'locked': (self.unlock_date is not None and self.unlock_date > datetime.utcnow())}
 
     def from_json(self, json):
         if not json.get('username', None):

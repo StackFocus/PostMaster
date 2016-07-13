@@ -25,7 +25,7 @@ function newAdmin(username, password, name) {
 
 
 // Deletes an administrator via the API
-function deleteAdmin (id) {
+function deleteAdmin(id) {
 
     $.ajax({
         url: '/api/v1/admins/' + id,
@@ -42,19 +42,41 @@ function deleteAdmin (id) {
     });
 }
 
+// Unlocks an administrator via the API
+function unlockAdmin(id, targetLink) {
+
+    $.ajax({
+        url: '/api/v1/admins/unlock/' + id,
+        type: 'put',
+
+        success: function (response) {
+            addStatusMessage('success', 'The administrator was unlocked successfully');
+            targetLink.parent('td').html('Unlocked');
+        },
+
+        error: function (response) {
+            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+        }
+    });
+
+}
+
 // Sets the event listeners for x-editable
 function editableAdminEventListeners() {
 
     var adminUsername = $('a.adminUsername');
     var adminPassword = $('a.adminPassword');
     var adminName = $('a.adminName');
+    var adminLocked = $('a.adminLocked')
 
     adminUsername.unbind();
     adminPassword.unbind();
     adminName.unbind();
+    adminLocked.unbind();
     adminUsername.tooltip();
     adminPassword.tooltip();
     adminName.tooltip();
+    adminLocked.tooltip();
 
     adminUsername.editable({
         type: 'text',
@@ -138,6 +160,12 @@ function editableAdminEventListeners() {
         success: function () {
             addStatusMessage('success', 'The administrator\'s name was changed successfully');
         }
+    });
+
+    adminLocked.on('click', function(e) {
+        var target = $(e.target);
+        unlockAdmin(target.attr('data-pk'), target);
+        e.preventDefault();
     });
 }
 
@@ -251,6 +279,7 @@ function fillInTable () {
             html += '<td data-title="Username: "><a href="#" class="adminUsername" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the username">' + filterText(item.username) + '</a></td>\
                     <td data-title="Password: "><a href="#" class="adminPassword" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
                     <td data-title="Name: "><a href="#" class="adminName" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the name">' + filterText(item.name) + '</a></td>\
+                    <td data-title="Locked: ">' + (item.locked ? ('<a href="#" class="adminLocked" data-pk="' + item.id + '" title="Click to unlock the administrator">Locked</a>') : 'Unlocked') + '</td>\
                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
             tableRow.length == 0 ? html += '</tr>' : null;
             tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);

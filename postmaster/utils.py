@@ -8,7 +8,7 @@ import ldap
 from struct import unpack
 from re import search, sub, IGNORECASE
 from json import dumps
-from datetime import datetime
+from datetime import datetime, timedelta
 from os import path
 from wtforms.validators import StopValidation as WtfStopValidation
 from postmaster import app, db, models, bcrypt
@@ -63,8 +63,29 @@ def add_default_configuration_settings():
         min_pwd_length = models.Configs()
         min_pwd_length.setting = 'Minimum Password Length'
         min_pwd_length.value = '8'
-        min_pwd_length.regex = '^([1-9]|[1][0-9]|[2][0-5])$'
+        min_pwd_length.regex = '^([0-9]|[1][0-9]|[2][0-5])$'
         db.session.add(min_pwd_length)
+
+    if not models.Configs.query.filter_by(setting='Account Lockout Threshold').first():
+        account_lockout_threshold = models.Configs()
+        account_lockout_threshold.setting = 'Account Lockout Threshold'
+        account_lockout_threshold.value = '5'
+        account_lockout_threshold.regex = '^([0-9]|[1][0-9]|[2][0-5])$'
+        db.session.add(account_lockout_threshold)
+
+    if not models.Configs.query.filter_by(setting='Account Lockout Duration in Minutes').first():
+        account_lockout_duration = models.Configs()
+        account_lockout_duration.setting = 'Account Lockout Duration in Minutes'
+        account_lockout_duration.value = '30'
+        account_lockout_duration.regex = '^([1-9]|[1-9][0-9])$'
+        db.session.add(account_lockout_duration)
+
+    if not models.Configs.query.filter_by(setting='Reset Account Lockout Counter in Minutes').first():
+        reset_account_lockout = models.Configs()
+        reset_account_lockout.setting = 'Reset Account Lockout Counter in Minutes'
+        reset_account_lockout.value = '30'
+        reset_account_lockout.regex = '^([1-9]|[1-9][0-9])$'
+        db.session.add(reset_account_lockout)
 
     if not models.Configs.query.filter_by(setting='Login Auditing').first():
         login_auditing = models.Configs()
@@ -116,6 +137,103 @@ def add_default_configuration_settings():
         db.session.rollback()
 
 
+def is_account_unlocked(username):
+    """ Returns a boolean based on if the account is unlocked
+    """
+    admin = models.Admins.query.filter_by(username=username).first()
+
+    if admin:
+
+        if admin.source == 'local' and admin.unlock_date and admin.unlock_date > datetime.utcnow():
+            return False
+
+        return True
+    else:
+        raise ValidationError('The user does not exist in the database.')
+
+
+def increment_failed_login(username):
+    """ Increments the failed_attempts value, updates the last_failed_date value, and sets the unlock_date value
+    if necessary on the admin
+    """
+    admin = models.Admins.query.filter_by(username=username).first()
+    account_lockout_threshold = int(models.Configs.query.filter_by(setting='Account Lockout Threshold').first().value)
+    reset_account_lockout_counter = int(models.Configs.query.filter_by(
+        setting='Reset Account Lockout Counter in Minutes').first().value)
+    account_lockout_duration = int(models.Configs.query.filter_by(
+        setting='Account Lockout Duration in Minutes').first().value)
+    now = datetime.utcnow()
+    audit_message = str()
+
+    if admin:
+        # If the last failed attempt was before the current time minus the minutes configured to reset the
+        # account lockout counter, then the failed attempts should be set to 1 again
+        if admin.last_failed_date and admin.last_failed_date < (now - timedelta(minutes=reset_account_lockout_counter)):
+            admin.failed_attempts = 1
+            admin.unlock_date = None
+        else:
+            # If the admin has never failed a login attempt, the failed_attempts column will be null
+            if admin.failed_attempts:
+                admin.failed_attempts += 1
+            else:
+                admin.failed_attempts = 1
+
+            # Only try to lockout the user if the account lockout threshold is greater than 0, otherwise account
+            # lockouts are disabled
+            if account_lockout_threshold != 0 and admin.failed_attempts >= account_lockout_threshold:
+                admin.unlock_date = now + timedelta(minutes=account_lockout_duration)
+                audit_message = '"{0}" is now locked out and will be unlocked in {1} minute(s)'.format(
+                    username, account_lockout_duration)
+
+        admin.last_failed_date = now
+
+        try:
+            db.session.add(admin)
+            db.session.commit()
+            if audit_message:
+                json_logger('audit', username, audit_message)
+        except ValidationError as e:
+            raise e
+        except Exception as e:
+            db.session.rollback()
+            json_logger(
+                'error', username,
+                'The following error occurred when incrementing the failed login attempts field on "{0}": {1}'.format(
+                    username, str(e)))
+            ValidationError('A database error occurred. Please try again.', 'error')
+        finally:
+            db.session.close()
+
+
+def clear_lockout_fields_on_user(username):
+    """ Clears the lockout fields (failed_attempts, last_failed_date, unlock_date) on a user. This is used
+    to unlock a user, or when a user logs in successfully.
+    """
+    admin = models.Admins.query.filter_by(username=username).first()
+
+    if admin:
+        # Only clear the lockout fields if it's not an LDAP user
+        if admin.source == 'local':
+            try:
+                admin.failed_attempts = 0
+                admin.last_failed_date = None
+                admin.unlock_date = None
+                db.session.add(admin)
+                db.session.commit()
+            except ValidationError as e:
+                raise e
+            except Exception as e:
+                db.session.rollback()
+                json_logger(
+                    'error', username,
+                    'The following error occurred when try to clear out the lockout fields: {0}'.format(str(e)))
+                ValidationError('A database error occurred. Please try again.', 'error')
+            finally:
+                db.session.close()
+    else:
+        raise ValidationError('The admin does not exist in the database.')
+
+
 def add_ldap_user_to_db(username, display_name):
     """ Adds an LDAP user stub in the Admins table of the database for flask_login
     """
@@ -150,14 +268,24 @@ def validate_wtforms_password(form, field):
             if form.auth_source.data == 'PostMaster User':
                 admin = models.Admins.query.filter_by(username=username, source='local').first()
 
-                if admin is not None and bcrypt.check_password_hash(admin.password, password):
-                    form.admin = admin
-                else:
-                    json_logger(
-                        'auth', username,
-                        'The administrator "{0}" entered an incorrect username or password'.format(
-                            username))
-                    raise WtfStopValidation('The username or password was incorrect')
+                if admin:
+
+                    if is_account_unlocked(username):
+
+                        if bcrypt.check_password_hash(admin.password, password):
+                            form.admin = admin
+                            return
+                        else:
+                            increment_failed_login(username)
+
+                    else:
+                        raise WtfStopValidation('The user is currently locked out. Please try logging in again later.')
+
+                json_logger(
+                    'auth', username,
+                    'The administrator "{0}" entered an incorrect username or password'.format(
+                        username))
+                raise WtfStopValidation('The username or password was incorrect')
             else:
                 ad_object = AD()
 
@@ -172,6 +300,7 @@ def validate_wtforms_password(form, field):
 
                         admin = models.Admins.query.filter_by(username=friendly_username, source='ldap').first()
                         form.admin = admin
+
         except ADException as e:
             raise WtfStopValidation(e.message)
 

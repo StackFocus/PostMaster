@@ -2,8 +2,9 @@
 import random
 import json
 from mock import patch
+from datetime import datetime, timedelta
 from postmaster import app, db
-from postmaster.models import Configs
+from postmaster.models import Configs, Admins
 
 
 class TestMailDbFunctions:
@@ -306,6 +307,27 @@ class TestMailDbFunctions:
         rv = loggedin_client.delete("/api/v1/admins/2", follow_redirects=True)
         assert rv.status_code == 204
 
+    def test_admins_unlock(self, loggedin_client):
+        test_admin = Admins().from_json({
+            'username': 'test_admin',
+            'password': 'S0meG00dP@ss',
+            'name': 'Test Admin'
+        })
+        test_admin.failed_attempts = 5
+        test_admin.last_failed_date = datetime.utcnow()
+        test_admin.unlock_date = datetime.utcnow() + timedelta(minutes=30)
+
+        db.session.add(test_admin)
+        db.session.commit()
+
+        new_test_admin = Admins.query.filter_by(username='test_admin').one()
+        rv = loggedin_client.put("/api/v1/admins/unlock/{0}".format(new_test_admin.id), follow_redirects=True)
+        assert rv.status_code == 200
+
+    def test_admins_unlock_not_found(self, loggedin_client):
+        rv = loggedin_client.put("/api/v1/admins/unlock/50", follow_redirects=True)
+        assert rv.status_code == 404
+
     def test_configs_get_one(self, loggedin_client):
         rv = loggedin_client.get("/api/v1/configs/1", follow_redirects=True)
         try:
@@ -323,32 +345,32 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     def test_configs_update_pass(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/7", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/10", data=json.dumps(
             {"value": "An Admin Group"}))
         assert rv.status_code == 200
 
     def test_configs_update_fail(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
         assert 'An invalid setting value was supplied' in rv.data
 
     @patch('os.access', return_value=False)
     def test_configs_enable_login_auditing_log_write_fail(self, mock_os_access, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
             {"value": "True"}))
         assert rv.status_code == 400
         assert 'The log could not be written to' in rv.data
 
     @patch('os.access', return_value=True)
     def test_configs_enable_login_auditing_log_write_pass(self, mock_os_access, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/2", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
             {"value": "True"}))
         assert rv.status_code == 200
 
     @patch('os.access', return_value=False)
     def test_configs_enable_maildb_auditing_log_write_fail(self, mock_os_access, loggedin_client):
-        rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/6", data=json.dumps(
             {"value": "True"}))
         assert rv.status_code == 400
         assert 'The log could not be written to' in rv.data
@@ -357,7 +379,7 @@ class TestMailDbFunctions:
     def test_configs_enable_maildb_auditing_log_write_pass(self, mock_os_access, loggedin_client, tmpdir):
         log_file = tmpdir.join('postmaster.log')
         app.config['LOG_LOCATION'] = str(log_file)
-        rv = loggedin_client.put("/api/v1/configs/3", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/6", data=json.dumps(
             {"value": "True"}))
         # Clean up the temp directory created by the test
         tmpdir.remove()
@@ -372,7 +394,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.put("/api/v1/configs/1", data=json.dumps(
             {"value": "9999"}))
         assert rv.status_code == 400
-        assert 'An invalid minimum password length was supplied.' in rv.data
+        assert 'An invalid value was supplied. The value must be between 0-25.' in rv.data
 
     def test_configs_update_enable_ldap_no_server(self, loggedin_client):
         """ Tests the update_config function (PUT route for configs) when LDAP is set to enabled
@@ -385,7 +407,7 @@ class TestMailDbFunctions:
         db.session.add(ldap_string)
         db.session.commit()
 
-        rv = loggedin_client.put("/api/v1/configs/4", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/7", data=json.dumps(
             {"value": "True"}))
 
         # Reverts to the previous AD Server LDAP String
@@ -407,7 +429,7 @@ class TestMailDbFunctions:
         db.session.add(ldap_enabled)
         db.session.commit()
 
-        rv = loggedin_client.put("/api/v1/configs/5", data=json.dumps(
+        rv = loggedin_client.put("/api/v1/configs/8", data=json.dumps(
             {"value": ""}))
 
         # Reverts to the previous state
