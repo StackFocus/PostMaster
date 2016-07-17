@@ -26,15 +26,7 @@ Use the following commands to restore the proper permissions on the PostMaster f
 
 **setdburi** sets the MySQL database URI that PostMaster uses to connect to the MySQL server used by your mail server.
 
-**createdb** runs a database migration, and configures the default configuration settings if they are missing on the database specified using the "setdburi" command.  
-This is used during the installation of PostMaster.
-
-**existingdb** marks the first revision complete, which
-  is the revision that creates the virtual\_\* tables. It then upgrades the database from there.   
-  This is used during the installation of PostMaster.   
-  **WARNING**: Only use this function if you setup your mailserver database before this application and only have the virtual_* tables.
-
-**upgradedb** upgrades the existing database to new state and adds default configurations if missing.
+**upgradedb** upgrades the existing database to the latest schema version and adds the default configuration items if they are missing.
 
 **generatekey** replaces the secret key in config.py which is used by Flask (the Python framework used for PostMaster) for cryptographic functions.
 After the initial installation, this command should not be run again as all current logins would become invalid upon the next restart of the PostMaster.
@@ -43,5 +35,5 @@ After the initial installation, this command should not be run again as all curr
 and displays failing errors in HTML.
 
 **db [command]** runs advanced database migration commands.
-Most of the time it is better to use the wrapper commands we created above.  
+It is recommended to use the wrapper commands listed above instead, however, in rare and advanced circumstances, these sets of commands may be necessary.
 For more information, visit the [Alembic API documentation](https://alembic.readthedocs.org/en/latest/api/commands.html).

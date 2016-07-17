@@ -20,14 +20,14 @@
 - name: Create default database for mysql
   mysql_db: name=servermail state=present login_user=root login_password=vagrant
 
-- name: Cleans the migration scripts
+- name: Cleans up the codebase
   command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py clean
   args:
     chdir: /opt/postmaster/git
     removes: /opt/postmaster/git/db
 
 - name: Migrate tables
-  command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py createdb
+  command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py upgradedb
   args:
     chdir: /opt/postmaster/git
     creates: /opt/postmaster/git/db/migrations

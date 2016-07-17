@@ -154,10 +154,7 @@ replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Prep
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
-        python manage.py createdb
-
- - If you are coming from an existing database with `virtual_users`, `virtual_domains`, and `virtual_aliases` tables (you followed the mailserver setup guides at the top), then run this command instead of the above:  
-   `python manage.py existingdb`  
+        python manage.py upgradedb
 
 26. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 

@@ -50,7 +50,7 @@
   command: a2ensite postmaster.conf
   become: yes
 
-- name: Ensure apache is started and enabled to start at boot.
+- name: Ensure apache is started and runs at startup
   become: yes
   service: name=apache2 state=restarted enabled=yes
 

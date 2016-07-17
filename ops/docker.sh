@@ -14,7 +14,7 @@ else
     source /opt/postmaster/env/bin/activate
     python manage.py setdburi "${DB_URI}"
 
-    if python manage.py createdb; then
+    if python manage.py upgradedb; then
         python manage.py generatekey
         touch /.mysql_db_created
         unset DB_URI

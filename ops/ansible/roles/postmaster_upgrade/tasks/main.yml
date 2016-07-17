@@ -1,13 +1,9 @@
 ---
 
-- name: Force upgrade of database
+- name: Migrate the database to the latest version
   command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py upgradedb
   args:
     chdir: /opt/postmaster/git
-
-- name: Ensure apache is started and enabled to start at boot.
-  become: yes
-  service: name=apache2 state=restarted enabled=yes
 
 - name: Ensure apache is reloaded
   become: yes
