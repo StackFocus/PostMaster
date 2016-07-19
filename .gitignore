@@ -12,8 +12,6 @@ __pycache__/
 
 # C extensions
 *.so
-postmaster.db
-db/
 # Distribution / packaging
 .Python
 env/

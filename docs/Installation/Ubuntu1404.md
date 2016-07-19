@@ -51,7 +51,7 @@ replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Prep
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
-        python manage.py createdb
+        python manage.py upgradedb
 
 6. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 
@@ -117,7 +117,7 @@ replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Prep
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
-        python manage.py createdb
+        python manage.py upgradedb
 
 12. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 

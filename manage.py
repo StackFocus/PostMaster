@@ -26,13 +26,23 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 
 
 @manager.command
-def createdb():
-    """Runs the db init, db migrate, db upgrade commands automatically,
-    and adds the default configuration settings if they are missing"""
-    if not os.path.isdir('db/migrations'):
-        flask_migrate.init(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
-    flask_migrate.migrate(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
-    flask_migrate.upgrade(directory=app.config['SQLALCHEMY_MIGRATE_REPO'])
+def upgradedb():
+    """Upgrades the existing database to the latest schema and adds the
+    default configuration items if they are missing"""
+    alembic_version_table_exists = db.engine.dialect.has_table(db.session.connection(), 'alembic_version')
+
+    if not alembic_version_table_exists:
+        virtual_domains_table_exists = db.engine.dialect.has_table(db.session.connection(), 'virtual_domains')
+        virtual_users_table_exists = db.engine.dialect.has_table(db.session.connection(), 'virtual_users')
+        virtual_aliases_table_exists = db.engine.dialect.has_table(db.session.connection(), 'virtual_aliases')
+
+        # If the alembic_version table doesn't exist and the virtual_* tables exist, that means the database is
+        # in the default state after following the mail server guide on Linode or DigitalOcean.
+        if virtual_domains_table_exists and virtual_users_table_exists and virtual_aliases_table_exists:
+            # This marks the first revision as complete, which is the revision that creates the virtual_* tables
+            flask_migrate.stamp(revision='bcc85aaa7896')
+
+    flask_migrate.upgrade()
     add_default_configuration_settings()
 
 
@@ -47,14 +57,13 @@ def clean():
     """Cleans the codebase, including database migration scripts"""
     if os.name == 'nt':
         commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"",  # pylint: disable=anomalous-backslash-in-string, line-too-long
-                    "powershell.exe -Command \"@('postmaster.db', 'db', 'postmaster.log') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]  # pylint: disable=anomalous-backslash-in-string, line-too-long
+                    "powershell.exe -Command \"@('postmaster.log') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]  # pylint: disable=anomalous-backslash-in-string, line-too-long
     else:
         commands = ["find . -name '*.pyc' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "find . -name '*.pyo' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "find . -name '*~' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
                     "find . -name '__pycache__' -exec rmdir {} \;",  # pylint: disable=anomalous-backslash-in-string
-                    "rm -f postmaster.db postmaster.log",
-                    "rm -rf db"]
+                    "rm -f postmaster.log"]
     for command in commands:
         os.system(command)
 
