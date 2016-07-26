@@ -8,7 +8,7 @@ import ldap
 from struct import unpack
 from re import search, sub, IGNORECASE
 from json import dumps
-from datetime import datetime, timedelta
+from datetime import datetime
 from os import path
 from wtforms.validators import StopValidation as WtfStopValidation
 from postmaster import app, db, models, bcrypt
@@ -137,72 +137,42 @@ def add_default_configuration_settings():
         db.session.rollback()
 
 
-def is_account_unlocked(username):
-    """ Returns a boolean based on if the account is unlocked
-    """
-    admin = models.Admins.query.filter_by(username=username).first()
-
-    if admin:
-
-        if admin.source == 'local' and admin.unlock_date and admin.unlock_date > datetime.utcnow():
-            return False
-
-        return True
-    else:
-        raise ValidationError('The user does not exist in the database.')
-
-
 def increment_failed_login(username):
     """ Increments the failed_attempts value, updates the last_failed_date value, and sets the unlock_date value
     if necessary on the admin
     """
     admin = models.Admins.query.filter_by(username=username).first()
+    if not admin:
+        raise ValidationError('The admin does not exist in the database.')
+
     account_lockout_threshold = int(models.Configs.query.filter_by(setting='Account Lockout Threshold').first().value)
     reset_account_lockout_counter = int(models.Configs.query.filter_by(
         setting='Reset Account Lockout Counter in Minutes').first().value)
     account_lockout_duration = int(models.Configs.query.filter_by(
         setting='Account Lockout Duration in Minutes').first().value)
-    now = datetime.utcnow()
-    audit_message = str()
 
-    if admin:
-        # If the last failed attempt was before the current time minus the minutes configured to reset the
-        # account lockout counter, then the failed attempts should be set to 1 again
-        if admin.last_failed_date and admin.last_failed_date < (now - timedelta(minutes=reset_account_lockout_counter)):
-            admin.failed_attempts = 1
-            admin.unlock_date = None
-        else:
-            # If the admin has never failed a login attempt, the failed_attempts column will be null
-            if admin.failed_attempts:
-                admin.failed_attempts += 1
-            else:
-                admin.failed_attempts = 1
+    admin.increment_failed_login(account_lockout_threshold, reset_account_lockout_counter, account_lockout_duration)
 
-            # Only try to lockout the user if the account lockout threshold is greater than 0, otherwise account
-            # lockouts are disabled
-            if account_lockout_threshold != 0 and admin.failed_attempts >= account_lockout_threshold:
-                admin.unlock_date = now + timedelta(minutes=account_lockout_duration)
-                audit_message = '"{0}" is now locked out and will be unlocked in {1} minute(s)'.format(
-                    username, account_lockout_duration)
+    try:
+        db.session.add(admin)
+        db.session.commit()
 
-        admin.last_failed_date = now
-
-        try:
-            db.session.add(admin)
-            db.session.commit()
-            if audit_message:
-                json_logger('audit', username, audit_message)
-        except ValidationError as e:
-            raise e
-        except Exception as e:
-            db.session.rollback()
-            json_logger(
-                'error', username,
-                'The following error occurred when incrementing the failed login attempts field on "{0}": {1}'.format(
-                    username, str(e)))
-            ValidationError('A database error occurred. Please try again.', 'error')
-        finally:
-            db.session.close()
+        # If the account is locked out, log an audit message
+        if not admin.is_unlocked():
+            audit_message = '"{0}" is now locked out and will be unlocked in {1} minute(s)'.format(
+                username, account_lockout_duration)
+            json_logger('audit', username, audit_message)
+    except ValidationError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        json_logger(
+            'error', username,
+            'The following error occurred when incrementing the failed login attempts field on "{0}": {1}'.format(
+                username, str(e)))
+        ValidationError('A database error occurred. Please try again.', 'error')
+    finally:
+        db.session.close()
 
 
 def clear_lockout_fields_on_user(username):
@@ -211,27 +181,23 @@ def clear_lockout_fields_on_user(username):
     """
     admin = models.Admins.query.filter_by(username=username).first()
 
-    if admin:
-        # Only clear the lockout fields if it's not an LDAP user
-        if admin.source == 'local':
-            try:
-                admin.failed_attempts = 0
-                admin.last_failed_date = None
-                admin.unlock_date = None
-                db.session.add(admin)
-                db.session.commit()
-            except ValidationError as e:
-                raise e
-            except Exception as e:
-                db.session.rollback()
-                json_logger(
-                    'error', username,
-                    'The following error occurred when try to clear out the lockout fields: {0}'.format(str(e)))
-                ValidationError('A database error occurred. Please try again.', 'error')
-            finally:
-                db.session.close()
-    else:
+    if not admin:
         raise ValidationError('The admin does not exist in the database.')
+
+    try:
+        admin.clear_lockout_fields()
+        db.session.add(admin)
+        db.session.commit()
+    except ValidationError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        json_logger(
+            'error', username,
+            'The following error occurred when try to clear out the lockout fields: {0}'.format(str(e)))
+        ValidationError('A database error occurred. Please try again.', 'error')
+    finally:
+        db.session.close()
 
 
 def add_ldap_user_to_db(username, display_name):
@@ -270,7 +236,7 @@ def validate_wtforms_password(form, field):
 
                 if admin:
 
-                    if is_account_unlocked(username):
+                    if admin.is_unlocked():
 
                         if bcrypt.check_password_hash(admin.password, password):
                             form.admin = admin

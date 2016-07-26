@@ -55,50 +55,50 @@ class TestUtilsFunctions:
         """ Tests the is_file_writeable function when a file exists and is writable.
         A return value of True is expected
         """
-        assert is_file_writeable('manage.py') == True
+        assert is_file_writeable('manage.py') is True
 
     @patch('os.access', return_value=True)
     def test_is_file_writeable_nonexisting_file(self, mock_access):
         """ Tests the is_file_writeable function when a file does not exist but the path is writable.
         A return value of True is expected
         """
-        assert is_file_writeable('S0meNonExistenFil3.SomeExtension') == True
+        assert is_file_writeable('S0meNonExistenFil3.SomeExtension') is True
 
     @patch('os.access', return_value=False)
     def test_is_file_writeable_existing_file_fail(self, mock_access):
         """ Tests the is_file_writeable function when a file exists and is not writable.
         A return value of False is expected
         """
-        assert is_file_writeable('manage.py') == False
+        assert is_file_writeable('manage.py') is False
 
     def test_is_file_writeable_nonexisting_file_fail(self):
         """ Tests the is_file_writeable function when a file does not exist and the path is not writable.
         A return value of True is expected
         """
-        assert is_file_writeable('S0meDir/S0meNonExistentFil3.SomeExtension') == False
+        assert is_file_writeable('S0meDir/S0meNonExistentFil3.SomeExtension') is False
 
-    def test_is_account_unlocked_false(self):
+    def test_is_unlocked_false(self):
         test_admin = generate_test_admin()
         test_admin.unlock_date = datetime.utcnow() + timedelta(minutes=30)
         db.session.add(test_admin)
         db.session.commit()
 
-        assert is_account_unlocked(test_admin.username) == False
+        assert test_admin.is_unlocked() is False
 
-    def test_is_account_unlocked_true(self):
+    def test_is_unlocked_true(self):
         test_admin = generate_test_admin()
         test_admin.unlock_date = datetime.utcnow() - timedelta(minutes=30)
         db.session.add(test_admin)
         db.session.commit()
 
-        assert is_account_unlocked(test_admin.username) == True
+        assert test_admin.is_unlocked() is True
 
-    def test_is_account_unlocked_true_field_is_none(self):
+    def test_is_unlocked_true_field_is_none(self):
         test_admin = generate_test_admin()
         db.session.add(test_admin)
         db.session.commit()
 
-        assert is_account_unlocked(test_admin.username) == True
+        assert test_admin.is_unlocked() is True
 
     def test_increment_failed_login_new_user(self):
         test_admin = generate_test_admin()
