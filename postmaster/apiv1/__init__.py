@@ -28,14 +28,14 @@ def generic_error(e):
 def bad_request_error(e):
     """ Error handler for 400 requests
     """
-    return bad_request('invalid request')
+    return bad_request('An invalid request was received')
 
 
 @apiv1.errorhandler(404)
 def not_found_error(e):
     """ Error handler for 404 requests
     """
-    return not_found('item not found')
+    return not_found('The item was not found')
 
 
 from . import domains, users, aliases, admins, configs, logs

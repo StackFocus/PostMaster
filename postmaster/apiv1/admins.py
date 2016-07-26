@@ -9,7 +9,7 @@ from flask import request
 from flask_login import login_required, current_user
 from postmaster import db, bcrypt
 from postmaster.models import Admins, Configs
-from postmaster.utils import json_logger
+from postmaster.utils import json_logger, clear_lockout_fields_on_user
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
 from . import apiv1
@@ -144,4 +144,15 @@ def update_admin(admin_id):
         raise GenericError('The administrator could not be updated')
     finally:
         db.session.close()
+    return {}, 200
+
+
+@apiv1.route('/admins/unlock/<int:admin_id>', methods=['PUT'])
+@login_required
+@json_wrap
+def unlock_admin(admin_id):
+    """ Unlocks an admin by ID in Admins, and returns HTTP 200 on success
+    """
+    admin = Admins.query.get_or_404(admin_id)
+    clear_lockout_fields_on_user(admin.username)
     return {}, 200

@@ -1,5 +1,14 @@
 **Minimum Password Length** specifies the minimum password length that all mail users and administrators must adhere to.
 
+**Account Lockout Threshold** specifies the number of failed login attempts a local account must make before being locked out.
+To disable account lockouts, set this value to 0.
+
+**Account Lockout Duration in Minutes** specifies the amount of time an account will be locked out for.
+
+**Reset Account Lockout Counter in Minutes** determines how long a bad password attempt will count towards a lockout.
+As an example, this value is set to 30, and an administrator entered an incorrect password twice; then the administrator returned 30 minutes later to try again,
+the two failed password attempts would no longer count because the configured 30 minutes would have elapsed.
+
 **Login Auditing** determines whether login and logout events are recorded in the log file.
 
 **Mail Database Auditing** determines whether changes to domains, users, aliases, administrators, and configuration settings should be recorded in the log file.

@@ -4,6 +4,7 @@ File: models.py
 Purpose: database definitions for SQLAlchemy
 """
 from postmaster import db, bcrypt
+from datetime import datetime, timedelta
 from .errors import ValidationError
 from re import search, match
 from os import urandom
@@ -226,6 +227,9 @@ class Admins(db.Model):
     password = db.Column(db.String(64))
     source = db.Column(db.String(64))
     active = db.Column(db.Boolean, default=True)
+    failed_attempts = db.Column(db.Integer)
+    last_failed_date = db.Column(db.DateTime)
+    unlock_date = db.Column(db.DateTime)
 
     def is_active(self):
         """ Returns if user is active
@@ -256,7 +260,9 @@ class Admins(db.Model):
     def to_json(self):
         """ Leaving password out
         """
-        return {'id': self.id, 'name': self.name, 'username': self.username}
+        return {'id': self.id, 'name': self.name, 'username': self.username, 'failed_attempts': self.failed_attempts,
+                'last_failed_date': self.last_failed_date, 'unlock_date': self.unlock_date,
+                'locked': (self.unlock_date is not None and self.unlock_date > datetime.utcnow())}
 
     def from_json(self, json):
         if not json.get('username', None):
@@ -268,12 +274,10 @@ class Admins(db.Model):
         if self.query.filter_by(username=json['username']).first() is not None:
             raise ValidationError('"{0}" already exists'.format(
                 json['username'].lower()))
-        minPwdLength = int(Configs.query.filter_by(
-            setting='Minimum Password Length').first().value)
-        if len(json['password']) < minPwdLength:
-            raise ValidationError(
-                'The password must be at least {0} characters long'.format(
-                    minPwdLength))
+        min_pwd_length = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        if len(json['password']) < min_pwd_length:
+            raise ValidationError('The password must be at least {0} characters long'.format(min_pwd_length))
+
         self.password = bcrypt.generate_password_hash(json['password'])
         self.username = json['username'].lower()
         self.name = json['name']
@@ -294,6 +298,62 @@ class Admins(db.Model):
         self.source = 'ldap'
         self.active = True
         return self
+
+    def is_unlocked(self):
+        """ Returns a boolean based on if the admin is unlocked.
+        """
+        if not self.id:
+            raise ValidationError('An admin is not associated with the object')
+
+        if self.unlock_date and self.unlock_date > datetime.utcnow():
+            return False
+
+        return True
+
+    def clear_lockout_fields(self):
+        """ Clears the lockout fields (failed_attempts, last_failed_date, unlock_date) on an admin.
+        """
+        if not self.id:
+            raise ValidationError('An admin is not associated with the object')
+
+        # Only clear out the lockout fields if the admin is not an LDAP user
+        if self.source == 'local':
+            self.failed_attempts = 0
+            self.last_failed_date = None
+            self.unlock_date = None
+
+    def increment_failed_login(self, account_lockout_threshold, reset_account_lockout_counter,
+                               account_lockout_duration):
+        """ Increments the failed_attempts value, updates the last_failed_date value, and sets the unlock_date value
+        if applicable on the admin object.
+        """
+        now = datetime.utcnow()
+
+        if not self.id:
+            raise ValidationError('An admin is not associated with the object')
+
+        # Only increment the failed login count if the admin is not an LDAP user
+        if self.source == 'local':
+            # If the last failed attempt was before the current time minus the minutes configured to reset the
+            # account lockout counter, then the failed attempts should be set to 1 again
+            if self.last_failed_date and self.last_failed_date < \
+                    (now - timedelta(minutes=reset_account_lockout_counter)):
+                self.failed_attempts = 1
+                self.unlock_date = None
+            else:
+                # If the admin has never failed a login attempt, the failed_attempts column will be null
+                if self.failed_attempts:
+                    self.failed_attempts += 1
+                else:
+                    self.failed_attempts = 1
+
+                # Only try to lockout the user if the account lockout threshold is greater than 0, otherwise account
+                # lockouts are disabled
+                if account_lockout_threshold != 0 and self.failed_attempts >= account_lockout_threshold:
+                    self.unlock_date = now + timedelta(minutes=account_lockout_duration)
+
+            self.last_failed_date = now
+
 
 
 class Configs(db.Model):

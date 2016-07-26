@@ -35,6 +35,7 @@ h2.textHeading {
     bottom: 0;
     margin: 0;
     width: 100%;
+    z-index: 999;
 }
 
 #bottomOuterAlertDiv div.alert {
@@ -233,6 +234,14 @@ ul.pagination li.disabled a:hover {
 #nameAdminHeader {
     width: 28.33%;
 }
+
+#lockedAdminHeader, #actionHeader {
+    width: 7.5%;
+}
+
+a.adminLocked {
+    color: #e74c3c;
+}
 /* End of Only Admin Page CSS */
 
 /* Only Configs Page CSS */
@@ -259,6 +268,10 @@ ul.pagination li.disabled a:hover {
 
     #bottomOuterAlertDiv div.alert {
         width: 85%;
+    }
+
+    .hiddenMobile {
+        display: none !important;
     }
 
     h2.textHeadingManage,

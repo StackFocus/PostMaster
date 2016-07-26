@@ -51,8 +51,10 @@ def is_config_update_valid(setting, value, valid_value_regex):
 
         return True
     else:
-        if setting == 'Minimum Password Length':
-            raise ValidationError('An invalid minimum password length was supplied. The value must be between 1-25.')
+        if setting == 'Minimum Password Length' or setting == 'Account Lockout Threshold':
+            raise ValidationError('An invalid value was supplied. The value must be between 0-25.')
+        elif setting == 'Account Lockout Duration in Minutes' or setting == 'Reset Account Lockout Counter in Minutes':
+            raise ValidationError('An invalid value was supplied. The value must be between 1-99.')
 
         raise ValidationError('An invalid setting value was supplied')
 

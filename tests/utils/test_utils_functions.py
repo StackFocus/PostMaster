@@ -3,10 +3,19 @@ import pytest
 from json import load
 from mockldap import MockLdap
 from mock import patch
+from datetime import datetime, timedelta
 from postmaster import app
 from postmaster.utils import *
 from postmaster.apiv1.utils import *
 
+
+def generate_test_admin():
+    test_admin = models.Admins().from_json({
+        'username': 'test_admin',
+        'password': 'S0meG00dP@ss',
+        'name': 'Test Admin'
+    })
+    return test_admin
 
 class TestUtilsFunctions:
 
@@ -46,27 +55,147 @@ class TestUtilsFunctions:
         """ Tests the is_file_writeable function when a file exists and is writable.
         A return value of True is expected
         """
-        assert is_file_writeable('manage.py') == True
+        assert is_file_writeable('manage.py') is True
 
     @patch('os.access', return_value=True)
     def test_is_file_writeable_nonexisting_file(self, mock_access):
         """ Tests the is_file_writeable function when a file does not exist but the path is writable.
         A return value of True is expected
         """
-        assert is_file_writeable('S0meNonExistenFil3.SomeExtension') == True
+        assert is_file_writeable('S0meNonExistenFil3.SomeExtension') is True
 
     @patch('os.access', return_value=False)
     def test_is_file_writeable_existing_file_fail(self, mock_access):
         """ Tests the is_file_writeable function when a file exists and is not writable.
         A return value of False is expected
         """
-        assert is_file_writeable('manage.py') == False
+        assert is_file_writeable('manage.py') is False
 
     def test_is_file_writeable_nonexisting_file_fail(self):
         """ Tests the is_file_writeable function when a file does not exist and the path is not writable.
         A return value of True is expected
         """
-        assert is_file_writeable('S0meDir/S0meNonExistentFil3.SomeExtension') == False
+        assert is_file_writeable('S0meDir/S0meNonExistentFil3.SomeExtension') is False
+
+    def test_is_unlocked_false(self):
+        test_admin = generate_test_admin()
+        test_admin.unlock_date = datetime.utcnow() + timedelta(minutes=30)
+        db.session.add(test_admin)
+        db.session.commit()
+
+        assert test_admin.is_unlocked() is False
+
+    def test_is_unlocked_true(self):
+        test_admin = generate_test_admin()
+        test_admin.unlock_date = datetime.utcnow() - timedelta(minutes=30)
+        db.session.add(test_admin)
+        db.session.commit()
+
+        assert test_admin.is_unlocked() is True
+
+    def test_is_unlocked_true_field_is_none(self):
+        test_admin = generate_test_admin()
+        db.session.add(test_admin)
+        db.session.commit()
+
+        assert test_admin.is_unlocked() is True
+
+    def test_increment_failed_login_new_user(self):
+        test_admin = generate_test_admin()
+        test_admin_username = test_admin.username
+        db.session.add(test_admin)
+        db.session.commit()
+        increment_failed_login(test_admin_username)
+        new_test_admin = models.Admins.query.filter_by(username=test_admin_username).first()
+        assert new_test_admin.failed_attempts == 1
+        assert new_test_admin.unlock_date is None
+        one_min_ago = datetime.utcnow() - timedelta(minutes=1)
+        assert new_test_admin.last_failed_date > one_min_ago
+
+    def test_increment_failed_login_prev_failures(self):
+        test_admin = generate_test_admin()
+        test_admin_username = test_admin.username
+        test_admin.last_failed_date = datetime.utcnow()
+        test_admin.failed_attempts = 2
+        db.session.add(test_admin)
+        db.session.commit()
+        increment_failed_login(test_admin_username)
+        new_test_admin = models.Admins.query.filter_by(username=test_admin_username).first()
+        assert new_test_admin.failed_attempts == 3
+        assert new_test_admin.unlock_date is None
+        one_min_ago = datetime.utcnow() - timedelta(minutes=1)
+        assert new_test_admin.last_failed_date > one_min_ago
+
+    def test_increment_failed_login_lock(self):
+        account_lockout_threshold = int(
+            models.Configs.query.filter_by(setting='Account Lockout Threshold').first().value)
+        account_lockout_duration = int(
+            models.Configs.query.filter_by(setting='Account Lockout Duration in Minutes').first().value)
+        account_lockout_minus_one_min = datetime.utcnow() + timedelta(minutes=(account_lockout_duration - 1))
+        one_min_ago = datetime.utcnow() - timedelta(minutes=1)
+
+        test_admin = generate_test_admin()
+        test_admin_username = test_admin.username
+        test_admin.failed_attempts = account_lockout_threshold - 1
+        test_admin.last_failed_date = datetime.utcnow() - timedelta(minutes=5)
+        db.session.add(test_admin)
+        db.session.commit()
+        increment_failed_login(test_admin_username)
+        new_test_admin = models.Admins.query.filter_by(username=test_admin_username).first()
+
+        assert new_test_admin.unlock_date > account_lockout_minus_one_min
+        assert new_test_admin.failed_attempts == 5
+        assert new_test_admin.last_failed_date > one_min_ago
+
+    def test_increment_failed_login_time_elapsed(self):
+        account_lockout_threshold = int(
+            models.Configs.query.filter_by(setting='Account Lockout Threshold').first().value)
+        reset_account_lockout_counter = int(models.Configs.query.filter_by(
+            setting='Reset Account Lockout Counter in Minutes').first().value)
+        one_min_ago = datetime.utcnow() - timedelta(minutes=1)
+
+        test_admin = generate_test_admin()
+        test_admin_username = test_admin.username
+        test_admin.failed_attempts = account_lockout_threshold - 1
+        test_admin.last_failed_date = datetime.utcnow() - timedelta(minutes=(reset_account_lockout_counter + 1))
+        db.session.add(test_admin)
+        db.session.commit()
+        increment_failed_login(test_admin_username)
+        new_test_admin = models.Admins.query.filter_by(username=test_admin_username).first()
+
+        assert new_test_admin.unlock_date is None
+        assert new_test_admin.failed_attempts == 1
+        assert new_test_admin.last_failed_date > one_min_ago
+
+    def test_increment_failed_login_user_lockout_disabled(self):
+        account_lockout_threshold = models.Configs.query.filter_by(setting='Account Lockout Threshold').first()
+        account_lockout_threshold.value = '0'
+        db.session.add(account_lockout_threshold)
+        test_admin = generate_test_admin()
+        test_admin_username = test_admin.username
+        test_admin.failed_attempts = 999
+        db.session.add(test_admin)
+        db.session.commit()
+        increment_failed_login(test_admin_username)
+        new_test_admin = models.Admins.query.filter_by(username=test_admin_username).first()
+        assert new_test_admin.failed_attempts == 1000
+        assert new_test_admin.unlock_date is None
+        one_min_ago = datetime.utcnow() - timedelta(minutes=1)
+        assert new_test_admin.last_failed_date > one_min_ago
+
+    def test_clear_lockout_fields_on_user(self):
+        test_admin = generate_test_admin()
+        test_admin_username = test_admin.username
+        test_admin.failed_attempts = 1
+        test_admin.last_failed_date = datetime.utcnow()
+        test_admin.unlock_date = datetime.utcnow() + timedelta(minutes=30)
+        db.session.add(test_admin)
+        db.session.commit()
+        clear_lockout_fields_on_user(test_admin_username)
+        new_test_admin = models.Admins.query.filter_by(username=test_admin_username).first()
+        assert new_test_admin.failed_attempts == 0
+        assert new_test_admin.unlock_date is None
+        assert new_test_admin.last_failed_date is None
 
     def test_get_wtforms_errors(self):
         """ Tests the get_wtforms_errors function by posting to /login with missing parameters.
@@ -82,6 +211,24 @@ class TestUtilsFunctions:
             follow_redirects=True
         )
         assert 'The username was not provided<br>The password was not provided' in rv.data
+
+    def test_account_lockout_from_ui(self):
+        """ Tests that the user gets an account lockout message after 5 failed attempts.
+        """
+        client = app.test_client()
+
+        for i in range(6):
+            rv = client.post(
+                '/login',
+                data=dict(
+                    username='admin',
+                    password='BadPassword',
+                    auth_source='PostMaster User'
+                ),
+                follow_redirects=True
+            )
+
+        assert 'The user is currently locked out. Please try logging in again later.' in rv.data
 
 
 def manage_mock_ldap(f):
