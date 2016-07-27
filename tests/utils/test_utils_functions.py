@@ -4,7 +4,7 @@ from json import load
 from mockldap import MockLdap
 from mock import patch
 from datetime import datetime, timedelta
-from postmaster import app
+from postmaster import app, bcrypt
 from postmaster.utils import *
 from postmaster.apiv1.utils import *
 
@@ -196,6 +196,14 @@ class TestUtilsFunctions:
         assert new_test_admin.failed_attempts == 0
         assert new_test_admin.unlock_date is None
         assert new_test_admin.last_failed_date is None
+
+    def test_reset_admin_password(self):
+        test_admin = generate_test_admin()
+        db.session.add(test_admin)
+        db.session.commit()
+        reset_admin_password('test_admin', 'SomeNewPassword')
+        new_test_admin = models.Admins.query.filter_by(username='test_admin').first()
+        assert bcrypt.check_password_hash(new_test_admin.password, 'SomeNewPassword') is True
 
     def test_get_wtforms_errors(self):
         """ Tests the get_wtforms_errors function by posting to /login with missing parameters.

@@ -11,7 +11,7 @@ import flask_migrate
 from re import sub
 from flask_script import Manager
 from postmaster import app, db, models
-from postmaster.utils import add_default_configuration_settings
+from postmaster.utils import add_default_configuration_settings, clear_lockout_fields_on_user, reset_admin_password
 
 manager = Manager(app)
 if os.environ.get('POSTMASTER_DEV'):
@@ -97,6 +97,19 @@ def setlogfile(filepath):
             base_config_set = True
         else:
             print(line.rstrip())
+
+
+@manager.command
+def unlockadmin(username):
+    """Unlocks a locked out administrator"""
+    clear_lockout_fields_on_user(username)
+
+
+@manager.command
+def resetadminpassword(username, new_password):
+    """Resets an administrator's password with one supplied"""
+    reset_admin_password(username, new_password)
+
 
 if __name__ == "__main__":
     manager.run()
