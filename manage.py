@@ -13,12 +13,6 @@ from flask_script import Manager
 from postmaster import app, db, models
 from postmaster.utils import add_default_configuration_settings
 
-manager = Manager(app)
-if os.environ.get('POSTMASTER_DEV'):
-    app.config.from_object('config.DevConfiguration')
-else:
-    app.config.from_object('config.BaseConfiguration')
-
 migrate = flask_migrate.Migrate(app, db)
 
 manager = Manager(app)
