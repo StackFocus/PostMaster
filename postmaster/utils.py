@@ -200,6 +200,32 @@ def clear_lockout_fields_on_user(username):
         db.session.close()
 
 
+def reset_admin_password(username, new_password):
+    """ Resets an admin's password with one supplied
+    """
+    admin = models.Admins.query.filter_by(username=username).first()
+
+    if not admin:
+        raise ValidationError('The admin does not exist in the database.')
+
+    admin.set_password(new_password)
+
+    try:
+        db.session.add(admin)
+        db.session.commit()
+        json_logger('audit', 'CLI', ('The administrator "{0}" had their password changed via the CLI'.format(username)))
+    except ValidationError as e:
+        raise e
+    except Exception as e:
+        db.session.rollback()
+        json_logger(
+            'error', username,
+            'The following error occurred when try to reset an admin\'s password: {0}'.format(str(e)))
+        ValidationError('A database error occurred. Please try again.', 'error')
+    finally:
+        db.session.close()
+
+
 def add_ldap_user_to_db(username, display_name):
     """ Adds an LDAP user stub in the Admins table of the database for flask_login
     """

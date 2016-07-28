@@ -354,6 +354,17 @@ class Admins(db.Model):
 
             self.last_failed_date = now
 
+    def set_password(self, new_password):
+        """ Sets the password for an admin.
+        """
+        if not self.id:
+            raise ValidationError('An admin is not associated with the object')
+
+        min_pwd_length = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        if len(new_password) < min_pwd_length:
+            raise ValidationError('The password must be at least {0} characters long'.format(min_pwd_length))
+
+        self.password = bcrypt.generate_password_hash(new_password)
 
 
 class Configs(db.Model):

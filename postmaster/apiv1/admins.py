@@ -7,7 +7,7 @@ an admin to create, delete, and update admins
 
 from flask import request
 from flask_login import login_required, current_user
-from postmaster import db, bcrypt
+from postmaster import db
 from postmaster.models import Admins, Configs
 from postmaster.utils import json_logger, clear_lockout_fields_on_user
 from ..decorators import json_wrap, paginate
@@ -108,30 +108,21 @@ def update_admin(admin_id):
             auditMessage = 'The administrator "{0}" had their username changed to "{1}"'.format(
                 admin.username, newUsername)
             admin.username = newUsername
-            db.session.add(admin)
         else:
             ValidationError('The username supplied already exists')
     elif 'password' in json:
-        minPwdLength = int(Configs.query.filter_by(
-            setting='Minimum Password Length').first().value)
-        if len(json['password']) < minPwdLength:
-            raise ValidationError(
-                'The password must be at least {0} characters long'.format(
-                    minPwdLength))
+        admin.set_password(json['password'])
         auditMessage = 'The administrator "{0}" had their password changed'.format(
             admin.username)
-        admin.password = bcrypt.generate_password_hash(json['password'])
-        db.session.add(admin)
     elif 'name' in json:
-        auditMessage = 'The administrator "{0}" had their name changed to "{1}"'.format(
-            admin.username, admin.name)
+        auditMessage = 'The administrator "{0}" had their name changed to "{1}"'.format(admin.username, admin.name)
         admin.name = json['name']
-        db.session.add(admin)
     else:
         raise ValidationError(
             'The username, password, or name was not supplied in the request')
 
     try:
+        db.session.add(admin)
         db.session.commit()
         json_logger('audit', current_user.username, auditMessage)
     except ValidationError as e:
