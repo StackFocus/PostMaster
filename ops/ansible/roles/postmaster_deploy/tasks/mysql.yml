@@ -24,10 +24,8 @@
   command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py clean
   args:
     chdir: /opt/postmaster/git
-    removes: /opt/postmaster/git/db
 
 - name: Migrate tables
   command: /opt/postmaster/env/bin/python /opt/postmaster/git/manage.py upgradedb
   args:
     chdir: /opt/postmaster/git
-    creates: /opt/postmaster/git/db/migrations
