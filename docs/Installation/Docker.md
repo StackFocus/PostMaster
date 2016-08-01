@@ -1,5 +1,3 @@
-### Overview
-
 ### Prerequisites
 1. An Ubuntu 14.04 mail server configured with the guide from [DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin) or [Linode](https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql).
 Any other MySQL configuration requires edits to PostMaster's database models. Paid support for this is available.

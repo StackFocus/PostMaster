@@ -1,59 +1,63 @@
-# Create your Environment
+### Overview
 
-We use [Vagrant](https://www.vagrantup.com/) and [Ansible](https://www.ansible.com/).
+PostMaster uses a combination of [Vagrant](https://www.vagrantup.com/) and [Ansible](https://www.ansible.com/) to
+automate the setup of a development environment. In this scenario, Ansible is run entirely on the guest, and is thus
+not required on the host system.
 
-Install Vagrant using your package manager.  
+### Getting Started
 
-Provision the VM:
+- Install Vagrant by using your package manager or downloading it at:
+[https://www.vagrantup.com/downloads.html](https://www.vagrantup.com/downloads.html)
 
-```
-$ vagrant up
-```
+- Run `vagrant up` as root/administrator to provision a Vagrant guest (development VM)
 
-PostMaster should now be running on http://localhost:8080  
-The default Postmaster login is `admin:PostMaster`
+- Access PostMaster at [http://localhost:8080](http://localhost:8080) via your web browser
 
-Your instance is running a local mysql instance.  
-The default mysql login is `root:vagrant`
+- Login using the username "admin" and the password "PostMaster"
 
-
-**NOTE:** The instance is not running a local mail server
+- For more help with Vagrant, such as deleting and recreating your development environment, visit
+[https://www.vagrantup.com/docs/cli/](https://www.vagrantup.com/docs/cli/)
 
 
-If you do not want to use Vagrant, just run the ansible playbook against a host:
-```
-$ ansible-playbook -i "localhost,"  \
--c local /opt/postmaster/git/ops/ansible/site.yml \
---extra-vars="remote_user=vagrant"  \
---extra-vars="provision_type=dev"
-```
+Additional Information:
 
-## Code Updates
+- The Vagrant guest is running a local MySQL instance which can be accessed locally with `mysql -uroot -pvagrant`
+- The Vagrant guest is not running a mail server
 
-The code is location at:
-`/opt/postmaster/git`
 
-### Activate the virtualenv
+#### Code Updates
+
+The source code is located on the Vagrant guest at `/opt/postmaster/git`, but code changes made locally
+will be automatically synced to the development VM via Vagrant.
+
+
+#### Activate the virtualenv
+
+On the guest, run the following:
 ```
 $ source /opt/postmaster/env/bin/activate
 ```
 
-### Apply the Code Updates
-Your code repo is linked onto the VM, so updates are going to be there automatically, however each python file update will require you to restart the
-service.  On the vagrant host (`vagrant ssh`)  
+#### Apply the Code Updates
+Any Python file updates will require you to restart Apache on the Vagrant guest. To do so, run the following on
+the Vagrant guest:
 
 ```
 $ sudo service apache2 restart
 ```
 
-### Run the test suite
+#### Run the Unit Tests
+
+On the Vagrant guest, activate the virtualenv (see above) and run the following in "/opt/postmaster/git":
 ```
 $ py.test tests
 ```
 
-### Check Any Logs
+#### Checking Logs
+
+Logs can be found on the Vagrant guest at the following locations:
 ```
 /opt/postmaster/logs/postmaster.log
-/var/log/apache2/postmaster.access.log
-/var/log/apache2/postmaster.error.log
+/opt/postmaster/logs/postmaster.access.log
+/opt/postmaster/logs/postmaster.error.log
 ```
