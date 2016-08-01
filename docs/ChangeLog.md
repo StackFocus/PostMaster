@@ -13,6 +13,7 @@ Features:
 * Adds the ability to lockout local accounts after x number of failed login attempts [GH-142]
 * Database upgrades/migrations are automatic during ugrades via the deb package and Docker [GH-138]
 * Adds the ability to unlock administrators and reset administrator passwords via the CLI [GH-145]
+* Adds the `python manage.py version` command [GH-156]
 
 Improvements:
 
