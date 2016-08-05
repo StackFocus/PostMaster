@@ -15,5 +15,8 @@ pages:
     - Configurations Page: Configuration/ConfigurationsPage.md
 - API:
     - API Usage: API/ApiUsage.md
+- Developer Guide:
+    - Dev Environment: Development/DevEnvironment.md
+    - Contributing: Development/Contributing.md
 - Release Notes:
     - Change Log: ChangeLog.md
