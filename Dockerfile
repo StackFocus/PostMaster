@@ -33,6 +33,7 @@ RUN virtualenv -p /usr/bin/python2.7 /opt/postmaster/env
 WORKDIR /opt/postmaster/git
 
 RUN /opt/postmaster/env/bin/pip install -r requirements.txt
+RUN cp -pn /opt/postmaster/git/config.default.py /opt/postmaster/git/config.py
 RUN source /opt/postmaster/env/bin/activate && python manage.py clean
 RUN chown -R www-data:www-data /opt/postmaster
 RUN chmod +x /opt/postmaster/git/ops/docker.sh
