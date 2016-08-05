@@ -4,6 +4,7 @@ site.retry
 
 .vagrant
 .idea
+config.py
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

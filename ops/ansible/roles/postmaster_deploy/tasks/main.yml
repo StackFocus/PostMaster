@@ -29,7 +29,16 @@
   file: path=/opt/postmaster/logs state=directory owner={{remote_user}} group=www-data mode=0775 recurse=yes
   become: yes
 
-- pip: requirements=/opt/postmaster/git/requirements.txt virtualenv=/opt/postmaster/env
+- name: Install python dependencies
+  pip: requirements=/opt/postmaster/git/requirements.txt virtualenv=/opt/postmaster/env
+
+- name: Checking if config.py exists
+  stat: path=/opt/postmaster/git/config.py
+  register: config_file
+
+- name: Copying config.default.py to config.py
+  copy: src=/opt/postmaster/git/config.default.py dest=/opt/postmaster/git/config.py remote_src=True
+  when: config_file.stat.exists == False
 
 - include: mysql.yml
   when: provision_type == "dev"

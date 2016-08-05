@@ -129,17 +129,21 @@ This is done with the following command:
 
         pip install -r "$env:SystemDrive\PostMaster\git\requirements.txt"
 
-26. Copy wfastcgi.py, created by Microsoft Web Platform Installer earlier, to C:\PostMaster\git:
+26. Create the PostMaster configuration file from using the sample file that was included:
 
-        Copy-Item -Path "$env:SystemDrive\Python27\Scripts\wfastcgi.py" "$env:SystemDrive\PostMaster\git"
+        Copy-Item "$env:SystemDrive\PostMaster\git\config.default.py "$env:SystemDrive\PostMaster\git\config.py"
 
-27. At this point, PostMaster requires an IIS site. You can either use the "Default Web Site" and change the virtual directory to C:\PostMaster\git,
+27. Copy wfastcgi.py, created by Microsoft Web Platform Installer earlier, to C:\PostMaster\git:
+
+        Copy-Item "$env:SystemDrive\Python27\Scripts\wfastcgi.py" "$env:SystemDrive\PostMaster\git"
+
+28. At this point, PostMaster requires an IIS site. You can either use the "Default Web Site" and change the virtual directory to C:\PostMaster\git,
 or create a new site that points to that directory. This tutorial will use the Default Web Site. To change the virtual directory, use the following commands:
 
         Import-Module WebAdministration
         Set-ItemProperty 'IIS:\Sites\Default Web Site\' -Name physicalPath -Value "$env:SystemDrive\PostMaster\git"
 
-28. Now, IIS needs to know how to run PostMaster. The following commands configure FastCGI to be able to use the Python virtual environment created earlier and run PostMaster
+29. Now, IIS needs to know how to run PostMaster. The following commands configure FastCGI to be able to use the Python virtual environment created earlier and run PostMaster
 (If you are using a site other than "Default Web Site", change that value in the commands below):
 
         Import-Module WebAdministration
@@ -149,41 +153,36 @@ or create a new site that points to that directory. This tutorial will use the D
         Add-WebConfiguration -Filter "/system.webServer/fastCgi/application[@fullPath='$env:SystemDrive\PostMaster\env\Scripts\python.exe' and @arguments='$env:SystemDrive\PostMaster\git\wfastcgi.py']/environmentVariables" -Value @{name='PYTHONPATH'; value="$env:SystemDrive\PostMaster\git"} -AtIndex 0
         Add-WebConfiguration -Filter "/system.webServer/fastCgi/application[@fullPath='$env:SystemDrive\PostMaster\env\Scripts\python.exe' and @arguments='$env:SystemDrive\PostMaster\git\wfastcgi.py']/environmentVariables" -Value @{name='WSGI_HANDLER'; value='app.app'} -AtIndex 1
 
-29. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+30. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
 Make sure to replace "password_changeme" and "127.0.0.1' with the actual values supplied in step 2 of MySQL Preparation, and if needed,
 replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:
 
         cd C:\Postmaster\git
         python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
 
-30. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+31. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
         python manage.py upgradedb
 
-31. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
+32. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 
         python manage.py generatekey
 
-32. By deafult, PostMaster logs to a Linux based path, run the following command to change the log to the text file created in step 11:
+33. By deafult, PostMaster logs to a Linux based path, run the following command to change the log to the text file created in step 11:
 
         python manage.py setlogfile "$env:SystemDrive\PostMaster\logs\postmaster.log"
 
-33. You may now exit the Python virtual environment:
+34. You may now exit the Python virtual environment:
 
         deactivate
 
-34. Restart IIS to make sure all the changes take effect:
+35. Restart IIS to make sure all the changes take effect:
 
         iisreset
 
-35. At this point it is highly recommended that you implement SSL before using PostMaster in production.
+36. At this point it is highly recommended that you implement SSL before using PostMaster in production.
 
-36. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
+37. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.
-
-37. Please keep in mind that the C:\PostMaster\git\db\migrations folder should be backed up after installation/updates.
-This is because PostMaster uses database migrations to safely upgrade the database schema,
-and this folder contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
-If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.

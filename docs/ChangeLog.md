@@ -23,10 +23,13 @@ Improvements:
 * Cleaned up JavaScript event listeners [GH-120]
 * Vagrant now uses Ansible for configuration instead of a bash script [GH-111]
 * Updated the Python packages to the latest versions [GH-135]
+* Apache logs for PostMaster now default to /opt/postmaster/logs
 
 Bug Fixes:
 
 * Fixed an issue where error logs were attempting to be written before the log file path was defined [GH-109]
+* The configuration file, config.py, is now named as config.default.py in the repository. During installation, the administrator must now copy or rename config.default.py to config.py.
+This is so that config.py is not overwritten during package upgrades.
 
 
 ### v1.0.0 - Abbey Road

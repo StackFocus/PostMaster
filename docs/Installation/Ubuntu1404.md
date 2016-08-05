@@ -117,56 +117,55 @@ This allows you to separate the system installed python packages from PostMaster
         cd /opt/postmaster/git
         pip install -r requirements.txt
 
-13. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
+13. Create the PostMaster configuration file from using the sample file that was included:
+
+        cp -pn /opt/postmaster/git/config.default.py /opt/postmaster/git/config.py
+
+14. PostMaster needs to be configured to connect to the MySQL database using the MySQL user created in step 2 of MySQL Preparation.
 Make sure to replace "password_changeme" with the actual password supplied in step 2 of MySQL Preparation, and if needed,
 replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:
 
         cd /opt/postmaster/git
         python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
 
-14. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
+15. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:
 
         python manage.py upgradedb
 
-15. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
+16. PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:
 
         python manage.py generatekey
 
-16. You may now exit from the python virtual environment:
+17. You may now exit from the python virtual environment:
 
         deactivate
 
-17. Provide the proper permissions on the PostMaster files:
+18. Provide the proper permissions on the PostMaster files:
 
         chown -R www-data:www-data /opt/postmaster
         chmod -R 550 /opt/postmaster
         chmod 770 /opt/postmaster/logs
 
-18. Disable the default Apache site:
+19. Disable the default Apache site:
 
         a2dissite 000-default.conf
 
-19. Copy the default PostMaster Apache site configuration and give it the appropriate permissions.
+20. Copy the default PostMaster Apache site configuration and give it the appropriate permissions.
 It is highly recommended that you implement SSL before using PostMaster in production:
 
         cp /opt/postmaster/git/ops/apache.conf /etc/apache2/sites-available/postmaster.conf
         chmod 644 /etc/apache2/sites-available/postmaster.conf
         chown root:root /etc/apache2/sites-available/postmaster.conf
 
-20. Enable the PostMaster Apache site:
+21. Enable the PostMaster Apache site:
 
         a2ensite postmaster.conf
 
-21. Restart Apache for the changes to take effect:
+22. Restart Apache for the changes to take effect:
 
         service apache2 restart
 
-22. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
+23. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.
-
-23. Please keep in mind that the /opt/postmaster/git/db/migrations folder should be backed up after installation/updates.
-This is because PostMaster uses database migrations to safely upgrade the database schema,
-and this folder contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
-If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.
