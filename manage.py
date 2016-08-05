@@ -10,7 +10,7 @@ import fileinput
 import flask_migrate
 from re import sub
 from flask_script import Manager
-from postmaster import app, db, models
+from postmaster import app, db, models, __version__
 from postmaster.utils import add_default_configuration_settings, clear_lockout_fields_on_user, reset_admin_password
 
 migrate = flask_migrate.Migrate(app, db)
@@ -103,6 +103,12 @@ def unlockadmin(username):
 def resetadminpassword(username, new_password):
     """Resets an administrator's password with one supplied"""
     reset_admin_password(username, new_password)
+
+
+@manager.command
+def version():
+    """Returns the version of PostMaster"""
+    return __version__
 
 
 if __name__ == "__main__":

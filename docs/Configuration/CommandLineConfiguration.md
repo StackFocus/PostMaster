@@ -22,6 +22,8 @@ Use the following commands to restore the proper permissions on the PostMaster f
 
 ### Command Line Commands
 
+**version** returns the version of PostMaster that is installed.
+
 **setlogfile** sets the location of the logfile. The default is `/opt/postmaster/logs/postmaster.log`.
 
 **setdburi** sets the MySQL database URI that PostMaster uses to connect to the MySQL server used by your mail server.
