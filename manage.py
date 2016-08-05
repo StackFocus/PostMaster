@@ -8,7 +8,7 @@ Purpose: Manages the app
 import os
 import fileinput
 import flask_migrate
-from re import sub
+from re import sub, compile
 from flask_script import Manager
 from postmaster import app, db, models, __version__
 from postmaster.utils import add_default_configuration_settings, clear_lockout_fields_on_user, reset_admin_password
@@ -48,18 +48,22 @@ def make_shell_context():
 
 @manager.command
 def clean():
-    """Cleans the codebase, including database migration scripts"""
-    if os.name == 'nt':
-        commands = ["powershell.exe -Command \"@('*.pyc', '*.pyo', '*~', '__pycache__') |  Foreach-Object { Get-ChildItem -Filter $_ -Recurse | Remove-Item -Recurse -Force }\"",  # pylint: disable=anomalous-backslash-in-string, line-too-long
-                    "powershell.exe -Command \"@('postmaster.log') |  Foreach-Object { Get-ChildItem -Filter $_ | Remove-Item -Recurse -Force }\""]  # pylint: disable=anomalous-backslash-in-string, line-too-long
-    else:
-        commands = ["find . -name '*.pyc' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
-                    "find . -name '*.pyo' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
-                    "find . -name '*~' -exec rm -f {} \;",  # pylint: disable=anomalous-backslash-in-string
-                    "find . -name '__pycache__' -exec rmdir {} \;",  # pylint: disable=anomalous-backslash-in-string
-                    "rm -f postmaster.log"]
-    for command in commands:
-        os.system(command)
+    """Cleans the codebase of temporary files"""
+    for root, dir_names, file_names in os.walk(os.path.abspath(os.path.dirname(__file__))):
+        pyc_regex = compile('.+\.pyc$')
+        pyo_regex = compile('.+\.pyo$')
+        tilde_regex = compile('.+~$')
+
+        for file_name in file_names:
+
+            if pyc_regex.match(file_name) or pyo_regex.match(file_name) or tilde_regex.match(file_name) \
+                    or file_name == 'postmaster.log':
+                os.remove(os.path.join(root, file_name))
+
+        for dir_name in dir_names:
+
+            if dir_name == '__pycache__':
+                os.removedirs(os.path.join(root, dir_name))
 
 
 @manager.command
