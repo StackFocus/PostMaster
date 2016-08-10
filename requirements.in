@@ -1,0 +1,16 @@
+coverage
+Flask
+Flask-Bcrypt
+Flask-Login
+Flask-Migrate
+Flask-Script
+Flask-SQLAlchemy
+Flask-WTF
+mock
+mockldap
+mysqlclient
+passlib
+pylint
+pytest
+pytest-cov
+python-ldap

@@ -5,9 +5,10 @@ File: manage.py
 Purpose: Manages the app
 """
 
-import os
-import fileinput
 import flask_migrate
+from fileinput import input
+from os import path, walk, remove, urandom
+from shutil import rmtree
 from re import sub, compile
 from flask_script import Manager
 from postmaster import app, db, models, __version__
@@ -49,7 +50,7 @@ def make_shell_context():
 @manager.command
 def clean():
     """Cleans the codebase of temporary files"""
-    for root, dir_names, file_names in os.walk(os.path.abspath(os.path.dirname(__file__))):
+    for root, dir_names, file_names in walk(path.abspath(path.dirname(__file__))):
         pyc_regex = compile('.+\.pyc$')
         pyo_regex = compile('.+\.pyo$')
         tilde_regex = compile('.+~$')
@@ -58,26 +59,26 @@ def clean():
 
             if pyc_regex.match(file_name) or pyo_regex.match(file_name) or tilde_regex.match(file_name) \
                     or file_name == 'postmaster.log':
-                os.remove(os.path.join(root, file_name))
+                remove(path.join(root, file_name))
 
         for dir_name in dir_names:
 
             if dir_name == '__pycache__':
-                os.removedirs(os.path.join(root, dir_name))
+                rmtree(path.join(root, dir_name))
 
 
 @manager.command
 def generatekey():
     """Replaces the SECRET_KEY in config.py with a new random one"""
-    for line in fileinput.input('config.py', inplace=True):
-        print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', os.urandom(24).encode('hex'), line.rstrip()))
+    for line in input('config.py', inplace=True):
+        print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', urandom(24).encode('hex'), line.rstrip()))
 
 
 @manager.command
 def setdburi(uri):
     """Replaces the BaseConfiguration SQLALCHEMY_DATABASE_URI in config.py with one supplied"""
     base_config_set = False
-    for line in fileinput.input('config.py', inplace=True, backup='.bak'):
+    for line in input('config.py', inplace=True, backup='.bak'):
         if not base_config_set and 'SQLALCHEMY_DATABASE_URI' in line:
             print(sub(r'(?<=SQLALCHEMY_DATABASE_URI = \')(.+)(?=\')', uri, line.rstrip()))
             base_config_set = True
@@ -89,7 +90,7 @@ def setdburi(uri):
 def setlogfile(filepath):
     """Replaces the BaseConfiguration LOG_LOCATION in config.py with one supplied"""
     base_config_set = False
-    for line in fileinput.input('config.py', inplace=True, backup='.bak'):
+    for line in input('config.py', inplace=True, backup='.bak'):
         if not base_config_set and 'LOG_LOCATION' in line:
             print(sub(r'(?<=LOG_LOCATION = \')(.+)(?=\')', filepath, line.rstrip()))
             base_config_set = True
