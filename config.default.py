@@ -12,7 +12,7 @@ class BaseConfiguration(object):
     # We introduce very little risk by disabling this.
     WTF_CSRF_ENABLED = False
     # Make this random (used to generate session keys)
-    SECRET_KEY = 'e9987dce48df3ce98542529fd074d9e9f9cd40e66fc6c4c2'
+    SECRET_KEY = '123456789abcdef123456789'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = 'mysql://root:vagrant@localhost:3306/servermail'
     basedir = path.abspath(path.dirname(__file__))
