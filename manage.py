@@ -75,6 +75,13 @@ def generatekey():
 
 
 @manager.command
+def setkey(key):
+    """Replaces the SECRET_KEY in config.py with one specified"""
+    for line in input('config.py', inplace=True):
+        print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', key, line.rstrip()))
+
+
+@manager.command
 def setdburi(uri):
     """Replaces the BaseConfiguration SQLALCHEMY_DATABASE_URI in config.py with one supplied"""
     base_config_set = False
