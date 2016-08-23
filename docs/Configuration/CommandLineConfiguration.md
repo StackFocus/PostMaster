@@ -33,6 +33,8 @@ Use the following commands to restore the proper permissions on the PostMaster f
 **generatekey** replaces the secret key in config.py which is used by Flask (the Python framework used for PostMaster) for cryptographic functions.
 After the initial installation, this command should not be run again as all current logins would become invalid upon the next restart of the PostMaster.
 
+**setkey** replaces the secret key with one provided in config.py which is used by Flask (the Python framework used for PostMaster) for cryptographic functions.
+
 **unlockadmin username** unlocks a locked out administrator (replace username with the actual value).
 
 **resetadminpassword username password** resets an administrator's password to the desired value (replace user and password with the actual values)
