@@ -75,7 +75,7 @@ You can change your username and password from Manage -> Administrators.
 
 3. Install the required packages for PostMaster:
 
-        apt-get install python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server libmysqlclient-dev
+        apt-get install python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server
 
 4. Make sure you are running Python 2.7 as your default Python installation, as PostMaster relies on Python 2.7:
 
