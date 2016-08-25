@@ -1,6 +1,6 @@
 #!/bin/bash
 #REVISION=`git describe --abbrev=0 --tags | cut -c 2-`
-REVISION=1.4.0
+REVISION=1.1.0
 fpm -s dir -t deb -n "postmaster" -v $REVISION \
 --prefix /opt/postmaster/git \
 --description 'PostMaster is a beautiful web application to manage domains, users, and aliases on a Linux mail server' \
