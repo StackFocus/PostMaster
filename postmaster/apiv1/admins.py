@@ -138,7 +138,7 @@ def update_admin(admin_id):
     return {}, 200
 
 
-@apiv1.route('/admins/unlock/<int:admin_id>', methods=['PUT'])
+@apiv1.route('/admins/<int:admin_id>/unlock', methods=['PUT'])
 @login_required
 @json_wrap
 def unlock_admin(admin_id):

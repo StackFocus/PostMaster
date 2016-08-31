@@ -321,11 +321,11 @@ class TestMailDbFunctions:
         db.session.commit()
 
         new_test_admin = Admins.query.filter_by(username='test_admin').one()
-        rv = loggedin_client.put("/api/v1/admins/unlock/{0}".format(new_test_admin.id), follow_redirects=True)
+        rv = loggedin_client.put("/api/v1/admins/{0}/unlock".format(new_test_admin.id), follow_redirects=True)
         assert rv.status_code == 200
 
     def test_admins_unlock_not_found(self, loggedin_client):
-        rv = loggedin_client.put("/api/v1/admins/unlock/50", follow_redirects=True)
+        rv = loggedin_client.put("/api/v1/admins/50/unlock", follow_redirects=True)
         assert rv.status_code == 404
 
     def test_configs_get_one(self, loggedin_client):
