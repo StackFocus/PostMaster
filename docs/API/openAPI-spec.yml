@@ -148,7 +148,7 @@
           404:
             description: "The administrator was not found"
 
-    /admins/unlock/{admin_id}:
+    /admins/{admin_id}/unlock:
       put:
           tags:
             - "admins"

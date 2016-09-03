@@ -46,7 +46,7 @@ function deleteAdmin(id) {
 function unlockAdmin(id, targetLink) {
 
     $.ajax({
-        url: '/api/v1/admins/unlock/' + id,
+        url: '/api/v1/admins/' + id + 'unlock/',
         type: 'put',
 
         success: function (response) {
@@ -175,7 +175,7 @@ function adminEventListeners () {
     var deleteModal = $('#deleteModal');
     var deleteModalBtn = $('#modalDeleteBtn');
     var newItemAnchor = $('#newItemAnchor');
-    
+
     // When hitting the back/forward buttons, reload the table
     $(window).bind("popstate", function () {
         fillInTable();
