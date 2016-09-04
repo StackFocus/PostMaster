@@ -37,16 +37,16 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:
 
         tar -xzvf ~/postmaster.tar.gz
 
-3. Build the Docker image:
+4. Build the Docker image:
 
         cd ~/PostMaster-*
         docker build -t postmaster .
 
-4. Create a directory on the Docker host to contain PostMaster's application and Apache logs:
+5. Create a directory on the Docker host to contain PostMaster's application and Apache logs:
 
         mkdir -p /opt/postmaster_data/logs
 
-4. Run a PostMaster Docker container from the created image.
+6. Run a PostMaster Docker container from the created image.
 The -p has the Docker host serve port 80 of the PostMaster container. Change this to what suits your environment.
 The -e specifies the value of the DB_URI environment variable, which is the URI that PostMaster will use to connect to your mail server's MySQL server.
 The -v parameter specifies that the /opt/postmaster_data/logs should be mounted as a volume at /opt/postmaster/logs inside the container.
@@ -58,9 +58,9 @@ Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what
              -v /opt/postmaster_data/logs:/opt/postmaster/logs \
              -d postmaster
 
-Note: If you plan to deploy PostMaster behind a load-balancer, set the SECRET_KEY environment variable to a
-random string (preferably hex characters) that is the same across all running containers behind the load-balancer.
-This SECRET_KEY is used by Flask (the Python framework used for PostMaster) for cryptographic functions.
+    Note: If you plan to deploy PostMaster behind a load-balancer, set the SECRET_KEY environment variable to a
+    random string (preferably hex characters) that is the same across all running containers behind the load-balancer.
+    This SECRET_KEY is used by Flask (the Python framework used for PostMaster) for cryptographic functions.
 
-5. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
+7. PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -> Administrators.

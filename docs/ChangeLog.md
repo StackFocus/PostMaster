@@ -1,4 +1,4 @@
-### Unreleased
+### v1.1.0 - A Hard Day's Night
 
 BACKWARDS INCOMPATIBILITIES / NOTES:
 
@@ -14,7 +14,7 @@ Features:
 * Database upgrades/migrations are automatic during ugrades via the deb package and Docker [GH-138]
 * Adds the ability to unlock administrators and reset administrator passwords via the CLI [GH-145]
 * Adds the `python manage.py version` command [GH-156]
-* Adds the `python manage.py setkey` command [CHANGEME]
+* Adds the `python manage.py setkey` command [GH-161]
 
 Improvements:
 
@@ -25,13 +25,13 @@ Improvements:
 * Made the `python manage.py clean` function completely OS agnostic [GH-158]
 * Vagrant now uses Ansible for configuration instead of a bash script [GH-111]
 * Updated the Python packages to the latest versions [GH-135]
-* Apache logs for PostMaster now default to /opt/postmaster/logs
+* Apache logs for PostMaster now default to /opt/postmaster/logs [GH-151]
 
 Bug Fixes:
 
 * Fixed an issue where error logs were attempting to be written before the log file path was defined [GH-109]
 * The configuration file, config.py, is now named as config.default.py in the repository. During installation, the administrator must now copy or rename config.default.py to config.py.
-This is so that config.py is not overwritten during package upgrades.
+This is so that config.py is not overwritten during package upgrades [GH-157].
 
 
 ### v1.0.0 - Abbey Road
