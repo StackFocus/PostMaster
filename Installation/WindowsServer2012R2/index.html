@@ -25,7 +25,7 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Windows Server 2012 R2";
-    var mkdocs_page_input_path = "Installation\WindowsServer2012R2.md";
+    var mkdocs_page_input_path = "Installation/WindowsServer2012R2.md";
     var mkdocs_page_url = "/Installation/WindowsServer2012R2/";
   </script>
   
@@ -134,6 +134,28 @@
             
     <li class="toctree-l1 ">
         <a class="" href="../../API/ApiUsage/">API Usage</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Developer Guide</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Development/DevEnvironment/">Dev Environment</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Development/Contributing/">Contributing</a>
         
     </li>
 
@@ -257,23 +279,30 @@ Install-WindowsFeature Web-Server, Web-CGI, Web-Mgmt-Console
 </code></pre>
 </li>
 <li>
-<p>In order to download the source code for PostMaster, a git client is required. To download git, run the following command:</p>
-<pre><code>Invoke-WebRequest -Uri 'https://github.com/git-for-windows/git/releases/download/v2.7.2.windows.1/Git-2.7.2-64-bit.exe' -OutFile "$env:SystemDrive\Git-2.7.2-64-bit.exe"
+<p>Find the URL to the latest zip file containing the PostMaster source code at:</p>
+<pre><code>https://github.com/StackFocus/PostMaster/releases/latest
 </code></pre>
 </li>
 <li>
-<p>Install git:</p>
-<pre><code>Start-Process -FilePath "$env:SystemDrive\Git-2.7.2-64-bit.exe" -ArgumentList '/VERYSILENT' -Wait
+<p>Then download PostMaster with the URL from the previous step:</p>
+<pre><code>Invoke-WebRequest 'https://github.com/StackFocus/PostMaster/archive/[release version].zip' -OutFile "$env:SystemDrive\postmaster.zip"
 </code></pre>
 </li>
 <li>
-<p>Delete the git installation file:</p>
-<pre><code>Remove-Item "$env:SystemDrive\Git-2.7.2-64-bit.exe" -Force
+<p>Then unzip the downloaded zip file:</p>
+<pre><code>Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::ExtractToDirectory("$env:SystemDrive\postmaster.zip", "$env:SystemDrive\")
 </code></pre>
 </li>
 <li>
-<p>Create a directory to contain PostMaster:</p>
-<pre><code>New-Item "$env:SystemDrive\PostMaster" -Type Directory
+<p>Move the downloaded source code to C:\PostMaster:</p>
+<pre><code>$folder = Get-ChildItem "$env:SystemDrive\" | Where-Object {$_.Name -like "*Postmaster-*"} | Select-Object -First 1
+Move-Item $folder "$env:SystemDrive\PostMaster"
+</code></pre>
+</li>
+<li>
+<p>Delete the downloaded zip file:</p>
+<pre><code>Remove-Item 'postmaster.zip' -Force
 </code></pre>
 </li>
 <li>
@@ -354,8 +383,13 @@ This is done with the following command:</p>
 </code></pre>
 </li>
 <li>
+<p>Create the PostMaster configuration file from using the sample file that was included:</p>
+<pre><code>Copy-Item "$env:SystemDrive\PostMaster\git\config.default.py "$env:SystemDrive\PostMaster\git\config.py"
+</code></pre>
+</li>
+<li>
 <p>Copy wfastcgi.py, created by Microsoft Web Platform Installer earlier, to C:\PostMaster\git:</p>
-<pre><code>Copy-Item -Path "$env:SystemDrive\Python27\Scripts\wfastcgi.py" "$env:SystemDrive\PostMaster\git"
+<pre><code>Copy-Item "$env:SystemDrive\Python27\Scripts\wfastcgi.py" "$env:SystemDrive\PostMaster\git"
 </code></pre>
 </li>
 <li>
@@ -388,12 +422,17 @@ python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:33
 <p>PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
 To start the migration, run the following command:</p>
-<pre><code>python manage.py createdb
+<pre><code>python manage.py upgradedb
 </code></pre>
 </li>
 <li>
 <p>PostMaster uses a secret key for certain cryptographic functions. To generate a random key, run the following command:</p>
 <pre><code>python manage.py generatekey
+</code></pre>
+</li>
+<li>
+<p>By deafult, PostMaster logs to a Linux based path, run the following command to change the log to the text file created in step 11:</p>
+<pre><code>python manage.py setlogfile "$env:SystemDrive\PostMaster\logs\postmaster.log"
 </code></pre>
 </li>
 <li>
@@ -412,12 +451,6 @@ To start the migration, run the following command:</p>
 <li>
 <p>PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
 You can change your username and password from Manage -&gt; Administrators.</p>
-</li>
-<li>
-<p>Please keep in mind that the C:\PostMaster\git\db\migrations folder should be backed up after installation/updates.
-This is because PostMaster uses database migrations to safely upgrade the database schema,
-and this folder contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
-If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.</p>
 </li>
 </ol>
               
@@ -440,7 +473,7 @@ If this folder is missing, PostMaster can't tell what state your database is in,
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-06-29 00:49:03.316000<p>
+    <p>Documentation generated on 2016-09-04 15:16:36.103347<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>

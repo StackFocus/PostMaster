@@ -4,7 +4,7 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,19 +13,19 @@
         
     <url>
      <loc>None/Installation/Docker/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/Installation/Ubuntu1404/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/Installation/WindowsServer2012R2/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -35,13 +35,13 @@
         
     <url>
      <loc>None/Configuration/CommandLineConfiguration/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/Configuration/ConfigurationsPage/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -51,7 +51,23 @@
         
     <url>
      <loc>None/API/ApiUsage/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>None/Development/DevEnvironment/</loc>
+     <lastmod>2016-09-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/Development/Contributing/</loc>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -61,7 +77,7 @@
         
     <url>
      <loc>None/ChangeLog/</loc>
-     <lastmod>2016-06-28</lastmod>
+     <lastmod>2016-09-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

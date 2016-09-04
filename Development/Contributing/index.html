@@ -8,7 +8,7 @@
   
   
   
-  <title>API Usage - PostMaster</title>
+  <title>Contributing - PostMaster</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -24,9 +24,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "API Usage";
-    var mkdocs_page_input_path = "API/ApiUsage.md";
-    var mkdocs_page_url = "/API/ApiUsage/";
+    var mkdocs_page_name = "Contributing";
+    var mkdocs_page_input_path = "Development/Contributing.md";
+    var mkdocs_page_url = "/Development/Contributing/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -119,21 +119,8 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">API Usage</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#api-documentation">API Documentation</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#curl-example">Curl Example</a></li>
-                
-            
-                <li class="toctree-l3"><a href="#powershell-example-v3">PowerShell Example (v3+)</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../../API/ApiUsage/">API Usage</a>
         
     </li>
 
@@ -148,14 +135,37 @@
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../../Development/DevEnvironment/">Dev Environment</a>
+        <a class="" href="../DevEnvironment/">Dev Environment</a>
         
     </li>
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../../Development/Contributing/">Contributing</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Contributing</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#types-of-contributions">Types of Contributions</a></li>
+                
+                    <li><a class="toctree-l4" href="#bug-reports">Bug Reports</a></li>
+                
+                    <li><a class="toctree-l4" href="#bug-fixes">Bug Fixes</a></li>
+                
+                    <li><a class="toctree-l4" href="#features">Features</a></li>
+                
+                    <li><a class="toctree-l4" href="#documentation">Documentation</a></li>
+                
+                    <li><a class="toctree-l4" href="#feedback">Feedback</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#how-to-contribute-code">How To Contribute Code</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#coding-standards">Coding Standards</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -200,11 +210,11 @@
     
       
         
-          <li>API &raquo;</li>
+          <li>Developer Guide &raquo;</li>
         
       
     
-    <li>API Usage</li>
+    <li>Contributing</li>
     <li class="wy-breadcrumbs-aside">
       
         
@@ -218,36 +228,59 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="api-documentation">API Documentation</h3>
+                <h3 id="types-of-contributions">Types of Contributions</h3>
+<h4 id="bug-reports">Bug Reports</h4>
+<p>Report bugs and issues at <a href="https://github.com/StackFocus/PostMaster/issues">https://github.com/StackFocus/PostMaster/issues</a>.</p>
+<p>If you are reporting a bug, please include the following:</p>
 <ul>
-<li><a href="../../API/openAPI-spec.html">OpenAPI Specification (Swagger)</a>  </li>
-<li><a href="../../API/openAPI-spec.yml">OpenAPI Specification File (Swagger)</a></li>
+<li>The version of PostMaster that you are running</li>
+<li>The operating system name and version that is running the application</li>
+<li>The version of Python that is running the application (<code>python -V</code>)</li>
+<li>The installation method used (package or manual)</li>
+<li>Detailed steps to reproduce the bug</li>
+<li>Any details about your specific environment that might be helpful for troubleshooting</li>
 </ul>
-<h3 id="curl-example">Curl Example</h3>
-<p>For local PostMaster authentication, use the following command (session.txt is used to store your login session):  </p>
-<pre><code class="bash">curl https://postmaster.example.local/login --data 'username=admin&amp;password=PostMaster&amp;auth_source=PostMaster User' -c session.txt
-</code></pre>
-
-<p>For LDAP authentication, set auth_source with the value from the "AD Domain" setting on the configurations page (session.txt is used to store your login session):</p>
-<pre><code class="bash">curl https://postmaster.example.local/login --data 'username=user@example.local&amp;password=password&amp;auth_source=example.local' -c session.txt
-</code></pre>
-
-<p>Once you are logged in, you can use the following command to query the API:</p>
-<pre><code class="bash">curl https://postmaster.example.local/api/v1/domains -b session.txt
-</code></pre>
-
-<h3 id="powershell-example-v3">PowerShell Example (v3+)</h3>
-<p>For local PostMaster authentication, use the following command (session is a variable used to store your login session):  </p>
-<pre><code class="powershell">Invoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'PostMaster'; auth_source = 'PostMaster User'}
-</code></pre>
-
-<p>For LDAP authentication, set auth_source with the value from the "AD Domain" setting on the configurations page (session is a variable used to store your login session):</p>
-<pre><code class="powershell">Invoke-WebRequest -Uri 'http://postmaster.example.local/login' -Method 'Post' -SessionVariable 'session' -Body @{username = 'admin'; password = 'password'; auth_source = 'example.local'}
-</code></pre>
-
-<p>Once you are logged in, you can use the following command to query the API:</p>
-<pre><code class="powershell">Invoke-RestMethod -Uri 'http://postmaster.example.local/api/v1/domains' -WebSession $session
-</code></pre>
+<h4 id="bug-fixes">Bug Fixes</h4>
+<p>Look through the GitHub issues for bugs.
+Anything tagged with "bug" and is unassigned is open to whoever wants to implement it.
+Any changes made should be documented in docs/ChangeLog.md.</p>
+<h4 id="features">Features</h4>
+<p>Look through the GitHub issues for features.
+Anything tagged with "feature" and is unassigned is open to whoever wants to implement it.
+Any changes made should be documented in "docs/ChangeLog.md".</p>
+<h4 id="documentation">Documentation</h4>
+<p>PostMaster documentation is written in Markdown and then deployed to GitHub pages via mkdocs by a StackFocus administrator.
+To update documentation, directly modify the Markdown files in the "docs" folder. Once the changes are merged,
+a StackFocus administrator will update GitHub pages.</p>
+<h4 id="feedback">Feedback</h4>
+<p>The best way to send feedback is to file an issue at <a href="https://github.com/StackFocus/PostMaster/issues">https://github.com/StackFocus/PostMaster/issues</a>.</p>
+<p>If you are proposing a feature:</p>
+<ul>
+<li>Explain in detail how it would work and why it would be beneficial</li>
+<li>Keep the scope as narrow as possible to make it easier to implement</li>
+</ul>
+<h3 id="how-to-contribute-code">How To Contribute Code</h3>
+<ol>
+<li>Fork the project</li>
+<li>Create a branch related to the issue (ex. ft-adds_2factor-123)</li>
+<li>Make changes to the code</li>
+<li>Write unit tests to test the new code</li>
+<li>Run <code>$ python pylint-check.py</code> to verify that you are complying to PEP8 coding standards</li>
+<li>Run <code>$ py.test tests</code> to verify the unit tests pass</li>
+<li>Commit and push the changed files</li>
+<li>Open a pull request and describe what was changed (try to squash your commits when possible)</li>
+</ol>
+<h3 id="coding-standards">Coding Standards</h3>
+<p>We use standard <a href="https://www.python.org/dev/peps/pep-0008/">PEP8</a>.
+Our specific exceptions are in the <code>.pylintrc</code> file.</p>
+<p>Code will not be accepted if it fails the pylint test. To run pylint:
+<code>$ python pylint-check.py</code></p>
+<p>There is a paradigm we've been using for Flask:</p>
+<ul>
+<li>Keep the code in the routes as minimal as possible by using decorators and helper functions</li>
+<li>Use Ajax to an API route for data as much as possible</li>
+<li>Use modern Flask and SQLAlchemy functions for API routes (ex. get_or_404)</li>
+</ul>
               
             </div>
           </div>
@@ -255,10 +288,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../Development/DevEnvironment/" class="btn btn-neutral float-right" title="Dev Environment">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../ChangeLog/" class="btn btn-neutral float-right" title="Change Log">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../Configuration/ConfigurationsPage/" class="btn btn-neutral" title="Configurations Page"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../DevEnvironment/" class="btn btn-neutral" title="Dev Environment"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -268,7 +301,7 @@
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-09-04 15:16:36.133722<p>
+    <p>Documentation generated on 2016-09-04 15:16:36.151768<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
@@ -286,10 +319,10 @@
           <a href="https://github.com/stackfocus/postmaster" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../../Configuration/ConfigurationsPage/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../DevEnvironment/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../Development/DevEnvironment/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../ChangeLog/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

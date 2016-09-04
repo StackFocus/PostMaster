@@ -25,7 +25,7 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Docker";
-    var mkdocs_page_input_path = "Installation\Docker.md";
+    var mkdocs_page_input_path = "Installation/Docker.md";
     var mkdocs_page_url = "/Installation/Docker/";
   </script>
   
@@ -72,9 +72,6 @@
         <a class="current" href="./">Docker</a>
         
             <ul>
-            
-                <li class="toctree-l3"><a href="#overview">Overview</a></li>
-                
             
                 <li class="toctree-l3"><a href="#prerequisites">Prerequisites</a></li>
                 
@@ -146,6 +143,28 @@
           
             <li>
     <ul class="subnav">
+    <li><span>Developer Guide</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Development/DevEnvironment/">Dev Environment</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../Development/Contributing/">Contributing</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
     <li><span>Release Notes</span></li>
 
         
@@ -199,13 +218,7 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="overview">Overview</h3>
-<p>PostMaster is a Docker friendly application, however, it does require a data volume.
-This is because PostMaster uses database migrations to safely upgrade the database schema.
-The data volume contains auto-generated database migration scripts that allow you to revert back if a database migration ever failed.
-If this folder is missing, PostMaster can't tell what state your database is in, and therefore, cannot revert back.
-In this documentation, the data volume will be hosted in /opt/postmaster_data on the Docker host, but you can alter this in anyway you see fit.</p>
-<h3 id="prerequisites">Prerequisites</h3>
+                <h3 id="prerequisites">Prerequisites</h3>
 <ol>
 <li>An Ubuntu 14.04 mail server configured with the guide from <a href="https://www.digitalocean.com/community/tutorials/how-to-configure-a-mail-server-using-postfix-dovecot-mysql-and-spamassassin">DigitalOcean</a> or <a href="https://www.linode.com/docs/email/postfix/email-with-postfix-dovecot-and-mysql">Linode</a>.
 Any other MySQL configuration requires edits to PostMaster's database models. Paid support for this is available.</li>
@@ -239,45 +252,51 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:</p>
 <h3 id="installation">Installation</h3>
 <ol>
 <li>
-<p>Switch to the Docker host, and login as root:</p>
-<pre><code>sudo su -
+<p>Find the URL to the latest tar.gz file containing the PostMaster source code at:</p>
+<pre><code>https://github.com/StackFocus/PostMaster/releases/latest
 </code></pre>
 </li>
 <li>
-<p>As root, create the following folder on the Docker host to hold PostMaster's data volume:</p>
-<pre><code>mkdir /opt/postmaster_data
+<p>Then download PostMaster with the URL from the previous step:</p>
+<pre><code>wget https://github.com/StackFocus/PostMaster/archive/[release version].tar.gz -O ~/postmaster.tar.gz
 </code></pre>
 </li>
 <li>
-<p>Provide the appropriate permissions to PostMaster's data volume:</p>
-<pre><code>chown root:root /opt/postmaster_data &amp;&amp; chmod 770 /opt/postmaster_data
-</code></pre>
-</li>
-<li>
-<p>Download the PostMaster sourcecode from GitHub:</p>
-<pre><code>git clone https://github.com/StackFocus/PostMaster.git ~/postmaster
+<p>Decompress the downloaded tar.gz file:</p>
+<pre><code>tar -xzvf ~/postmaster.tar.gz
 </code></pre>
 </li>
 <li>
 <p>Build the Docker image:</p>
-<pre><code>cd ~/postmaster
+<pre><code>cd ~/PostMaster-*
 docker build -t postmaster .
 </code></pre>
 </li>
 <li>
-<p>Run a PostMaster Docker container from the created image.
-The -v points to the data volume that was created in step 2.
-The -p has the Docker host serve port 80 of the PostMaster container. Change this to what suits your environment.
-The -e specifies the value of the DB_URI environment variable, which is the URI that PostMaster will use to connect to your mail server's MySQL server.
-Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what you configured in step 2 of MySQL Preparation:</p>
-<pre><code>docker run -p 0.0.0.0:80:8082 -v /opt/postmaster_data:/opt/postmaster/git/db \
-     -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail -d postmaster
+<p>Create a directory on the Docker host to contain PostMaster's application and Apache logs:</p>
+<pre><code>mkdir -p /opt/postmaster_data/logs
 </code></pre>
 </li>
 <li>
-<p>PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
-You can change your username and password from Manage -&gt; Administrators.</p>
+<p>Run a PostMaster Docker container from the created image.
+The -p has the Docker host serve port 80 of the PostMaster container. Change this to what suits your environment.
+The -e specifies the value of the DB_URI environment variable, which is the URI that PostMaster will use to connect to your mail server's MySQL server.
+The -v parameter specifies that the /opt/postmaster_data/logs should be mounted as a volume at /opt/postmaster/logs inside the container.
+Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what you configured in step 2 of MySQL Preparation:</p>
+<pre><code>docker run \
+     -p 0.0.0.0:80:8082 \
+     -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail \
+     -v /opt/postmaster_data/logs:/opt/postmaster/logs \
+     -d postmaster
+</code></pre>
 </li>
+</ol>
+<p>Note: If you plan to deploy PostMaster behind a load-balancer, set the SECRET_KEY environment variable to a
+random string (preferably hex characters) that is the same across all running containers behind the load-balancer.
+This SECRET_KEY is used by Flask (the Python framework used for PostMaster) for cryptographic functions.</p>
+<ol>
+<li>PostMaster should now be running. Simply use the username "admin" and the password "PostMaster" to login.
+You can change your username and password from Manage -&gt; Administrators.</li>
 </ol>
               
             </div>
@@ -299,7 +318,7 @@ You can change your username and password from Manage -&gt; Administrators.</p>
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-06-29 00:49:03.263000<p>
+    <p>Documentation generated on 2016-09-04 15:16:36.065604<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>

@@ -148,6 +148,29 @@
           404:
             description: "The administrator was not found"
 
+    /admins/{admin_id}/unlock:
+      put:
+          tags:
+            - "admins"
+          summary: "Unlocks a locked out local administrator"
+          description: ""
+          consumes:
+            - "application/json"
+          produces:
+            - "application/json"
+          parameters:
+            -
+              name: "admin_id"
+              in: "path"
+              description: "The ID of the administrator to unlock"
+              required: true
+              type: "integer"
+              format: "int64"
+          responses:
+            200:
+              description: "The administrator was unlocked"
+            404:
+              description: "The administrator was not found"
 
     /aliases:
       get:

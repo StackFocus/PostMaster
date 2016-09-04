@@ -130,6 +130,28 @@
           
             <li>
     <ul class="subnav">
+    <li><span>Developer Guide</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Development/DevEnvironment/">Dev Environment</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../Development/Contributing/">Contributing</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
     <li><span>Release Notes</span></li>
 
         
@@ -139,7 +161,7 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#unreleased">Unreleased</a></li>
+                <li class="toctree-l3"><a href="#v110-a-hard-days-night">v1.1.0 - A Hard Day's Night</a></li>
                 
             
                 <li class="toctree-l3"><a href="#v100-abbey-road">v1.0.0 - Abbey Road</a></li>
@@ -193,21 +215,39 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="unreleased">Unreleased</h3>
+                <h3 id="v110-a-hard-days-night">v1.1.0 - A Hard Day's Night</h3>
+<p>BACKWARDS INCOMPATIBILITIES / NOTES:</p>
+<ul>
+<li>The 'Log File' config option is now baked into the application config and cannot be set in the API/UI/database. Use <code>python manage.py setlogfile &lt;path&gt;</code> or edit config.py to change the log file location. [GH-128]</li>
+<li><code>python manage.py createdb</code> has been replaced with <code>python manage.py upgradedb</code> [GH-138]</li>
+<li>On new installations of PostMaster, the ID of the configuration settings will change. Existing installations that will be upgraded will not be affected. [GH-142]</li>
+<li>The API error messages for HTTP 400 and 404 have been made friendlier. Any automation that keys in on these messages will be broken. [GH-142]</li>
+</ul>
 <p>Features:</p>
 <ul>
 <li>Added the ability to install PostMaster via a deb package [GH-111]</li>
+<li>Adds the ability to lockout local accounts after x number of failed login attempts [GH-142]</li>
+<li>Database upgrades/migrations are automatic during ugrades via the deb package and Docker [GH-138]</li>
+<li>Adds the ability to unlock administrators and reset administrator passwords via the CLI [GH-145]</li>
+<li>Adds the <code>python manage.py version</code> command [GH-156]</li>
+<li>Adds the <code>python manage.py setkey</code> command [GH-161]</li>
 </ul>
 <p>Improvements:</p>
 <ul>
+<li>Database migrations are now tracked via source control to ensure consistency across installations [GH-138]</li>
 <li>Added additional documentation [GH-115]</li>
 <li>Improved Active Directory authentication performance [GH-118]</li>
 <li>Cleaned up JavaScript event listeners [GH-120]</li>
+<li>Made the <code>python manage.py clean</code> function completely OS agnostic [GH-158]</li>
 <li>Vagrant now uses Ansible for configuration instead of a bash script [GH-111]</li>
+<li>Updated the Python packages to the latest versions [GH-135]</li>
+<li>Apache logs for PostMaster now default to /opt/postmaster/logs [GH-151]</li>
 </ul>
 <p>Bug Fixes:</p>
 <ul>
 <li>Fixed an issue where error logs were attempting to be written before the log file path was defined [GH-109]</li>
+<li>The configuration file, config.py, is now named as config.default.py in the repository. During installation, the administrator must now copy or rename config.default.py to config.py.
+This is so that config.py is not overwritten during package upgrades [GH-157].</li>
 </ul>
 <h3 id="v100-abbey-road">v1.0.0 - Abbey Road</h3>
 <p>Features:</p>
@@ -222,7 +262,7 @@
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="../API/ApiUsage/" class="btn btn-neutral" title="API Usage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../Development/Contributing/" class="btn btn-neutral" title="Contributing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -232,7 +272,7 @@
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-06-29 00:49:03.396000<p>
+    <p>Documentation generated on 2016-09-04 15:16:36.160170<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
@@ -250,7 +290,7 @@
           <a href="https://github.com/stackfocus/postmaster" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../API/ApiUsage/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../Development/Contributing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
     </span>
