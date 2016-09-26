@@ -5,7 +5,7 @@ Purpose: The admins API for PostMaster which allows
 an admin to create, delete, and update admins
 """
 
-from flask import request, jsonify
+from flask import request
 from flask_login import login_required, current_user
 import pyqrcode
 from StringIO import StringIO
