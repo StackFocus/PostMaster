@@ -10,7 +10,7 @@ from flask_login import login_required, current_user
 import pyqrcode
 from StringIO import StringIO
 from postmaster import db
-from postmaster.models import Admins, Configs
+from postmaster.models import Admins
 from postmaster.utils import json_logger, clear_lockout_fields_on_user
 from ..decorators import json_wrap, paginate
 from ..errors import ValidationError, GenericError
@@ -153,6 +153,7 @@ def unlock_admin(admin_id):
 
 @apiv1.route('/admins/<int:admin_id>/2factor', methods=['GET'])
 @login_required
+@json_wrap
 def twofactor_status(admin_id):
     """ Returns if 2 factor is enabled or not
 
@@ -160,11 +161,12 @@ def twofactor_status(admin_id):
         but I added it here as a stub for the URI.
     """
     admin = Admins.query.get_or_404(admin_id)
-    return jsonify({"enabled": admin.otp_active})
+    return dict(enabled=admin.otp_active)
 
 
 @apiv1.route('/admins/<int:admin_id>/2factor', methods=['PUT'])
 @login_required
+@json_wrap
 def twofactor_disable(admin_id):
     """ Disable 2 factor using API.
 
@@ -186,23 +188,24 @@ def twofactor_disable(admin_id):
                     'error', current_user.username,
                     'The following error occurred in twofactor_disable: {0}'.format(str(e)))
                 raise GenericError('The administrator could not be updated')
-            return jsonify({"enabled": admin.otp_active})
+            return dict(enabled=admin.otp_active)
         elif status.lower() == "true":
             raise GenericError("Cannot enable 2 factor from this route - see docs")
-    raise GenericError("Must provide 'enabled=False'")
+    raise GenericError("An Invalid parameter was supplied")
 
 
 @apiv1.route('/admins/<int:admin_id>/2factor/qrcode', methods=['GET'])
 @login_required
+@json_wrap
 def qrcode(admin_id):
     """ Presents the user with a QR code to scan to setup 2 factor authentication
     """
     # render qrcode for FreeTOTP
     admin = Admins.query.get_or_404(admin_id)
     if admin.id != current_user.id:
-        raise GenericError('You can only view your user\'s QR code')
+        raise GenericError('You may not view other admin\'s QR codes')
     if admin.otp_active:
-        return "Already gucci"
+        return dict(status="Already Enabled")
     admin.generate_otp_secret()
     try:
         db.session.add(admin)
@@ -227,6 +230,7 @@ def qrcode(admin_id):
 
 @apiv1.route('/admins/<int:admin_id>/2factor/verify', methods=['POST'])
 @login_required
+@json_wrap
 def verify_qrcode(admin_id):
     """ Verifies if the 2 factor token provided is correct
 
@@ -235,17 +239,18 @@ def verify_qrcode(admin_id):
     admin = Admins.query.get_or_404(admin_id)
     if request.get_json(force=True).get('code'):
         if not admin.otp_secret:
-            raise GenericError("2 Factor Secret has not been generated yet")
+            raise GenericError("The 2 Factor Secret has not been generated yet")
         if admin.verify_totp(request.get_json(force=True).get('code')):
             if not admin.otp_active:
-                auditMessage = 'The administrator "{0}" enabled 2 factor'.format(
+                audit_message = 'The administrator "{0}" enabled 2 factor'.format(
                     admin.username)
-                json_logger('audit', current_user.username, auditMessage)
                 admin.otp_active = True
             try:
                 db.session.add(admin)
                 db.session.commit()
-                return jsonify({"status": "Success"})
+                if audit_message:
+                    json_logger('audit', current_user.username, audit_message)
+                return dict(status="Success")
             except ValidationError as e:
                 raise e
             except Exception as e:
@@ -255,6 +260,6 @@ def verify_qrcode(admin_id):
                     'The following error occurred in verify_qrcode: {0}'.format(str(e)))
                 raise GenericError('The administrator could not be updated')
         else:
-            raise GenericError("Invalid Code")
+            raise GenericError("An invalid code was supplied")
     else:
-        raise ValidationError("Missing form parameter: code")
+        raise ValidationError("The code was not supplied")
