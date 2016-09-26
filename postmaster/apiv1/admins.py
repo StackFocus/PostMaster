@@ -196,7 +196,6 @@ def twofactor_disable(admin_id):
 
 @apiv1.route('/admins/<int:admin_id>/2factor/qrcode', methods=['GET'])
 @login_required
-@json_wrap
 def qrcode(admin_id):
     """ Presents the user with a QR code to scan to setup 2 factor authentication
     """
@@ -205,7 +204,7 @@ def qrcode(admin_id):
     if admin.id != current_user.id:
         raise GenericError('You may not view other admin\'s QR codes')
     if admin.otp_active:
-        return dict(status="Already Enabled")
+        return ('', 204)
     admin.generate_otp_secret()
     try:
         db.session.add(admin)
@@ -245,20 +244,19 @@ def verify_qrcode(admin_id):
                 audit_message = 'The administrator "{0}" enabled 2 factor'.format(
                     admin.username)
                 admin.otp_active = True
-            try:
-                db.session.add(admin)
-                db.session.commit()
-                if audit_message:
+                try:
+                    db.session.add(admin)
+                    db.session.commit()
                     json_logger('audit', current_user.username, audit_message)
-                return dict(status="Success")
-            except ValidationError as e:
-                raise e
-            except Exception as e:
-                db.session.rollback()
-                json_logger(
-                    'error', current_user.username,
-                    'The following error occurred in verify_qrcode: {0}'.format(str(e)))
-                raise GenericError('The administrator could not be updated')
+                except ValidationError as e:
+                    raise e
+                except Exception as e:
+                    db.session.rollback()
+                    json_logger(
+                        'error', current_user.username,
+                        'The following error occurred in verify_qrcode: {0}'.format(str(e)))
+                    raise GenericError('The administrator could not be updated')
+            return dict(status="Success")
         else:
             raise GenericError("An invalid code was supplied")
     else:

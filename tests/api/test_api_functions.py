@@ -376,7 +376,7 @@ class TestMailDbFunctions:
         except:
             assert False, "Not json"
         assert rv.status_code == 400
-        assert "Invalid Code" in rv.data
+        assert "invalid code" in rv.data
 
     def test_admins_2factor_verify_secret_fail(self, loggedin_client):
         test_admin = Admins().from_json({
@@ -415,6 +415,7 @@ class TestMailDbFunctions:
             json.loads(rv.data)
         except:
             assert False, "Not json"
+        assert "Success" in rv.data
         assert rv.status_code == 200
         assert "Success" in rv.data
 
