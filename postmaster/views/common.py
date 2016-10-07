@@ -61,7 +61,7 @@ def login():
     login_form = forms.LoginForm.new()
 
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('common.index'))
     else:
         if request.method == 'GET':
             return render_template('login.html', title='PostMaster Login', loginForm=login_form)
@@ -74,13 +74,13 @@ def login():
                 'The administrator "{0}" logged in successfully'.format(
                     username))
             return redirect(request.args.get('next') or url_for(
-                'index'))
+                'common.index'))
         else:
             wtforms_errors = get_wtforms_errors(login_form)
             if wtforms_errors:
                 flash(wtforms_errors)
 
-    return redirect(url_for('login'))
+    return redirect(url_for('common.login'))
 
 
 @common.route('/logout', methods=["GET"])
@@ -92,7 +92,7 @@ def logout():
         logout_user()
         flash('Successfully logged out', 'success')
 
-    return redirect(url_for('login'))
+    return redirect(url_for('common.login'))
 
 
 @common.route('/domains', methods=["GET"])
