@@ -54,7 +54,7 @@ Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what
 
         docker run \
              -p 0.0.0.0:80:8082 \
-             -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail \
+             -e DB_URI=pymysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail \
              -v /opt/postmaster_data/logs:/opt/postmaster/logs \
              -d postmaster
 
