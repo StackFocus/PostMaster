@@ -14,7 +14,7 @@ class BaseConfiguration(object):
     # Make this random (used to generate session keys)
     SECRET_KEY = '123456789abcdef123456789'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:vagrant@localhost:3306/servermail'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:vagrant@localhost:3306/servermail'
     basedir = path.abspath(path.dirname(__file__))
     LOG_LOCATION = '/opt/postmaster/logs/postmaster.log'
 
