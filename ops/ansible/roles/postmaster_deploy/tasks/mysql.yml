@@ -15,7 +15,7 @@
 
 - name: Install mysql-python using apt for this next command
   become: yes
-  apt: name=python-mysqldb state-latest
+  apt: name=python-mysqldb state=latest
 
 - name: Create default database for mysql
   mysql_db: name=servermail state=present login_user=root login_password=vagrant
