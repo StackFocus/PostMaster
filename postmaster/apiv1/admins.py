@@ -151,7 +151,7 @@ def unlock_admin(admin_id):
     return {}, 200
 
 
-@apiv1.route('/admins/<int:admin_id>/2factor', methods=['GET'])
+@apiv1.route('/admins/<int:admin_id>/twofactor', methods=['GET'])
 @login_required
 @json_wrap
 def twofactor_status(admin_id):
@@ -164,7 +164,7 @@ def twofactor_status(admin_id):
     return dict(enabled=admin.otp_active)
 
 
-@apiv1.route('/admins/<int:admin_id>/2factor', methods=['PUT'])
+@apiv1.route('/admins/<int:admin_id>/twofactor', methods=['PUT'])
 @login_required
 @json_wrap
 def twofactor_disable(admin_id):
@@ -191,10 +191,10 @@ def twofactor_disable(admin_id):
             return dict(enabled=admin.otp_active)
         elif status.lower() == "true":
             raise GenericError("Cannot enable 2 factor from this route - see docs")
-    raise GenericError("An Invalid parameter was supplied")
+    raise GenericError("An invalid parameter was supplied")
 
 
-@apiv1.route('/admins/<int:admin_id>/2factor/qrcode', methods=['GET'])
+@apiv1.route('/admins/<int:admin_id>/twofactor/qrcode', methods=['GET'])
 @login_required
 def qrcode(admin_id):
     """ Presents the user with a QR code to scan to setup 2 factor authentication
@@ -227,7 +227,7 @@ def qrcode(admin_id):
         'Expires': '0'}
 
 
-@apiv1.route('/admins/<int:admin_id>/2factor/verify', methods=['POST'])
+@apiv1.route('/admins/<int:admin_id>/twofactor/verify', methods=['POST'])
 @login_required
 @json_wrap
 def verify_qrcode(admin_id):
@@ -256,7 +256,7 @@ def verify_qrcode(admin_id):
                         'error', current_user.username,
                         'The following error occurred in verify_qrcode: {0}'.format(str(e)))
                     raise GenericError('The administrator could not be updated')
-            return dict(status="Success")
+            return {}, 200
         else:
             raise GenericError("An invalid code was supplied")
     else:

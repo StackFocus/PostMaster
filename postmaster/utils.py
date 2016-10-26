@@ -265,7 +265,7 @@ def validate_wtforms_password(form, field):
                         if bcrypt.check_password_hash(admin.password, password):
                             if admin.otp_active:
                                 if not admin.verify_totp(two_factor):
-                                    raise WtfStopValidation('2 Factor token was incorrect')
+                                    raise WtfStopValidation('The two factor authentication code is incorrect')
                             form.admin = admin
                             return
                         else:
@@ -288,7 +288,7 @@ def validate_wtforms_password(form, field):
                         admin = models.Admins.query.filter_by(username=friendly_username, source='ldap').first()
                         if admin.otp_active:
                             if not admin.verify_totp(two_factor):
-                                raise WtfStopValidation('2 Factor token was incorrect')
+                                raise WtfStopValidation('The two factor authentication code is incorrect')
                         form.admin = admin
         except ADException as e:
             raise WtfStopValidation(e.message)

@@ -267,7 +267,7 @@ class Admins(db.Model):
         return {'id': self.id, 'name': self.name, 'username': self.username, 'failed_attempts': self.failed_attempts,
                 'last_failed_date': self.last_failed_date, 'unlock_date': self.unlock_date,
                 'locked': (self.unlock_date is not None and self.unlock_date > datetime.utcnow()),
-                'twoFactor': self.otp_active}
+                'two_factor': self.otp_active}
 
     def from_json(self, json):
         if not json.get('username', None):
