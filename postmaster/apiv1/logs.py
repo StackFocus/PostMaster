@@ -7,8 +7,8 @@ an admin to query the log file
 
 from flask import request, jsonify
 from flask_login import login_required
-from . import apiv1
-from utils import get_logs_dict
+from postmaster.apiv1 import apiv1
+from postmaster.apiv1.utils import get_logs_dict
 
 
 @apiv1.route("/logs", methods=["GET"])

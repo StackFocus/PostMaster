@@ -8,7 +8,7 @@ import os
 from re import match
 from mmap import mmap
 from json import loads
-from ..errors import ValidationError
+from postmaster.errors import ValidationError
 from postmaster import app
 from postmaster.models import Configs
 

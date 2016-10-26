@@ -10,9 +10,9 @@ from flask_login import login_required, current_user
 from postmaster import db
 from postmaster.models import Admins, Configs
 from postmaster.utils import json_logger, clear_lockout_fields_on_user
-from ..decorators import json_wrap, paginate
-from ..errors import ValidationError, GenericError
-from . import apiv1
+from postmaster.decorators import json_wrap, paginate
+from postmaster.errors import ValidationError, GenericError
+from postmaster.apiv1 import apiv1
 
 
 @apiv1.route("/admins", methods=["GET"])
