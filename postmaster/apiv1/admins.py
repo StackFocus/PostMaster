@@ -188,7 +188,7 @@ def twofactor_disable(admin_id):
                     'error', current_user.username,
                     'The following error occurred in twofactor_disable: {0}'.format(str(e)))
                 raise GenericError('The administrator could not be updated')
-            return dict(enabled=admin.otp_active)
+            return {}, 200
         elif status.lower() == "true":
             raise GenericError("Cannot enable 2 factor from this route - see docs")
     raise GenericError("An invalid parameter was supplied")
