@@ -5,6 +5,7 @@ Purpose: General helper utils
 """
 
 import ldap
+from sys import version_info
 from struct import unpack
 from re import search, sub, IGNORECASE
 from json import dumps
@@ -565,12 +566,25 @@ class AD(object):
         string version of the SID in format of S-1-5-21-1270288957-3800934213-3019856503-500
         This function was based from: http://www.gossamer-threads.com/lists/apache/bugs/386930
         """
-        srl = ord(sid[0])
-        number_sub_id = ord(sid[1])
-        iav = unpack('!Q', '\x00\x00' + sid[2:8])[0]
-        sub_ids = [
-            unpack('<I', sid[8+4*i:12+4*i])[0]
-            for i in range(number_sub_id)
-        ]
+        # The revision level (typically 1)
+        if version_info.major < 3:
+            revision = ord(sid[0])
+        else:
+            revision = sid[0]
+        # The number of dashes minus 2
+        if version_info.major < 3:
+            number_of_sub_ids = ord(sid[1])
+        else:
+            number_of_sub_ids = sid[1]
+        # Identifier Authority Value (typically a value of 5 representing "NT Authority")
+        # ">Q" is the format string. ">" specifies that the bytes are big-endian.
+        # The "Q" specifies "unsigned long long" because 8 bytes are being decoded.
+        # Since the actual SID section being decoded is only 6 bytes, we must precede it with 2 empty bytes.
+        iav = unpack('>Q', b'\x00\x00' + sid[2:8])[0]
+        # The sub-ids include the Domain SID and the RID representing the object
+        # '<I' is the format string. "<" specifies that the bytes are little-endian. "I" specifies "unsigned int".
+        # This decodes in 4 byte chunks starting from the 8th byte until the last byte
+        sub_ids = [unpack('<I', sid[8 + 4 * i:12 + 4 * i])[0]
+                   for i in range(number_of_sub_ids)]
 
-        return 'S-{0}-{1}-{2}'.format(srl, iav, '-'.join([str(s) for s in sub_ids]))
+        return 'S-{0}-{1}-{2}'.format(revision, iav, '-'.join([str(sub_id) for sub_id in sub_ids]))

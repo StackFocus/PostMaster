@@ -5,7 +5,7 @@ Purpose: database definitions for SQLAlchemy
 """
 from postmaster import db, bcrypt
 from datetime import datetime, timedelta
-from .errors import ValidationError
+from postmaster.errors import ValidationError
 from re import search, match
 from os import urandom
 from passlib.hash import sha512_crypt as sha512  # pylint: disable=no-name-in-module

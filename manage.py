@@ -6,7 +6,7 @@ Purpose: Manages the app
 """
 
 import flask_migrate
-from fileinput import input
+import fileinput
 from os import path, walk, remove, urandom
 from shutil import rmtree
 from re import sub, compile
@@ -70,14 +70,14 @@ def clean():
 @manager.command
 def generatekey():
     """Replaces the SECRET_KEY in config.py with a new random one"""
-    for line in input('config.py', inplace=True):
+    for line in fileinput.input('config.py', inplace=True):
         print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', urandom(24).encode('hex'), line.rstrip()))
 
 
 @manager.command
 def setkey(key):
     """Replaces the SECRET_KEY in config.py with one specified"""
-    for line in input('config.py', inplace=True):
+    for line in fileinput.input('config.py', inplace=True):
         print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', key, line.rstrip()))
 
 
@@ -85,7 +85,7 @@ def setkey(key):
 def setdburi(uri):
     """Replaces the BaseConfiguration SQLALCHEMY_DATABASE_URI in config.py with one supplied"""
     base_config_set = False
-    for line in input('config.py', inplace=True, backup='.bak'):
+    for line in fileinput.input('config.py', inplace=True, backup='.bak'):
         if not base_config_set and 'SQLALCHEMY_DATABASE_URI' in line:
             print(sub(r'(?<=SQLALCHEMY_DATABASE_URI = \')(.+)(?=\')', uri, line.rstrip()))
             base_config_set = True
@@ -97,7 +97,7 @@ def setdburi(uri):
 def setlogfile(filepath):
     """Replaces the BaseConfiguration LOG_LOCATION in config.py with one supplied"""
     base_config_set = False
-    for line in input('config.py', inplace=True, backup='.bak'):
+    for line in fileinput.input('config.py', inplace=True, backup='.bak'):
         if not base_config_set and 'LOG_LOCATION' in line:
             print(sub(r'(?<=LOG_LOCATION = \')(.+)(?=\')', filepath, line.rstrip()))
             base_config_set = True
