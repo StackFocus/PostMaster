@@ -8,10 +8,10 @@ Flask-SQLAlchemy
 Flask-WTF
 mock
 mockldap
-mysqlclient
 onetimepass
 passlib
 pylint
+pymysql
 pyqrcode
 pytest
 pytest-cov
