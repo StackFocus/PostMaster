@@ -51,20 +51,25 @@ function changePage(obj, e) {
 // This manages the loading spinner for the table
 function manageSpinner(present) {
 
-    var spinner = $('div.loader');
+    var spinner = $('div.spinner');
+    var spinnerParent = $('div.spinnerParent');
 
     if (present) {
-        if (spinner.length == 0) {
-            $('#dynamicTableDiv').prepend('<div class="loader"></div>');
+        // If the spinner isn't there, create it
+        if (spinnerParent.length == 0) {
+            var spinnerParentHtml = $('<div/>', {'class': 'spinnerParent'});
+            var spinnerHtml = $('<div/>', {'class': 'spinner'});
+            spinnerHtml.append($('<div/>', {'class': 'bounce1'}));
+            spinnerHtml.append($('<div/>', {'class': 'bounce2'}));
+            spinnerHtml.append($('<div/>', {'class': 'bounce3'}));
+            spinnerParentHtml.append(spinnerHtml);
+
+            $('#dynamicTableDiv').prepend(spinnerParentHtml);
         }
     }
     else {
-        // Remove the spinner but keep the gray background with opacity
-        spinner.css('background', 'rgba(255, 255, 255, 0.7)');
-        // Remove the gray background with opacity after 300 ms
-        setTimeout(function () {
-            spinner.fadeOut('fast', function() { spinner.remove() });
-        }, 400);
+        // Remove the spinner
+        spinner.fadeOut(500, function() { spinnerParent.remove(); });
     }
 }
 

@@ -11,6 +11,9 @@ Features:
 
 * Supports Two-Factor Authentication on the backend [GH-169]
 
+Improvements:
+
+* Replaced GIF spinner with a pure CSS spinner using CSS3 animations [GH-177].
 
 ### v1.1.0 - A Hard Day's Night
 
