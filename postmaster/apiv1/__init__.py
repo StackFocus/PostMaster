@@ -5,7 +5,7 @@ Purpose: initializes apiv1
 """
 
 from flask import Blueprint
-from ..errors import ValidationError, GenericError, bad_request, not_found
+from postmaster.errors import ValidationError, GenericError, bad_request, not_found
 
 apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
 
@@ -38,4 +38,4 @@ def not_found_error(e):
     return not_found('The item was not found')
 
 
-from . import domains, users, aliases, admins, configs, logs
+from postmaster.apiv1 import domains, users, aliases, admins, configs, logs

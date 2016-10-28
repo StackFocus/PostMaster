@@ -43,7 +43,7 @@ def unauthorized_callback():
     return redirect('/login?next=' + request.path)
 
 
-@app.route('/', methods=['GET'])
+@common.route('/', methods=['GET'])
 @login_required
 def index():
     """ Function to return index page
@@ -53,7 +53,7 @@ def index():
                            authenticated=current_user.is_authenticated)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@common.route('/login', methods=['GET', 'POST'])
 def login():
     """ This is the login route and processing of information
     """
@@ -61,7 +61,7 @@ def login():
     login_form = forms.LoginForm.new()
 
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('common.index'))
     else:
         if request.method == 'GET':
             return render_template('login.html', title='PostMaster Login', loginForm=login_form)
@@ -74,16 +74,16 @@ def login():
                 'The administrator "{0}" logged in successfully'.format(
                     username))
             return redirect(request.args.get('next') or url_for(
-                'index'))
+                'common.index'))
         else:
             wtforms_errors = get_wtforms_errors(login_form)
             if wtforms_errors:
                 flash(wtforms_errors)
 
-    return redirect(url_for('login'))
+    return redirect(url_for('common.login'))
 
 
-@app.route('/logout', methods=["GET"])
+@common.route('/logout', methods=["GET"])
 def logout():
     """
     Logs current user out
@@ -92,10 +92,10 @@ def logout():
         logout_user()
         flash('Successfully logged out', 'success')
 
-    return redirect(url_for('login'))
+    return redirect(url_for('common.login'))
 
 
-@app.route('/domains', methods=["GET"])
+@common.route('/domains', methods=["GET"])
 @login_required
 def domains():
     """
@@ -106,7 +106,7 @@ def domains():
                            authenticated=current_user.is_authenticated)
 
 
-@app.route('/users', methods=["GET"])
+@common.route('/users', methods=["GET"])
 @login_required
 def users():
     """
@@ -117,7 +117,7 @@ def users():
                            authenticated=current_user.is_authenticated)
 
 
-@app.route('/aliases', methods=["GET"])
+@common.route('/aliases', methods=["GET"])
 @login_required
 def aliases():
     """
@@ -128,7 +128,7 @@ def aliases():
                            authenticated=current_user.is_authenticated)
 
 
-@app.route('/admins', methods=["GET"])
+@common.route('/admins', methods=["GET"])
 @login_required
 def admins():
     """
@@ -139,7 +139,7 @@ def admins():
                            authenticated=current_user.is_authenticated)
 
 
-@app.route('/configs', methods=["GET"])
+@common.route('/configs', methods=["GET"])
 @login_required
 def configs():
     """
@@ -150,7 +150,7 @@ def configs():
                            authenticated=current_user.is_authenticated)
 
 
-@app.route('/logs', methods=["GET"])
+@common.route('/logs', methods=["GET"])
 @login_required
 def logs():
     """

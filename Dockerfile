@@ -24,7 +24,6 @@ RUN apt-get install -y \
     libyaml-dev \
     libpython2.7-dev \
     sqlite3 \
-    libmysqlclient-dev && \
     apt-get autoremove -y && \
     apt-get clean
 RUN /usr/sbin/apache2ctl stop && systemctl disable apache2

@@ -1,3 +1,12 @@
+### Unreleased
+
+BACKWARDS INCOMPATIBILITIES / NOTES:
+
+* The default MySQL Python connector of "mysqlclient" has been replaced with "pymysql" for a pure Python replacement.
+Upgrades will be unaffected by this, but please note that reinstalls will require you to either install "mysqlclient"
+([Ubuntu Instructions](https://github.com/PyMySQL/mysqlclient-python#install) or change the start of your database URI
+with "mysql+pymysql://" instead of "mysql://" [GH-170].
+
 ### v1.1.0 - A Hard Day's Night
 
 BACKWARDS INCOMPATIBILITIES / NOTES:

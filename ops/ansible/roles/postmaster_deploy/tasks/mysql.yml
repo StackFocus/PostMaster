@@ -13,9 +13,9 @@
   become: yes
   apt: pkg=mysql-server state=latest
 
-- name: Install mysql-python globally for this next command :(
-  pip: name=MySQL-python
+- name: Install mysql-python using apt for this next command
   become: yes
+  apt: name=python-mysqldb state=latest
 
 - name: Create default database for mysql
   mysql_db: name=servermail state=present login_user=root login_password=vagrant

@@ -45,7 +45,7 @@ Make sure to replace "password_changeme" with the actual password supplied in st
 replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:
 
         cd /opt/postmaster/git
-        python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
+        python manage.py setdburi 'mysql+pymysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
 
 5. PostMaster needs to create a few tables under the servermail database. This is done via a database migration,
 which means that only the necessary changes to the database are made, and these changes are reversible if something went wrong.
@@ -75,7 +75,7 @@ You can change your username and password from Manage -> Administrators.
 
 3. Install the required packages for PostMaster:
 
-        apt-get install python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server libmysqlclient-dev
+        apt-get install python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server
 
 4. Make sure you are running Python 2.7 as your default Python installation, as PostMaster relies on Python 2.7:
 
