@@ -7,6 +7,11 @@ Upgrades will be unaffected by this, but please note that reinstalls will requir
 ([Ubuntu Instructions](https://github.com/PyMySQL/mysqlclient-python#install) or change the start of your database URI
 with "mysql+pymysql://" instead of "mysql://" [GH-170].
 
+Features:
+
+* Supports Two-Factor Authentication on the backend [GH-169]
+
+
 ### v1.1.0 - A Hard Day's Night
 
 BACKWARDS INCOMPATIBILITIES / NOTES:

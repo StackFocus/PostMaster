@@ -8,9 +8,11 @@ Flask-SQLAlchemy
 Flask-WTF
 mock
 mockldap
-pymysql
+onetimepass
 passlib
 pylint
+pymysql
+pyqrcode
 pytest
 pytest-cov
 python-ldap
