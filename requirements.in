@@ -6,6 +6,7 @@ Flask-Migrate
 Flask-Script
 Flask-SQLAlchemy
 Flask-WTF
+ldap3
 mock
 mockldap
 onetimepass

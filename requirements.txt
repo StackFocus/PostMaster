@@ -26,6 +26,7 @@ isort==4.2.5              # via pylint
 itsdangerous==0.24        # via flask
 Jinja2==2.8               # via flask
 lazy-object-proxy==1.2.2  # via astroid
+ldap3==2.0.9
 Mako==1.0.4               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
 mccabe==0.5.2             # via pylint
@@ -35,6 +36,7 @@ onetimepass==1.0.1
 passlib==1.6.5
 pbr==1.10.0               # via mock
 py==1.4.31                # via pytest
+pyasn1==0.1.9             # via ldap3
 pycparser==2.14           # via cffi
 pylint==1.6.4
 pymysql==0.7.9
