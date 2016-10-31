@@ -23,6 +23,7 @@ class TestConfiguration(BaseConfiguration):
     WTF_CSRF_ENABLED = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     DEBUG = True
+    LOG_LOCATION = ''
 
 
 class DevConfiguration(BaseConfiguration):
