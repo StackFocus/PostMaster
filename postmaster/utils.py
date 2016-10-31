@@ -122,6 +122,13 @@ def add_default_configuration_settings():
         ad_group.regex = '^(.*)$'
         db.session.add(ad_group)
 
+    if not models.Configs.query.filter_by(setting='LDAP Authentication Method').first():
+        auth_method = models.Configs()
+        auth_method.setting = 'LDAP Authentication Method'
+        auth_method.value = 'NTLM'
+        auth_method.regex = '^(SIMPLE|simple|NTLM|ntlm)$'
+        db.session.add(auth_method)
+
     if not models.Admins.query.first():
         admin = models.Admins().from_json(
             {'username': 'admin', 'password': 'PostMaster', 'name': 'Default Admin'})

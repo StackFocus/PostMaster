@@ -31,6 +31,7 @@ class AD(object):
             ldap_server = models.Configs().query.filter_by(setting='AD Server LDAP String').first()
             domain = models.Configs().query.filter_by(setting='AD Domain').first()
             ldap_admin_group = models.Configs().query.filter_by(setting='AD PostMaster Group').first()
+            ldap_auth_method = models.Configs().query.filter_by(setting='LDAP Authentication Method').first()
 
             if ldap_server is not None and re.search(r'LDAP[S]?:\/\/(.*?)\:\d+', ldap_server.value, re.IGNORECASE):
                 self.ldap_server = ldap_server.value
@@ -42,7 +43,8 @@ class AD(object):
                     ad_server = ldap3.Server(
                         ldap_server.value, allowed_referral_hosts=[('*', False)],  connect_timeout=3)
                     # Use NTLMv2 authentication so that credentials aren't set in the clear if LDAPS is not used
-                    self.ldap_connection = ldap3.Connection(ad_server, auto_referrals=False, authentication=ldap3.NTLM)
+                    self.ldap_connection = ldap3.Connection(
+                        ad_server, auto_referrals=False, authentication=ldap_auth_method.value.upper())
 
                     try:
                         self.ldap_connection.open()
@@ -84,6 +86,9 @@ class AD(object):
             # Parse the username from the UPN
             username_search = re.search(extract_username_regex, username)
             return '{0}\\{1}'.format(self.domain, username_search.group('username'))
+        elif self.ldap_connection.authentication != 'NTLM' and re.search('CN=', username, re.IGNORECASE):
+            # If the authentication method is not NTLM, then distinguished names are valid usernames
+            return username
         else:
             return '{0}\\{1}'.format(self.domain, username)
 
@@ -147,6 +152,11 @@ class AD(object):
         """
         # Check if the ldap_connection is in a logged in state
         if self.ldap_connection.bound:
+            # If a distinguished name was used to login, get the sAMAccountName
+            if re.search('CN=', self.ldap_connection.user, re.IGNORECASE):
+                search_filter = '(&(objectClass=user)(distinguishedName={0}))'.format(self.ldap_connection.user)
+                user = self.search(search_filter, ['sAMAccountName'])
+                return user[0]['attributes']['sAMAccountName']
             # The username is stored as DOMAIN\username, so this gets the sAMAccountName
             return re.sub(r'(^.*(?<=\\))', '', self.ldap_connection.user)
 

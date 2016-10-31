@@ -2,6 +2,7 @@
 function configEventListeners () {
     var configBoolItems = $('a.configBool');
     var configTextItems = $('a.configText');
+    var configLdapAuth = $('a.configLdapAuth');
 
     configBoolItems.unbind();
     configBoolItems.tooltip();
@@ -11,7 +12,7 @@ function configEventListeners () {
         source: [
               {value: 'True', text: 'True'},
               {value: 'False', text: 'False'}
-        ],
+        ]
     });
 
     configTextItems.unbind();
@@ -20,6 +21,17 @@ function configEventListeners () {
         display: function (value) {
             $(this).html(filterText(value));
         }
+    });
+
+    configLdapAuth.unbind();
+    configLdapAuth.tooltip();
+    configLdapAuth.editable({
+        type: 'select',
+        showbuttons: false,
+        source: [
+              {value: 'NTLM', text: 'NTLM'},
+              {value: 'SIMPLE', text: 'SIMPLE'}
+        ]
     });
 }
 
@@ -48,10 +60,13 @@ function fillInTable () {
             ];
 
             if($.inArray(item.setting, boolConfigItems) != -1) {
-                var cssClass = 'configBool'
+                var cssClass = 'configBool';
+            }
+            else if(item.setting == 'LDAP Authentication Method') {
+                var cssClass = 'configLdapAuth';
             }
             else {
-                var cssClass = 'configText'
+                var cssClass = 'configText';
             }
 
             tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;

@@ -26,3 +26,6 @@ such as "LDAPS://dc1.postmaster.local:636". Although not recommended, you can al
 This setting's value must be the same as the "Group name (pre-Windows 2000)" value of the desired group as shown in the screenshot below.
 
 [![PostMaster Active Directory Group](../imgs/AD_Group.png)](../imgs/AD_Group.png)
+
+**LDAP Authentication Method** specifies which authentication mechanism to use when authenticating via LDAP to Active Directory.
+NTLM is the default option and is more secure, as the password is never sent to the Domain Controller.
