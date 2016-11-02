@@ -174,14 +174,10 @@ class AD(object):
         """
         group_dn = self.get_distinguished_name(group_sam_account_name)
         user_dn = self.get_distinguished_name(user_sam_account_name)
-        search_filter = '(member:1.2.840.113556.1.4.1941:={0})'.format(user_dn)
-        group_membership = self.search(search_filter)
-
-        for group in group_membership:
-            if 'dn' in group and group['dn'] == group_dn:
-                return True
-
-        return False
+        search_filter = '(memberof:1.2.840.113556.1.4.1941:={0})'.format(group_dn)
+        # By setting the base to be the user, and the dn searching for as the group, search will return a boolean
+        # based on if the user is a member or not
+        return self.ldap_connection.search(user_dn, search_filter)
 
     def get_primary_group_dn_of_user(self, sam_account_name):
         """ Returns the distinguished name of the primary group of the user
