@@ -226,7 +226,8 @@ class TestUtilsFunctions:
             ),
             follow_redirects=True
         )
-        assert 'The username was not provided<br>The password was not provided' in rv.data
+        assert 'The username was not provided<br>The password was not provided' in rv.data.decode('utf-8') or \
+               'The password was not provided<br>The username was not provided' in rv.data.decode('utf-8')
 
     def test_account_lockout_from_ui(self):
         """ Tests that the user gets an account lockout message after 5 failed attempts.
@@ -244,4 +245,4 @@ class TestUtilsFunctions:
                 follow_redirects=True
             )
 
-        assert 'The user is currently locked out. Please try logging in again later.' in rv.data
+        assert 'The user is currently locked out. Please try logging in again later.' in rv.data.decode('utf-8')

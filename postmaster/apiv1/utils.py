@@ -114,6 +114,6 @@ def get_logs_dict(numLines=50, reverseOrder=False):
         if reverseOrder:
             logs = list(reversed(logs))
 
-        return {'items': [loads(log) for log in logs], }
+        return {'items': [loads(log.decode('utf-8')) for log in logs], }
     else:
         raise ValidationError('The log file could not be found')

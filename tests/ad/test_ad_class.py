@@ -55,7 +55,7 @@ class TestAdFunctions:
 
     @manage_mock_ldap
     def test_parse_username_input_with_domain(self):
-        """ Tests the parse_username_input function when the username input is postmaster\username
+        r""" Tests the parse_username_input function when the username input is postmaster\username
         """
         assert self.ad_obj.parse_username_input('postmaster\\testUser3') == 'postmaster\\testUser3'
 
@@ -88,7 +88,7 @@ class TestAdFunctions:
         assert self.ad_obj.search('(displayName=Test User)', ['name']) == [{
             'attributes': {'name': u'Test User'},
             'dn': 'CN=Test User,OU=PostMaster,DC=postmaster,DC=local',
-            'raw_attributes': {'name': ['Test User']},
+            'raw_attributes': {'name': [b'Test User']},
             'type': 'searchResEntry'
         }]
 
@@ -255,4 +255,4 @@ class TestAdFunctions:
                 follow_redirects=True
             )
 
-        assert '<h2 class="textHeading">Dashboard</h2>' in rv.data
+        assert '<h2 class="textHeading">Dashboard</h2>' in rv.data.decode('utf-8')
