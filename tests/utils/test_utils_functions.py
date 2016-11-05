@@ -2,6 +2,7 @@
 from mock import patch
 from datetime import timedelta
 from postmaster.logger import *
+import tests.conftest
 from postmaster.utils import *
 from postmaster.apiv1.utils import *
 
@@ -217,7 +218,7 @@ class TestUtilsFunctions:
         This also tests the new_line_to_break Jinja2 filter. The expected return value is an
         error stating that both the username and password was not provided with a <br> in between
         """
-        client = app.test_client()
+        client = tests.conftest.app.test_client()
         rv = client.post(
             '/login',
             data=dict(
@@ -230,7 +231,7 @@ class TestUtilsFunctions:
     def test_account_lockout_from_ui(self):
         """ Tests that the user gets an account lockout message after 5 failed attempts.
         """
-        client = app.test_client()
+        client = tests.conftest.app.test_client()
 
         for i in range(6):
             rv = client.post(
