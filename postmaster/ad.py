@@ -6,7 +6,7 @@ Purpose: Active Directory class
 import ldap3
 import re
 from postmaster import models
-from postmaster.utils import json_logger
+from postmaster.logger import json_logger
 
 
 class ADException(Exception):

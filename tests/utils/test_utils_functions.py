@@ -1,6 +1,7 @@
 ﻿from json import load
 from mock import patch
 from datetime import timedelta
+from postmaster.logger import *
 from postmaster.utils import *
 from postmaster.apiv1.utils import *
 

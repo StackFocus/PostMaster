@@ -240,8 +240,8 @@ class TestAdFunctions:
         and expects the Dashboard page (view when logged in) to be returned
         """
         # Mocks the AD instantiation in validate_wtforms_password with the Mocked LDAP instance
-        # created from the manage_mock_ldap decorator
-        with patch('postmaster.ad.AD') as mock_ad:
+        # created from the manage_mock_ldap decorator. We are patching utils because of the way it is imported
+        with patch('postmaster.utils.AD') as mock_ad:
             self.ad_obj.check_nested_group_membership = Mock(return_value=True)
             mock_ad.return_value = self.ad_obj
             client = app.test_client()

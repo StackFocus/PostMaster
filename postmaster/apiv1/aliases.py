@@ -9,7 +9,7 @@ from flask import request
 from flask_login import login_required, current_user
 from postmaster import db
 from postmaster.models import VirtualAliases
-from postmaster.utils import json_logger
+from postmaster.logger import json_logger
 from postmaster.decorators import json_wrap, paginate
 from postmaster.errors import ValidationError, GenericError
 from postmaster.apiv1 import apiv1

@@ -454,7 +454,7 @@ class TestMailDbFunctions:
         assert 'The log could not be written to' in rv.data
 
     # Since we have to turn on logging to test this, we'll mock the json_logger so we don't actually write anything
-    @patch('postmaster.utils.json_logger', return_value=None)
+    @patch('postmaster.logger.json_logger', return_value=None)
     @patch('os.access', return_value=True)
     def test_configs_enable_login_auditing_log_write_pass(self, mock_os_access, mock_json_logger, loggedin_client):
         app.config['LOG_LOCATION'] = '/opt/postmaster/logs/postmaster.log'

@@ -8,7 +8,8 @@ from flask import render_template, redirect, url_for, request, flash, Blueprint
 from flask_login import login_required, login_user, logout_user, current_user
 from jinja2 import evalcontextfilter, Markup, escape
 from postmaster import app, forms, models, login_manager
-from postmaster.utils import get_wtforms_errors, json_logger, clear_lockout_fields_on_user
+from postmaster.logger import json_logger
+from postmaster.utils import get_wtforms_errors, clear_lockout_fields_on_user
 
 common = Blueprint('common', __name__)
 
