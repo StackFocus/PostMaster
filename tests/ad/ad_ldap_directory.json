@@ -1,0 +1,912 @@
+{
+    "entries": [
+        {
+            "attributes": {
+                "auditingPolicy": "\u0000\u0001",
+                "creationTime": "2016-10-29 22:20:51.193895+00:00",
+                "dSASignature": {
+                    "encoded": "AQAAACgAAAAAAAAAAAAAAAAAAAAAAAAAx9IyJW4jmE2CaySc+GYSfg==",
+                    "encoding": "base64"
+                },
+                "dSCorePropagationData": [
+                    "1601-01-01 00:00:00+00:00"
+                ],
+                "dc": "postmaster",
+                "distinguishedName": "DC=postmaster,DC=local",
+                "fSMORoleOwner": "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local",
+                "forceLogoff": -9223372036854775808,
+                "gPLink": "[LDAP://CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=Policies,CN=System,DC=postmaster,DC=local;0]",
+                "instanceType": 5,
+                "isCriticalSystemObject": true,
+                "lockOutObservationWindow": -18000000000,
+                "lockoutDuration": -18000000000,
+                "lockoutThreshold": 0,
+                "masteredBy": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "maxPwdAge": -36288000000000,
+                "minPwdAge": -864000000000,
+                "minPwdLength": 7,
+                "modifiedCount": 1,
+                "modifiedCountAtLastProm": 0,
+                "ms-DS-MachineAccountQuota": 10,
+                "msDS-AllUsersTrustQuota": 1000,
+                "msDS-Behavior-Version": 6,
+                "msDS-IsDomainFor": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "msDS-NcType": 0,
+                "msDS-PerUserTrustQuota": 1,
+                "msDS-PerUserTrustTombstonesQuota": 10,
+                "msDs-masteredBy": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "nTMixedDomain": 0,
+                "name": "postmaster",
+                "nextRid": 1002,
+                "objectCategory": "CN=Domain-DNS,CN=Schema,CN=Configuration,DC=postmaster,DC=local",
+                "objectClass": [
+                    "top",
+                    "domain",
+                    "domainDNS"
+                ],
+                "objectGUID": "57042aa9-658f-4945-ab53-2d8bd9a1313f",
+                "objectSid": "S-1-5-21-1270288957-3800934213-3019856503",
+                "otherWellKnownObjects": [
+                    "B:32:1EB93889E40C45DF9F0C64D23BBB6237:CN=Managed Service Accounts,DC=postmaster,DC=local"
+                ],
+                "pwdHistoryLength": 24,
+                "pwdProperties": 1,
+                "rIDManagerReference": "CN=RID Manager$,CN=System,DC=postmaster,DC=local",
+                "replUpToDateVector": {
+                    "encoded": "AgAAAAAAAAABAAAAAAAAAMfSMiVuI5hNgmsknPhmEn4GgAAAAAAAAKW70QwDAAAA",
+                    "encoding": "base64"
+                },
+                "serverState": 1,
+                "subRefs": [
+                    "DC=ForestDnsZones,DC=postmaster,DC=local",
+                    "DC=DomainDnsZones,DC=postmaster,DC=local",
+                    "CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "systemFlags": -1946157056,
+                "uASCompat": 1,
+                "uSNChanged": 86038,
+                "uSNCreated": 4099,
+                "wellKnownObjects": [
+                    "B:32:6227F0AF1FC2410D8E3BB10615BB5B0F:CN=NTDS Quotas,DC=postmaster,DC=local",
+                    "B:32:F4BE92A4C777485E878E9421D53087DB:CN=Microsoft,CN=Program Data,DC=postmaster,DC=local",
+                    "B:32:09460C08AE1E4A4EA0F64AEE7DAA1E5A:CN=Program Data,DC=postmaster,DC=local",
+                    "B:32:22B70C67D56E4EFB91E9300FCA3DC1AA:CN=ForeignSecurityPrincipals,DC=postmaster,DC=local",
+                    "B:32:18E2EA80684F11D2B9AA00C04F79F805:CN=Deleted Objects,DC=postmaster,DC=local",
+                    "B:32:2FBAC1870ADE11D297C400C04FD8D5CD:CN=Infrastructure,DC=postmaster,DC=local",
+                    "B:32:AB8153B7768811D1ADED00C04FD8D5CD:CN=LostAndFound,DC=postmaster,DC=local",
+                    "B:32:AB1D30F3768811D1ADED00C04FD8D5CD:CN=System,DC=postmaster,DC=local",
+                    "B:32:A361B2FFFFD211D1AA4B00C04FD7D83A:OU=Domain Controllers,DC=postmaster,DC=local",
+                    "B:32:AA312825768811D1ADED00C04FD8D5CD:CN=Computers,DC=postmaster,DC=local",
+                    "B:32:A9D1CA15768811D1ADED00C04FD8D5CD:CN=Users,DC=postmaster,DC=local"
+                ],
+                "whenChanged": "2016-10-29 22:20:51+00:00",
+                "whenCreated": "2016-02-11 23:00:21+00:00"
+            },
+            "dn": "DC=postmaster,DC=local",
+            "raw": {
+                "auditingPolicy": [
+                    "\u0000\u0001"
+                ],
+                "creationTime": [
+                    "131222532511938950"
+                ],
+                "dSASignature": [
+                    {
+                        "encoded": "AQAAACgAAAAAAAAAAAAAAAAAAAAAAAAAx9IyJW4jmE2CaySc+GYSfg==",
+                        "encoding": "base64"
+                    }
+                ],
+                "dSCorePropagationData": [
+                    "16010101000000.0Z"
+                ],
+                "dc": [
+                    "postmaster"
+                ],
+                "distinguishedName": [
+                    "DC=postmaster,DC=local"
+                ],
+                "fSMORoleOwner": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "forceLogoff": [
+                    "-9223372036854775808"
+                ],
+                "gPLink": [
+                    "[LDAP://CN={31B2F340-016D-11D2-945F-00C04FB984F9},CN=Policies,CN=System,DC=postmaster,DC=local;0]"
+                ],
+                "instanceType": [
+                    "5"
+                ],
+                "isCriticalSystemObject": [
+                    "TRUE"
+                ],
+                "lockOutObservationWindow": [
+                    "-18000000000"
+                ],
+                "lockoutDuration": [
+                    "-18000000000"
+                ],
+                "lockoutThreshold": [
+                    "0"
+                ],
+                "masteredBy": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "maxPwdAge": [
+                    "-36288000000000"
+                ],
+                "minPwdAge": [
+                    "-864000000000"
+                ],
+                "minPwdLength": [
+                    "7"
+                ],
+                "modifiedCount": [
+                    "1"
+                ],
+                "modifiedCountAtLastProm": [
+                    "0"
+                ],
+                "ms-DS-MachineAccountQuota": [
+                    "10"
+                ],
+                "msDS-AllUsersTrustQuota": [
+                    "1000"
+                ],
+                "msDS-Behavior-Version": [
+                    "6"
+                ],
+                "msDS-IsDomainFor": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "msDS-NcType": [
+                    "0"
+                ],
+                "msDS-PerUserTrustQuota": [
+                    "1"
+                ],
+                "msDS-PerUserTrustTombstonesQuota": [
+                    "10"
+                ],
+                "msDs-masteredBy": [
+                    "CN=NTDS Settings,CN=DC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "nTMixedDomain": [
+                    "0"
+                ],
+                "name": [
+                    "postmaster"
+                ],
+                "nextRid": [
+                    "1002"
+                ],
+                "objectCategory": [
+                    "CN=Domain-DNS,CN=Schema,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "objectClass": [
+                    "top",
+                    "domain",
+                    "domainDNS"
+                ],
+                "objectGUID": [
+                    {
+                        "encoded": "qSoEV49lRUmrUy2L2aExPw==",
+                        "encoding": "base64"
+                    }
+                ],
+                "objectSid": [
+                    {
+                        "encoded": "AQQAAAAAAAUVAAAAPRK3S0WnjeJ3Wv+z",
+                        "encoding": "base64"
+                    }
+                ],
+                "otherWellKnownObjects": [
+                    "B:32:1EB93889E40C45DF9F0C64D23BBB6237:CN=Managed Service Accounts,DC=postmaster,DC=local"
+                ],
+                "pwdHistoryLength": [
+                    "24"
+                ],
+                "pwdProperties": [
+                    "1"
+                ],
+                "rIDManagerReference": [
+                    "CN=RID Manager$,CN=System,DC=postmaster,DC=local"
+                ],
+                "replUpToDateVector": [
+                    {
+                        "encoded": "AgAAAAAAAAABAAAAAAAAAMfSMiVuI5hNgmsknPhmEn4GgAAAAAAAAKW70QwDAAAA",
+                        "encoding": "base64"
+                    }
+                ],
+                "serverState": [
+                    "1"
+                ],
+                "subRefs": [
+                    "DC=ForestDnsZones,DC=postmaster,DC=local",
+                    "DC=DomainDnsZones,DC=postmaster,DC=local",
+                    "CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "systemFlags": [
+                    "-1946157056"
+                ],
+                "uASCompat": [
+                    "1"
+                ],
+                "uSNChanged": [
+                    "86038"
+                ],
+                "uSNCreated": [
+                    "4099"
+                ],
+                "wellKnownObjects": [
+                    "B:32:6227F0AF1FC2410D8E3BB10615BB5B0F:CN=NTDS Quotas,DC=postmaster,DC=local",
+                    "B:32:F4BE92A4C777485E878E9421D53087DB:CN=Microsoft,CN=Program Data,DC=postmaster,DC=local",
+                    "B:32:09460C08AE1E4A4EA0F64AEE7DAA1E5A:CN=Program Data,DC=postmaster,DC=local",
+                    "B:32:22B70C67D56E4EFB91E9300FCA3DC1AA:CN=ForeignSecurityPrincipals,DC=postmaster,DC=local",
+                    "B:32:18E2EA80684F11D2B9AA00C04F79F805:CN=Deleted Objects,DC=postmaster,DC=local",
+                    "B:32:2FBAC1870ADE11D297C400C04FD8D5CD:CN=Infrastructure,DC=postmaster,DC=local",
+                    "B:32:AB8153B7768811D1ADED00C04FD8D5CD:CN=LostAndFound,DC=postmaster,DC=local",
+                    "B:32:AB1D30F3768811D1ADED00C04FD8D5CD:CN=System,DC=postmaster,DC=local",
+                    "B:32:A361B2FFFFD211D1AA4B00C04FD7D83A:OU=Domain Controllers,DC=postmaster,DC=local",
+                    "B:32:AA312825768811D1ADED00C04FD8D5CD:CN=Computers,DC=postmaster,DC=local",
+                    "B:32:A9D1CA15768811D1ADED00C04FD8D5CD:CN=Users,DC=postmaster,DC=local"
+                ],
+                "whenChanged": [
+                    "20161029222051.0Z"
+                ],
+                "whenCreated": [
+                    "20160211230021.0Z"
+                ]
+            }
+        },
+        {
+            "attributes": {
+                "accountExpires": "9999-12-31 23:59:59.999999",
+                "badPasswordTime": "1601-01-01 00:00:00+00:00",
+                "badPwdCount": 0,
+                "cn": "Test User",
+                "codePage": 0,
+                "countryCode": 0,
+                "dSCorePropagationData": [
+                    "1601-01-01 00:00:00+00:00"
+                ],
+                "displayName": "Test User",
+                "distinguishedName": "CN=Test User,OU=PostMaster,DC=postmaster,DC=local",
+                "givenName": "Test",
+                "instanceType": 4,
+                "lastLogoff": "1601-01-01 00:00:00+00:00",
+                "lastLogon": "1601-01-01 00:00:00+00:00",
+                "logonCount": 0,
+                "memberOf": [
+                    "CN=Some Group,OU=Groups,DC=postmaster,DC=local",
+                    "CN=PostMaster Admins,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "msDS-SupportedEncryptionTypes": 0,
+                "name": "Test User",
+                "objectCategory": "CN=Person,CN=Schema,CN=Configuration,DC=postmaster,DC=local",
+                "objectClass": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                ],
+                "objectGUID": "5609c5ec-c0df-4480-a94b-b6eb0fc4c066",
+                "objectSid": "S-1-5-21-1270288957-3800934213-3019856503-1608",
+                "primaryGroupID": 513,
+                "pwdLastSet": "2016-10-31 23:03:11.741022+00:00",
+                "sAMAccountName": "testUser",
+                "sAMAccountType": 805306368,
+                "sn": "User",
+                "uSNChanged": 86130,
+                "uSNCreated": 86116,
+                "userAccountControl": 66048,
+                "userPrincipalName": "testUser@postmaster.local",
+                "userPassword": "P@ssW0rd",
+                "whenChanged": "2016-10-31 23:03:49+00:00",
+                "whenCreated": "2016-10-31 23:03:11+00:00"
+            },
+            "dn": "CN=Test User,OU=PostMaster,DC=postmaster,DC=local",
+            "raw": {
+                "accountExpires": [
+                    "9223372036854775807"
+                ],
+                "badPasswordTime": [
+                    "0"
+                ],
+                "badPwdCount": [
+                    "0"
+                ],
+                "cn": [
+                    "Test User"
+                ],
+                "codePage": [
+                    "0"
+                ],
+                "countryCode": [
+                    "0"
+                ],
+                "dSCorePropagationData": [
+                    "16010101000000.0Z"
+                ],
+                "displayName": [
+                    "Test User"
+                ],
+                "distinguishedName": [
+                    "CN=Test User,OU=PostMaster,DC=postmaster,DC=local"
+                ],
+                "givenName": [
+                    "Test"
+                ],
+                "instanceType": [
+                    "4"
+                ],
+                "lastLogoff": [
+                    "0"
+                ],
+                "lastLogon": [
+                    "0"
+                ],
+                "logonCount": [
+                    "0"
+                ],
+                "memberOf": [
+                    "CN=Some Group,OU=Groups,DC=postmaster,DC=local",
+                    "CN=PostMaster Admins,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "msDS-SupportedEncryptionTypes": [
+                    "0"
+                ],
+                "name": [
+                    "Test User"
+                ],
+                "objectCategory": [
+                    "CN=Person,CN=Schema,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "objectClass": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                ],
+                "objectGUID": [
+                    {
+                        "encoded": "7MUJVt/AgESpS7brD8TAZg==",
+                        "encoding": "base64"
+                    }
+                ],
+                "objectSid": [
+                    {
+                        "encoded": "AQUAAAAAAAUVAAAAPRK3S0WnjeJ3Wv+zSAYAAA==",
+                        "encoding": "base64"
+                    }
+                ],
+                "primaryGroupID": [
+                    "513"
+                ],
+                "pwdLastSet": [
+                    "131224285917410224"
+                ],
+                "sAMAccountName": [
+                    "testUser"
+                ],
+                "sAMAccountType": [
+                    "805306368"
+                ],
+                "sn": [
+                    "User"
+                ],
+                "uSNChanged": [
+                    "86130"
+                ],
+                "uSNCreated": [
+                    "86116"
+                ],
+                "userAccountControl": [
+                    "66048"
+                ],
+                "userPassword": [
+                    "P@ssW0rd"
+                ],
+                "userPrincipalName": [
+                    "testUser@postmaster.local"
+                ],
+                "whenChanged": [
+                    "20161031230349.0Z"
+                ],
+                "whenCreated": [
+                    "20161031230311.0Z"
+                ]
+            }
+        },
+        {
+            "attributes": {
+                "accountExpires": "9999-12-31 23:59:59.999999",
+                "badPasswordTime": "1601-01-01 00:00:00+00:00",
+                "badPwdCount": 0,
+                "cn": "testUser2",
+                "codePage": 0,
+                "countryCode": 0,
+                "displayName": "",
+                "dSCorePropagationData": [
+                    "1601-01-01 00:00:00+00:00"
+                ],
+                "distinguishedName": "CN=testUser2,OU=PostMaster,DC=postmaster,DC=local",
+                "instanceType": 4,
+                "lastLogoff": "1601-01-01 00:00:00+00:00",
+                "lastLogon": "1601-01-01 00:00:00+00:00",
+                "logonCount": 0,
+                "memberOf": [
+                    "CN=Some Group,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "name": "testUser2",
+                "objectCategory": "CN=Person,CN=Schema,CN=Configuration,DC=postmaster,DC=local",
+                "objectClass": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                ],
+                "objectGUID": "10385a23-6def-4990-84a8-32444e36e496",
+                "objectSid": "S-1-5-21-1270288957-3800934213-3019856503-1609",
+                "primaryGroupID": 1607,
+                "pwdLastSet": "2016-10-31 23:03:42.553682+00:00",
+                "sAMAccountName": "testUser2",
+                "sAMAccountType": 805306368,
+                "uSNChanged": 86156,
+                "uSNCreated": 86124,
+                "userAccountControl": 66048,
+                "userPrincipalName": "testUser2@postmaster.local",
+                "userPassword": "P@ssW0rd",
+                "whenChanged": "2016-10-31 23:06:00+00:00",
+                "whenCreated": "2016-10-31 23:03:42+00:00"
+            },
+            "dn": "CN=testUser2,OU=PostMaster,DC=postmaster,DC=local",
+            "raw": {
+                "accountExpires": [
+                    "9223372036854775807"
+                ],
+                "badPasswordTime": [
+                    "0"
+                ],
+                "badPwdCount": [
+                    "0"
+                ],
+                "cn": [
+                    "testUser2"
+                ],
+                "codePage": [
+                    "0"
+                ],
+                "countryCode": [
+                    "0"
+                ],
+                "dSCorePropagationData": [
+                    "16010101000000.0Z"
+                ],
+                "distinguishedName": [
+                    "CN=testUser2,OU=PostMaster,DC=postmaster,DC=local"
+                ],
+                "displayName": [
+                    ""
+                ],
+                "instanceType": [
+                    "4"
+                ],
+                "lastLogoff": [
+                    "0"
+                ],
+                "lastLogon": [
+                    "0"
+                ],
+                "logonCount": [
+                    "0"
+                ],
+                "memberOf": [
+                    "CN=Some Group,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "name": [
+                    "testUser2"
+                ],
+                "objectCategory": [
+                    "CN=Person,CN=Schema,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "objectClass": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                ],
+                "objectGUID": [
+                    {
+                        "encoded": "I1o4EO9tkEmEqDJETjbklg==",
+                        "encoding": "base64"
+                    }
+                ],
+                "objectSid": [
+                    {
+                        "encoded": "AQUAAAAAAAUVAAAAPRK3S0WnjeJ3Wv+zSQYAAA==",
+                        "encoding": "base64"
+                    }
+                ],
+                "primaryGroupID": [
+                    "1607"
+                ],
+                "pwdLastSet": [
+                    "131224286225536819"
+                ],
+                "sAMAccountName": [
+                    "testUser2"
+                ],
+                "sAMAccountType": [
+                    "805306368"
+                ],
+                "uSNChanged": [
+                    "86156"
+                ],
+                "uSNCreated": [
+                    "86124"
+                ],
+                "userAccountControl": [
+                    "66048"
+                ],
+                "userPrincipalName": [
+                    "testUser2@postmaster.local"
+                ],
+                "userPassword": [
+                    "P@ssW0rd"
+                ],
+                "whenChanged": [
+                    "20161031230600.0Z"
+                ],
+                "whenCreated": [
+                    "20161031230342.0Z"
+                ]
+            }
+        },
+        {
+            "attributes": {
+                "accountExpires": "9999-12-31 23:59:59.999999",
+                "badPasswordTime": "1601-01-01 00:00:00+00:00",
+                "badPwdCount": 0,
+                "cn": "Test User3",
+                "codePage": 0,
+                "countryCode": 0,
+                "dSCorePropagationData": [
+                    "1601-01-01 00:00:00+00:00"
+                ],
+                "displayName": "Test User3",
+                "distinguishedName": "CN=Test User3,OU=PostMaster,DC=postmaster,DC=local",
+                "instanceType": 4,
+                "lastLogoff": "1601-01-01 00:00:00+00:00",
+                "lastLogon": "1601-01-01 00:00:00+00:00",
+                "logonCount": 0,
+                "memberOf": [
+                    "CN=Some Group,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "name": "Test User3",
+                "objectCategory": "CN=Person,CN=Schema,CN=Configuration,DC=postmaster,DC=local",
+                "objectClass": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                ],
+                "objectGUID": "8ee45029-a2bc-4dd8-8b7c-b4a672af3396",
+                "objectSid": "S-1-5-21-1270288957-3800934213-3019856503-1611",
+                "primaryGroupID": 513,
+                "pwdLastSet": "2016-10-31 23:06:28.476070+00:00",
+                "sAMAccountName": "testUser3",
+                "sAMAccountType": 805306368,
+                "uSNChanged": 86166,
+                "uSNCreated": 86161,
+                "userAccountControl": 66048,
+                "userPrincipalName": "testUser3@postmaster.local",
+                "userPassword": "P@ssW0rd",
+                "whenChanged": "2016-10-31 23:06:28+00:00",
+                "whenCreated": "2016-10-31 23:06:28+00:00"
+            },
+            "dn": "CN=Test User3,OU=PostMaster,DC=postmaster,DC=local",
+            "raw": {
+                "accountExpires": [
+                    "9223372036854775807"
+                ],
+                "badPasswordTime": [
+                    "0"
+                ],
+                "badPwdCount": [
+                    "0"
+                ],
+                "cn": [
+                    "Test User3"
+                ],
+                "codePage": [
+                    "0"
+                ],
+                "countryCode": [
+                    "0"
+                ],
+                "dSCorePropagationData": [
+                    "16010101000000.0Z"
+                ],
+                "displayName": [
+                    "Test User3"
+                ],
+                "distinguishedName": [
+                    "CN=Test User3,OU=PostMaster,DC=postmaster,DC=local"
+                ],
+                "instanceType": [
+                    "4"
+                ],
+                "lastLogoff": [
+                    "0"
+                ],
+                "lastLogon": [
+                    "0"
+                ],
+                "logonCount": [
+                    "0"
+                ],
+                "memberOf": [
+                    "CN=Some Group,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "name": [
+                    "Test User3"
+                ],
+                "objectCategory": [
+                    "CN=Person,CN=Schema,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "objectClass": [
+                    "top",
+                    "person",
+                    "organizationalPerson",
+                    "user"
+                ],
+                "objectGUID": [
+                    {
+                        "encoded": "KVDkjryi2E2LfLSmcq8zlg==",
+                        "encoding": "base64"
+                    }
+                ],
+                "objectSid": [
+                    {
+                        "encoded": "AQUAAAAAAAUVAAAAPRK3S0WnjeJ3Wv+zSwYAAA==",
+                        "encoding": "base64"
+                    }
+                ],
+                "primaryGroupID": [
+                    "513"
+                ],
+                "pwdLastSet": [
+                    "131224287884760706"
+                ],
+                "sAMAccountName": [
+                    "testUser3"
+                ],
+                "sAMAccountType": [
+                    "805306368"
+                ],
+                "uSNChanged": [
+                    "86166"
+                ],
+                "uSNCreated": [
+                    "86161"
+                ],
+                "userAccountControl": [
+                    "66048"
+                ],
+                "userPrincipalName": [
+                    "testUser3@postmaster.local"
+                ],
+                "userPassword": [
+                    "P@ssW0rd"
+                ],
+                "whenChanged": [
+                    "20161031230628.0Z"
+                ],
+                "whenCreated": [
+                    "20161031230628.0Z"
+                ]
+            }
+        },
+        {
+            "attributes": {
+                "cn": "Domain Users",
+                "dSCorePropagationData": [
+                    "2016-04-03 18:42:34+00:00",
+                    "2016-02-11 23:01:23+00:00",
+                    "1601-01-01 00:04:17+00:00"
+                ],
+                "description": [
+                    "All domain users"
+                ],
+                "distinguishedName": "CN=Domain Users,CN=Users,DC=postmaster,DC=local",
+                "groupType": -2147483646,
+                "instanceType": 4,
+                "isCriticalSystemObject": true,
+                "memberOf": [
+                    "CN=Users,CN=Builtin,DC=postmaster,DC=local"
+                ],
+                "name": "Domain Users",
+                "objectCategory": "CN=Group,CN=Schema,CN=Configuration,DC=postmaster,DC=local",
+                "objectClass": [
+                    "top",
+                    "group"
+                ],
+                "objectGUID": "17aca31b-79f0-4893-a766-8598452cb286",
+                "objectSid": "S-1-5-21-1270288957-3800934213-3019856503-513",
+                "sAMAccountName": "Domain Users",
+                "sAMAccountType": 268435456,
+                "uSNChanged": 86158,
+                "uSNCreated": 12348,
+                "whenChanged": "2016-10-31 23:06:00+00:00",
+                "whenCreated": "2016-02-11 23:01:22+00:00"
+            },
+            "dn": "CN=Domain Users,CN=Users,DC=postmaster,DC=local",
+            "raw": {
+                "cn": [
+                    "Domain Users"
+                ],
+                "dSCorePropagationData": [
+                    "20160403184234.0Z",
+                    "20160211230123.0Z",
+                    "16010101000417.0Z"
+                ],
+                "description": [
+                    "All domain users"
+                ],
+                "distinguishedName": [
+                    "CN=Domain Users,CN=Users,DC=postmaster,DC=local"
+                ],
+                "groupType": [
+                    "-2147483646"
+                ],
+                "instanceType": [
+                    "4"
+                ],
+                "isCriticalSystemObject": [
+                    "TRUE"
+                ],
+                "memberOf": [
+                    "CN=Users,CN=Builtin,DC=postmaster,DC=local"
+                ],
+                "name": [
+                    "Domain Users"
+                ],
+                "objectCategory": [
+                    "CN=Group,CN=Schema,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "objectClass": [
+                    "top",
+                    "group"
+                ],
+                "objectGUID": [
+                    {
+                        "encoded": "G6OsF/B5k0inZoWYRSyyhg==",
+                        "encoding": "base64"
+                    }
+                ],
+                "objectSid": [
+                    {
+                        "encoded": "AQUAAAAAAAUVAAAAPRK3S0WnjeJ3Wv+zAQIAAA==",
+                        "encoding": "base64"
+                    }
+                ],
+                "sAMAccountName": [
+                    "Domain Users"
+                ],
+                "sAMAccountType": [
+                    "268435456"
+                ],
+                "uSNChanged": [
+                    "86158"
+                ],
+                "uSNCreated": [
+                    "12348"
+                ],
+                "whenChanged": [
+                    "20161031230600.0Z"
+                ],
+                "whenCreated": [
+                    "20160211230122.0Z"
+                ]
+            }
+        },
+        {
+            "attributes": {
+                "cn": "PostMaster Admins",
+                "dSCorePropagationData": [
+                    "1601-01-01 00:00:00+00:00"
+                ],
+                "distinguishedName": "CN=PostMaster Admins,OU=Groups,DC=postmaster,DC=local",
+                "groupType": -2147483646,
+                "instanceType": 4,
+                "member": [
+                    "CN=Test User,OU=PostMaster,DC=postmaster,DC=local",
+                    "CN=matth,CN=Users,DC=postmaster,DC=local"
+                ],
+                "name": "PostMaster Admins",
+                "objectCategory": "CN=Group,CN=Schema,CN=Configuration,DC=postmaster,DC=local",
+                "objectClass": [
+                    "top",
+                    "group"
+                ],
+                "objectGUID": "5c1a6f4b-c9f8-4e85-836c-431d5e35572a",
+                "objectSid": "S-1-5-21-1270288957-3800934213-3019856503-1607",
+                "sAMAccountName": "PostMaster Admins",
+                "sAMAccountType": 268435456,
+                "uSNChanged": 86153,
+                "uSNCreated": 77882,
+                "whenChanged": "2016-10-31 23:06:00+00:00",
+                "whenCreated": "2016-10-27 00:30:00+00:00"
+            },
+            "dn": "CN=PostMaster Admins,OU=Groups,DC=postmaster,DC=local",
+            "raw": {
+                "cn": [
+                    "PostMaster Admins"
+                ],
+                "dSCorePropagationData": [
+                    "16010101000000.0Z"
+                ],
+                "distinguishedName": [
+                    "CN=PostMaster Admins,OU=Groups,DC=postmaster,DC=local"
+                ],
+                "groupType": [
+                    "-2147483646"
+                ],
+                "instanceType": [
+                    "4"
+                ],
+                "member": [
+                    "CN=Test User,OU=PostMaster,DC=postmaster,DC=local",
+                    "CN=matth,CN=Users,DC=postmaster,DC=local"
+                ],
+                "name": [
+                    "PostMaster Admins"
+                ],
+                "objectCategory": [
+                    "CN=Group,CN=Schema,CN=Configuration,DC=postmaster,DC=local"
+                ],
+                "objectClass": [
+                    "top",
+                    "group"
+                ],
+                "objectGUID": [
+                    {
+                        "encoded": "S28aXPjJhU6DbEMdXjVXKg==",
+                        "encoding": "base64"
+                    }
+                ],
+                "objectSid": [
+                    {
+                        "encoded": "AQUAAAAAAAUVAAAAPRK3S0WnjeJ3Wv+zRwYAAA==",
+                        "encoding": "base64"
+                    }
+                ],
+                "sAMAccountName": [
+                    "PostMaster Admins"
+                ],
+                "sAMAccountType": [
+                    "268435456"
+                ],
+                "uSNChanged": [
+                    "86153"
+                ],
+                "uSNCreated": [
+                    "77882"
+                ],
+                "whenChanged": [
+                    "20161031230600.0Z"
+                ],
+                "whenCreated": [
+                    "20161027003000.0Z"
+                ]
+            }
+        }
+    ]
+}

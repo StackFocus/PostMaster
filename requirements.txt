@@ -10,7 +10,6 @@ backports.functools-lru-cache==1.2.1  # via pylint
 bcrypt==3.1.0             # via flask-bcrypt
 cffi==1.7.0               # via bcrypt
 click==6.6                # via flask
-colorama==0.3.7           # via pylint, pytest
 configparser==3.5.0       # via pylint
 coverage==4.2
 Flask-Bcrypt==0.7.1
@@ -20,21 +19,21 @@ Flask-Script==2.0.5       # via flask-migrate
 Flask-SQLAlchemy==2.1     # via flask-migrate
 Flask-WTF==0.12
 Flask==0.11.1             # via flask-bcrypt, flask-login, flask-migrate, flask-script, flask-sqlalchemy, flask-wtf
-funcparserlib==0.3.6      # via mockldap
 funcsigs==1.0.2           # via mock
 isort==4.2.5              # via pylint
 itsdangerous==0.24        # via flask
 Jinja2==2.8               # via flask
 lazy-object-proxy==1.2.2  # via astroid
+ldap3==2.1.0
 Mako==1.0.4               # via alembic
 MarkupSafe==0.23          # via jinja2, mako
 mccabe==0.5.2             # via pylint
 mock==2.0.0
-mockldap==0.2.8
 onetimepass==1.0.1
 passlib==1.6.5
 pbr==1.10.0               # via mock
 py==1.4.31                # via pytest
+pyasn1==0.1.9             # via ldap3
 pycparser==2.14           # via cffi
 pylint==1.6.4
 pymysql==0.7.9
@@ -42,13 +41,8 @@ PyQRCode==1.2.1
 pytest-cov==2.3.1
 pytest==2.9.2
 python-editor==1.0.1      # via alembic
-python-ldap==2.4.27
 six==1.10.0               # via astroid, bcrypt, mock, onetimepass, pylint
 SQLAlchemy==1.0.14        # via alembic, flask-sqlalchemy
 Werkzeug==0.11.10         # via flask, flask-wtf
 wrapt==1.10.8             # via astroid
 WTForms==2.1              # via flask-wtf
-
-# The following packages are commented out because they are
-# considered to be unsafe in a requirements file:
-# setuptools                # via python-ldap

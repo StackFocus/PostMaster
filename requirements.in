@@ -6,8 +6,8 @@ Flask-Migrate
 Flask-Script
 Flask-SQLAlchemy
 Flask-WTF
+ldap3
 mock
-mockldap
 onetimepass
 passlib
 pylint
@@ -15,4 +15,3 @@ pymysql
 pyqrcode
 pytest
 pytest-cov
-python-ldap

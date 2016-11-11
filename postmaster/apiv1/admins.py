@@ -11,7 +11,8 @@ import pyqrcode
 from StringIO import StringIO
 from postmaster import db
 from postmaster.models import Admins
-from postmaster.utils import json_logger, clear_lockout_fields_on_user
+from postmaster.logger import json_logger
+from postmaster.utils import clear_lockout_fields_on_user
 from postmaster.decorators import json_wrap, paginate
 from postmaster.errors import ValidationError, GenericError
 from postmaster.apiv1 import apiv1

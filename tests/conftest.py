@@ -20,6 +20,9 @@ def initialize():
         domain.value = 'postmaster.local'
         ldap_admin_group = models.Configs.query.filter_by(setting='AD PostMaster Group').first()
         ldap_admin_group.value = 'PostMaster Admins'
+        ldap_auth_method = models.Configs.query.filter_by(setting='LDAP Authentication Method').first()
+        # Use SIMPLE auth because ldap3 testing only allows this authentication method
+        ldap_auth_method.value = 'SIMPLE'
 
         try:
             db.session.add(admin2)
@@ -27,6 +30,7 @@ def initialize():
             db.session.add(ldap_server)
             db.session.add(domain)
             db.session.add(ldap_admin_group)
+            db.session.add(ldap_auth_method)
             db.session.commit()
         except:
             return False
