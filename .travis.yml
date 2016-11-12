@@ -9,7 +9,6 @@ install:
 before_script:
   - ./pylint-check.py
 script:
-  - mkdir -p ../logs
   - py.test -v --cov postmaster --cov-report term-missing tests/
 after_success:
   - coveralls
