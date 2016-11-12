@@ -51,7 +51,7 @@ class TestAdFunctions:
         """
         with pytest.raises(postmaster.ad.ADException) as excinfo:
             self.ad_obj.login('user', 'WrongPassword')
-        assert excinfo.value.message == 'The username or password was incorrect'
+        assert str(excinfo.value) == 'The username or password was incorrect'
 
     @manage_mock_ldap
     def test_parse_username_input_with_domain(self):
@@ -220,7 +220,7 @@ class TestAdFunctions:
         assert self.ad_obj.login(
             'CN=testUser2,OU=PostMaster,DC=postmaster,DC=local', 'P@ssW0rd') is True
         with patch('postmaster.ad.AD.check_nested_group_membership', return_value=False):
-            assert  self.ad_obj.check_group_membership() is True
+            assert self.ad_obj.check_group_membership() is True
 
     @manage_mock_ldap
     def test_check_group_membership_fail(self):
@@ -232,7 +232,7 @@ class TestAdFunctions:
         with patch('postmaster.ad.AD.check_nested_group_membership', return_value=False):
             with pytest.raises(postmaster.ad.ADException) as excinfo:
                 self.ad_obj.check_group_membership()
-        assert excinfo.value.message == 'The user account is not authorized to login to PostMaster'
+        assert str(excinfo.value) == 'The user account is not authorized to login to PostMaster'
 
     @manage_mock_ldap
     def test_validate_wtforms_password(self):
