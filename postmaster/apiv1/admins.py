@@ -8,7 +8,7 @@ an admin to create, delete, and update admins
 from flask import request
 from flask_login import login_required, current_user
 import pyqrcode
-from StringIO import StringIO
+from io import BytesIO
 from postmaster import db
 from postmaster.models import Admins
 from postmaster.logger import json_logger
@@ -219,9 +219,9 @@ def qrcode(admin_id):
             'The following error occurred in qrcode: {0}'.format(str(e)))
         raise GenericError('The administrator could not be updated')
     url = pyqrcode.create(admin.get_totp_uri())
-    stream = StringIO()
+    stream = BytesIO()
     url.svg(stream, scale=5)
-    return stream.getvalue().encode('utf-8'), 200, {
+    return stream.getvalue(), 200, {
         'Content-Type': 'image/svg+xml',
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',

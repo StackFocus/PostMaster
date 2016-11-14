@@ -51,11 +51,11 @@ class TestAdFunctions:
         """
         with pytest.raises(postmaster.ad.ADException) as excinfo:
             self.ad_obj.login('user', 'WrongPassword')
-        assert excinfo.value.message == 'The username or password was incorrect'
+        assert str(excinfo.value) == 'The username or password was incorrect'
 
     @manage_mock_ldap
     def test_parse_username_input_with_domain(self):
-        """ Tests the parse_username_input function when the username input is postmaster\username
+        r""" Tests the parse_username_input function when the username input is postmaster\username
         """
         assert self.ad_obj.parse_username_input('postmaster\\testUser3') == 'postmaster\\testUser3'
 
@@ -88,7 +88,7 @@ class TestAdFunctions:
         assert self.ad_obj.search('(displayName=Test User)', ['name']) == [{
             'attributes': {'name': u'Test User'},
             'dn': 'CN=Test User,OU=PostMaster,DC=postmaster,DC=local',
-            'raw_attributes': {'name': ['Test User']},
+            'raw_attributes': {'name': [b'Test User']},
             'type': 'searchResEntry'
         }]
 
@@ -220,7 +220,7 @@ class TestAdFunctions:
         assert self.ad_obj.login(
             'CN=testUser2,OU=PostMaster,DC=postmaster,DC=local', 'P@ssW0rd') is True
         with patch('postmaster.ad.AD.check_nested_group_membership', return_value=False):
-            assert  self.ad_obj.check_group_membership() is True
+            assert self.ad_obj.check_group_membership() is True
 
     @manage_mock_ldap
     def test_check_group_membership_fail(self):
@@ -232,7 +232,7 @@ class TestAdFunctions:
         with patch('postmaster.ad.AD.check_nested_group_membership', return_value=False):
             with pytest.raises(postmaster.ad.ADException) as excinfo:
                 self.ad_obj.check_group_membership()
-        assert excinfo.value.message == 'The user account is not authorized to login to PostMaster'
+        assert str(excinfo.value) == 'The user account is not authorized to login to PostMaster'
 
     @manage_mock_ldap
     def test_validate_wtforms_password(self):
@@ -255,4 +255,4 @@ class TestAdFunctions:
                 follow_redirects=True
             )
 
-        assert '<h2 class="textHeading">Dashboard</h2>' in rv.data
+        assert '<h2 class="textHeading">Dashboard</h2>' in rv.data.decode('utf-8')

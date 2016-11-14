@@ -14,6 +14,7 @@ Features:
 Improvements:
 
 * Replaced GIF spinner with a pure CSS spinner using CSS3 animations [GH-177].
+* Adds Python 3.5 support [GH-179] [GH-180]
 
 ### v1.1.0 - A Hard Day's Night
 
