@@ -16,6 +16,11 @@ Improvements:
 * Replaced GIF spinner with a pure CSS spinner using CSS3 animations [GH-177].
 * Adds Python 3.5 support [GH-179] [GH-180]
 
+Bug Fixes:
+
+* `manage.py version` command now returns a zero exit code [GH-182]
+* `manage.py version` now returns a version that matches the GitHub releases [GH-182]
+
 ### v1.1.0 - A Hard Day's Night
 
 BACKWARDS INCOMPATIBILITIES / NOTES:
