@@ -120,7 +120,7 @@ def resetadminpassword(username, new_password):
 @manager.command
 def version():
     """Returns the version of PostMaster"""
-    return __version__
+    print(__version__)
 
 
 if __name__ == "__main__":
