@@ -10,6 +10,7 @@ import fileinput
 from os import path, walk, remove, urandom
 from shutil import rmtree
 from re import sub, compile
+from codecs import encode
 from flask_script import Manager
 from postmaster import app, db, models, __version__
 from postmaster.utils import add_default_configuration_settings, clear_lockout_fields_on_user, reset_admin_password
@@ -71,7 +72,8 @@ def clean():
 def generatekey():
     """Replaces the SECRET_KEY in config.py with a new random one"""
     for line in fileinput.input('config.py', inplace=True):
-        print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')', urandom(24).encode('hex'), line.rstrip()))
+        print(sub(r'(?<=SECRET_KEY = \')(.+)(?=\')',
+                  encode(urandom(24), 'hex').decode('utf-8'), line.rstrip()))
 
 
 @manager.command
