@@ -1,13 +1,13 @@
 // Read a page's GET URL variables and return them as an associative array.
 // Inspired from http://www.drupalden.co.uk/get-values-from-url-query-string-jquery
 function getUrlVars() {
-    var vars = [], hash;
-    if (window.location.href.indexOf('?') != -1) {
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    var vars = {};
+    var queryStartIndex = window.location.href.indexOf('?');
+    if (queryStartIndex != -1) {
+        var hashes = window.location.href.slice(queryStartIndex + 1).split('&');
 
         for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
+            var hash = hashes[i].split('=');
             vars[hash[0]] = hash[1];
         }
     }
@@ -179,19 +179,11 @@ function redirectToLastPage(api) {
 }
 
 function getApiUrl(api) {
-    var urlVars = getUrlVars();
+    var urlVars = getUrlVars() || {};
     var filter = $('#filterRow input').val();
+    if (filter) {
+        urlVars['search'] = filter;
+    }
 
-    if ('page' in urlVars && filter != '') {
-        return ('/api/v1/' + api + '?page=' + urlVars['page'] + '&search=' + filter);
-    }
-    else if ('page' in urlVars) {
-        return ('/api/v1/' + api + '?page=' + urlVars['page']);
-    }
-    else if (filter != '') {
-        return ('/api/v1/' + api + '?&search=' + filter);
-    }
-    else {
-        return ('/api/v1/' + api);
-    }
+    return ('/api/v1/' + api + '?' + jQuery.param(urlVars));
 }
