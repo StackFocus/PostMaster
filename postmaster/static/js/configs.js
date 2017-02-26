@@ -129,7 +129,7 @@ $(document).ready(function () {
         return JSON.stringify({ 'value': params.value })
     };
     $.fn.editable.defaults.error = function (response) {
-        addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+        addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
     };
     $.fn.editable.defaults.success = function () {
         addStatusMessage('success', 'The setting was changed successfully');

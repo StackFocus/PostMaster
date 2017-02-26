@@ -17,7 +17,7 @@ function newUser(email, password) {
         },
 
         error: function(response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -36,7 +36,7 @@ function deleteUser(id) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -69,7 +69,7 @@ function editableUserEventListeners() {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {

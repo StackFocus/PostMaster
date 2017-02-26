@@ -14,7 +14,7 @@ function newDomain(name) {
             },
 
             error: function (response) {
-                addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+                addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
             }
         });
     }
@@ -38,7 +38,7 @@ function deleteDomain (id) {
             },
 
             error: function (response) {
-                addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+                addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
             }
         });
     }

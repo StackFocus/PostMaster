@@ -16,25 +16,6 @@ function getUrlVars() {
 }
 
 
-// Inspired from https://github.com/janl/mustache.js/blob/master/mustache.js
-function filterText(text) {
-     var entityMap = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;',
-        '/': '&#x2F;',
-        '`': '&#x60;',
-        '=': '&#x3D;'
-    };
-
-    return String(text).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
-      return entityMap[s];
-    });
-}
-
-
 function changePage(obj, e) {
 
     if (history.pushState) {
@@ -78,17 +59,19 @@ function addStatusMessage(category, message) {
 
     // Generates a random id for the alert so that the setTimeout function below only applies to that specific alert
     var alertId = Math.floor((Math.random() * 100000) + 1);
-
-    $('#bottomOuterAlertDiv').html('\
-        <div id="bottomAlert' + alertId + '" class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                ' + message + '\
-        </div>\
-    ').hide().fadeIn();
-
+    var cssCategory = category == 'success' ? 'alert-success' : 'alert-danger';
+    // Create the new alert
+    var alert = $('<div />', {'id': 'bottomAlert' + alertId, 'class': 'alert alert-dismissible fade in ' + cssCategory, 'role': 'alert'}).text(message).append(
+        $('<button />', {'type': 'button', 'class': 'close', 'data-dismiss': 'alert', 'aria-label': 'Close'}).append(
+            $('<span />', {'aria-hidden': 'true'}).text('x')
+        )
+    );
+    // Remove any existing alerts and fade in the new alert
+    $('#bottomOuterAlertDiv').hide().empty().append(alert).fadeIn();
+    // Fade out the alert after a set amount of time based on its category
     setTimeout(function () {
         $('#bottomAlert' + alertId).fadeOut(function() {$(this).remove()}); },
-        ((category == 'success') ? 5000 : 8000)
+        (category == 'success' ? 5000 : 8000)
     );
 }
 

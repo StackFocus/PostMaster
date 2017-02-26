@@ -18,7 +18,7 @@ function newAdmin(username, password, name) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -37,7 +37,7 @@ function deleteAdmin(id) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -55,7 +55,7 @@ function unlockAdmin(id, targetLink) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 
@@ -98,7 +98,7 @@ function editableAdminEventListeners() {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {
@@ -126,7 +126,7 @@ function editableAdminEventListeners() {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {
@@ -154,7 +154,7 @@ function editableAdminEventListeners() {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {

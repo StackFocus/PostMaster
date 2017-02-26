@@ -18,7 +18,7 @@ function newAlias(source, destination) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -37,7 +37,7 @@ function deleteAlias (id) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -238,7 +238,7 @@ $(document).ready(function () {
         return JSON.stringify({ 'value': params.value })
     };
     $.fn.editable.defaults.error = function (response) {
-        addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+        addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
     };
     $.fn.editable.defaults.display = function (value) {
         $(this).html(filterText(value.toLowerCase()));
