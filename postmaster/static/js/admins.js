@@ -64,21 +64,21 @@ function unlockAdmin(id, targetLink) {
 // Sets the event listeners for x-editable
 function editableAdminEventListeners() {
 
-    var adminUsername = $('a.adminUsername');
+    var adminEmail = $('a.adminEmail');
     var adminPassword = $('a.adminPassword');
     var adminName = $('a.adminName');
     var adminLocked = $('a.adminLocked')
 
-    adminUsername.unbind();
+    adminEmail.unbind();
     adminPassword.unbind();
     adminName.unbind();
     adminLocked.unbind();
-    adminUsername.tooltip();
+    adminEmail.tooltip();
     adminPassword.tooltip();
     adminName.tooltip();
     adminLocked.tooltip();
 
-    adminUsername.editable({
+    adminEmail.editable({
         type: 'text',
         mode: 'inline',
         anim: 100,
@@ -277,8 +277,8 @@ function fillInTable () {
             // Create a new table row to be inserted or replace the current one
             var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
             var columnDataUrl = '/api/v1/admins/' + item.id;
-            var username_td = $('<td />', {'data-title': 'Username: '}).append(
-                $('<a />', {'href': '#', 'class': 'adminUsername', 'data-pk': item.id, 'data-url': columnDataUrl,
+            var email_td = $('<td />', {'data-title': 'Email: '}).append(
+                $('<a />', {'href': '#', 'class': 'adminEmail', 'data-pk': item.id, 'data-url': columnDataUrl,
                             'title': 'Click to change the username'}).text(item.username)
             );
             var password_td = $('<td />', {'data-title': 'Password: '}).append(
@@ -304,7 +304,7 @@ function fillInTable () {
                             'data-target': '#deleteModal'}).text('Delete')
             );
             // Add the new columns to the new table row
-            newTableRow.append(username_td).append(password_td).append(name_td).append(locked_td).append(action_td);
+            newTableRow.append(email_td).append(password_td).append(name_td).append(locked_td).append(action_td);
             // If the table row exists, then replace it, otherwise insert it
             if (tableRow.length > 0) {
                 tableRow.replaceWith(newTableRow);
