@@ -167,15 +167,32 @@ function fillInTable () {
         var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
+            // Query the existing table row
             var tableRow = $('#dynamicTableRow' + String(i));
-            var html = '';
+            // Create a new table row to be inserted or replace the current one
+            var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
+            var columnDataUrl = '/api/v1/aliases/' + item.id;
+            var source_td = $('<td />', {'data-title': 'Source: '}).append(
+                $('<a />', {'href': '#', 'class': 'sourceAlias', 'data-pk': item.id, 'data-url': columnDataUrl,
+                            'title': 'Click to change the source of the alias'}).text(item.source)
+            );
+            var destination_td = $('<td />', {'data-title': 'Destination: '}).append(
+                $('<a />', {'href': '#', 'class': 'destinationAlias', 'data-pk': item.id, 'data-url': columnDataUrl,
+                            'title': 'Click to change the destination of the alias'}).text(item.destination)
+            );
+            var delete_td = $('<td />', {'data-title': 'Action: '}).append(
+                $('<a />', {'href': '#', 'class': 'deleteAnchor', 'data-pk': item.id}).text('Delete')
+            );
+            // Add the new columns to the new table row
+            newTableRow.append(source_td).append(destination_td).append(delete_td);
 
-            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Source: "><a href="#" class="sourceAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the source of the alias">' + filterText(item.source) + '</td>\
-                    <td data-title="Destination: "><a href="#" class="destinationAlias" data-pk="' + item.id + '" data-url="/api/v1/aliases/' + item.id + '" title="Click to change the destination of the alias">' + filterText(item.destination) + '</td>\
-                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '">Delete</a></td>';
-            tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
+            // If the table row exists, then replace it, otherwise insert it
+            if (tableRow.length > 0) {
+                tableRow.replaceWith(newTableRow);
+            }
+            else {
+                insertTableRow(newTableRow);
+            }
 
             i++;
         });

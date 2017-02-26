@@ -173,15 +173,30 @@ function fillInTable () {
         var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
+            // Query the existing table row
             var tableRow = $('#dynamicTableRow' + String(i));
-            var html = '';
+            // Create a new table row to be inserted or replace the current one
+            var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
+            var columnDataUrl = '/api/v1/users/' + item.id;
+            var email_td = $('<td />', {'data-title': 'Email: '}).text(item.email);
+            var password_td = $('<td />', {'data-title': 'Password: '}).append(
+                $('<a />', {'href': '#', 'class': 'userPassword', 'data-pk': item.id, 'data-url': columnDataUrl,
+                            'title': 'Click to change the password'}).text('●●●●●●●●')
+            );
+            var action_td = $('<td />', {'data-title': 'Action: '}).append(
+                $('<a />', {'href': '#', 'class': 'deleteAnchor', 'data-pk': item.id, 'data-toggle': 'modal',
+                            'data-target': '#deleteModal'}).text('Delete')
+            );
+            // Add the new columns to the new table row
+            newTableRow.append(email_td).append(password_td).append(action_td);
 
-            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Email: ">' + filterText(item.email) + '</td>\
-                    <td data-title="Password: "><a href="#" class="userPassword" data-pk="' + item.id + '" data-url="/api/v1/users/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
-            tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
+            // If the table row exists, then replace it, otherwise insert it
+            if (tableRow.length > 0) {
+                tableRow.replaceWith(newTableRow);
+            }
+            else {
+                insertTableRow(newTableRow);
+            }
 
             i++;
         });

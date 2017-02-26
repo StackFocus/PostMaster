@@ -135,7 +135,7 @@ function setPagination(currPage, numPages, api) {
 
 
 function insertTableRow(tableRow) {
-    $(tableRow).insertBefore('#addItemRow')
+    tableRow.insertBefore('#addItemRow')
         .find('td').wrapInner('<div style="display: none;" />')
         .parent().find('td > div')
         .slideDown('fast', function () {
@@ -146,7 +146,7 @@ function insertTableRow(tableRow) {
 
 
 function appendTableRow(tableRow) {
-    $(tableRow).appendTo('#dynamicTable tbody')
+    tableRow.appendTo('#dynamicTable tbody')
         .find('td').wrapInner('<div style="display: none;" />')
         .parent().find('td > div')
         .slideDown('fast', function () {
