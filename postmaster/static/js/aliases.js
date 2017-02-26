@@ -241,7 +241,7 @@ $(document).ready(function () {
         addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
     };
     $.fn.editable.defaults.display = function (value) {
-        $(this).html(filterText(value.toLowerCase()));
+        $(this).text(value.toLowerCase());
     };
 
     // Populate the table

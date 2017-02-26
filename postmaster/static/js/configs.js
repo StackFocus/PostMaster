@@ -19,7 +19,7 @@ function configEventListeners () {
     configTextItems.tooltip();
     configTextItems.editable({
         display: function (value) {
-            $(this).html(filterText(value));
+            $(this).text(value);
         }
     });
 

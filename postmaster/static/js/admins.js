@@ -51,7 +51,7 @@ function unlockAdmin(id, targetLink) {
 
         success: function (response) {
             addStatusMessage('success', 'The administrator was unlocked successfully');
-            targetLink.parent('td').html('Unlocked');
+            targetLink.parent('td').text('Unlocked');
         },
 
         error: function (response) {
@@ -94,7 +94,7 @@ function editableAdminEventListeners() {
         },
 
         display: function (value) {
-            $(this).html(filterText(value.toLowerCase()));
+            $(this).text(value.toLowerCase());
         },
 
         error: function (response) {
@@ -122,7 +122,7 @@ function editableAdminEventListeners() {
         },
 
         display: function () {
-            $(this).html('●●●●●●●●');
+            $(this).text('●●●●●●●●');
         },
 
         error: function (response) {
@@ -150,7 +150,7 @@ function editableAdminEventListeners() {
         },
 
         display: function (value) {
-            $(this).html(filterText(value));
+            $(this).text(value);
         },
 
         error: function (response) {

@@ -65,7 +65,7 @@ function editableUserEventListeners() {
         },
 
         display: function () {
-            $(this).html('●●●●●●●●');
+            $(this).text('●●●●●●●●');
         },
 
         error: function (response) {
