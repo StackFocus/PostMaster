@@ -86,8 +86,10 @@ function setPagination(currPage, numPages, api) {
             var pageButton = $('#itemPage' + String(i));
             // If the page button does not exist, create it
             if (pageButton.length == 0) {
-                $('<li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '">\
-                    <a href="' + '/' + api + '?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>').appendTo(paginationDiv).hide().fadeIn('fast');
+                var cssClass = currPage == i ? 'active' : '';
+                $('<li />', {'id': 'itemPage' + i, 'class': cssClass}).append(
+                    $('<a />', {'href': '/' + api + '?' + jQuery.param({'page': i}), 'onclick': 'changePage(this, event)'}).text(i)
+                ).appendTo(paginationDiv).hide().fadeIn('fast')
             }
             // If the page button does exist, make sure the correct button is marked as active
             else {
