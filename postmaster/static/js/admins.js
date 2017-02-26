@@ -46,7 +46,7 @@ function deleteAdmin(id) {
 function unlockAdmin(id, targetLink) {
 
     $.ajax({
-        url: '/api/v1/admins/' + id + 'unlock/',
+        url: '/api/v1/admins/' + id + '/unlock',
         type: 'put',
 
         success: function (response) {
