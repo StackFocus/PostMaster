@@ -26,15 +26,23 @@ function fillInTable() {
         var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
+            // Query the existing table row
             var tableRow = $('#dynamicTableRow' + String(i));
-            var html = '';
+            // Create a new table row to be inserted or replace the current one
+            var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
+            var time_td = $('<td />', {'data-title': 'Time: '}).text(dateFormatFromISO(item.timestamp));
+            var admin_td = $('<td />', {'data-title': 'Admin: '}).text(item.admin);
+            var message_td = $('<td />', {'data-title': 'Message: '}).text(item.message);
+            // Add the new columns to the new table row
+            newTableRow.append(time_td).append(admin_td).append(message_td);
 
-            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Time: ">' + filterText(dateFormatFromISO(item.timestamp)) + '</td>\
-                    <td data-title="Admin: ">' + filterText(item.admin) + '</td>\
-                    <td data-title="Message: ">' + filterText(item.message) + '</td>';
-            tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
+            // If the table row exists, then replace it, otherwise insert it
+            if (tableRow.length > 0) {
+                tableRow.replaceWith(newTableRow);
+            }
+            else {
+                appendTableRow(newTableRow);
+            }
 
             i++;
         });
@@ -47,7 +55,7 @@ function fillInTable() {
     .fail(function (jqxhr, textStatus, error) {
         // Remove the loading spinner
         manageSpinner(false);
-        addStatusMessage('error', filterText(JSON.parse(jqxhr.responseText)['message']));
+        addStatusMessage('error', JSON.parse(jqxhr.responseText)['message']);
     });
 }
 

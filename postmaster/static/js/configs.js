@@ -19,7 +19,7 @@ function configEventListeners () {
     configTextItems.tooltip();
     configTextItems.editable({
         display: function (value) {
-            $(this).html(filterText(value));
+            $(this).text(value);
         }
     });
 
@@ -51,8 +51,8 @@ function fillInTable () {
         var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
+            // Query the existing table row
             var tableRow = $('#dynamicTableRow' + String(i));
-            var html = '';
             var boolConfigItems = [
                 'Login Auditing',
                 'Mail Database Auditing',
@@ -69,11 +69,23 @@ function fillInTable () {
                 var cssClass = 'configText';
             }
 
-            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Setting: ">' + filterText(item.setting) + '</td>\
-                    <td data-title="Value: "><a href="#" class="' + cssClass + '" data-pk="' + item.id + '" data-url="/api/v1/configs/' + item.id + '" title="Click to change the setting value">' + (item.value != null ? filterText(item.value) : '') + '</a></td>';
-            tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? appendTableRow(html) : tableRow.html(html);
+            // Create a new table row to be inserted or replace the current one
+            var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
+            var setting_td = $('<td />', {'data-title': 'Setting: '}).text(item.setting);
+            var value_td = $('<td />', {'data-title': 'Value: '}).append(
+                $('<a />', {'href': '#', 'class': cssClass, 'data-pk': item.id, 'data-url': '/api/v1/configs/' + item.id,
+                            'title': 'Click to change the setting value'}).text(item.value)
+            );
+            // Add the new columns to the new table row
+            newTableRow.append(setting_td).append(value_td);
+
+            // If the table row exists, then replace it, otherwise insert it
+            if (tableRow.length > 0) {
+                tableRow.replaceWith(newTableRow);
+            }
+            else {
+                appendTableRow(newTableRow);
+            }
 
             i++;
         });
@@ -117,7 +129,7 @@ $(document).ready(function () {
         return JSON.stringify({ 'value': params.value })
     };
     $.fn.editable.defaults.error = function (response) {
-        addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+        addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
     };
     $.fn.editable.defaults.success = function () {
         addStatusMessage('success', 'The setting was changed successfully');

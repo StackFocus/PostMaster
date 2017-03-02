@@ -1,37 +1,18 @@
 // Read a page's GET URL variables and return them as an associative array.
 // Inspired from http://www.drupalden.co.uk/get-values-from-url-query-string-jquery
 function getUrlVars() {
-    var vars = [], hash;
-    if (window.location.href.indexOf('?') != -1) {
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    var vars = {};
+    var queryStartIndex = window.location.href.indexOf('?');
+    if (queryStartIndex != -1) {
+        var hashes = window.location.href.slice(queryStartIndex + 1).split('&');
 
         for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
+            var hash = hashes[i].split('=');
             vars[hash[0]] = hash[1];
         }
     }
 
     return vars;
-}
-
-
-// Inspired from https://github.com/janl/mustache.js/blob/master/mustache.js
-function filterText(text) {
-     var entityMap = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;',
-        '/': '&#x2F;',
-        '`': '&#x60;',
-        '=': '&#x3D;'
-    };
-
-    return String(text).replace(/[&<>"'`=\/]/g, function fromEntityMap (s) {
-      return entityMap[s];
-    });
 }
 
 
@@ -78,17 +59,19 @@ function addStatusMessage(category, message) {
 
     // Generates a random id for the alert so that the setTimeout function below only applies to that specific alert
     var alertId = Math.floor((Math.random() * 100000) + 1);
-
-    $('#bottomOuterAlertDiv').html('\
-        <div id="bottomAlert' + alertId + '" class="alert ' + ((category == 'success') ? 'alert-success' : 'alert-danger') + ' alert-dismissible fade in" role="alert">\
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
-                ' + message + '\
-        </div>\
-    ').hide().fadeIn();
-
+    var cssCategory = category == 'success' ? 'alert-success' : 'alert-danger';
+    // Create the new alert
+    var alert = $('<div />', {'id': 'bottomAlert' + alertId, 'class': 'alert alert-dismissible fade in ' + cssCategory, 'role': 'alert'}).text(message).append(
+        $('<button />', {'type': 'button', 'class': 'close', 'data-dismiss': 'alert', 'aria-label': 'Close'}).append(
+            $('<span />', {'aria-hidden': 'true'}).text('x')
+        )
+    );
+    // Remove any existing alerts and fade in the new alert
+    $('#bottomOuterAlertDiv').hide().empty().append(alert).fadeIn();
+    // Fade out the alert after a set amount of time based on its category
     setTimeout(function () {
         $('#bottomAlert' + alertId).fadeOut(function() {$(this).remove()}); },
-        ((category == 'success') ? 5000 : 8000)
+        (category == 'success' ? 5000 : 8000)
     );
 }
 
@@ -103,8 +86,10 @@ function setPagination(currPage, numPages, api) {
             var pageButton = $('#itemPage' + String(i));
             // If the page button does not exist, create it
             if (pageButton.length == 0) {
-                $('<li' + ((currPage == i) ? ' class="active"' : '') + ' id="' + ('itemPage' + String(i)) + '">\
-                    <a href="' + '/' + api + '?page=' + i + '" onclick="changePage(this, event)">' + i + '</a></li>').appendTo(paginationDiv).hide().fadeIn('fast');
+                var cssClass = currPage == i ? 'active' : '';
+                $('<li />', {'id': 'itemPage' + i, 'class': cssClass}).append(
+                    $('<a />', {'href': '/' + api + '?' + jQuery.param({'page': i}), 'onclick': 'changePage(this, event)'}).text(i)
+                ).appendTo(paginationDiv).hide().fadeIn('fast')
             }
             // If the page button does exist, make sure the correct button is marked as active
             else {
@@ -135,7 +120,7 @@ function setPagination(currPage, numPages, api) {
 
 
 function insertTableRow(tableRow) {
-    $(tableRow).insertBefore('#addItemRow')
+    tableRow.insertBefore('#addItemRow')
         .find('td').wrapInner('<div style="display: none;" />')
         .parent().find('td > div')
         .slideDown('fast', function () {
@@ -146,7 +131,7 @@ function insertTableRow(tableRow) {
 
 
 function appendTableRow(tableRow) {
-    $(tableRow).appendTo('#dynamicTable tbody')
+    tableRow.appendTo('#dynamicTable tbody')
         .find('td').wrapInner('<div style="display: none;" />')
         .parent().find('td > div')
         .slideDown('fast', function () {
@@ -194,19 +179,11 @@ function redirectToLastPage(api) {
 }
 
 function getApiUrl(api) {
-    var urlVars = getUrlVars();
+    var urlVars = getUrlVars() || {};
     var filter = $('#filterRow input').val();
+    if (filter) {
+        urlVars['search'] = filter;
+    }
 
-    if ('page' in urlVars && filter != '') {
-        return ('/api/v1/' + api + '?page=' + urlVars['page'] + '&search=' + filter);
-    }
-    else if ('page' in urlVars) {
-        return ('/api/v1/' + api + '?page=' + urlVars['page']);
-    }
-    else if (filter != '') {
-        return ('/api/v1/' + api + '?&search=' + filter);
-    }
-    else {
-        return ('/api/v1/' + api);
-    }
+    return ('/api/v1/' + api + '?' + jQuery.param(urlVars));
 }

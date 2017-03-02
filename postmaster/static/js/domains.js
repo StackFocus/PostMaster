@@ -14,7 +14,7 @@ function newDomain(name) {
             },
 
             error: function (response) {
-                addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+                addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
             }
         });
     }
@@ -38,7 +38,7 @@ function deleteDomain (id) {
             },
 
             error: function (response) {
-                addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+                addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
             }
         });
     }
@@ -121,7 +121,7 @@ function domainEventListeners() {
 
 
 // Loads the dynamic table and pagination
-function fillInTable(filter) {
+function fillInTable() {
     // Set the loading spinner
     manageSpinner(true);
 
@@ -134,15 +134,25 @@ function fillInTable(filter) {
         var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
+            // Query the existing table row
             var tableRow = $('#dynamicTableRow' + String(i));
-            var html = '';
-
-            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-pk="' + item.id + '" data-title="Domain: ">' + filterText(item.name) + '</td>\
-                     <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
-            tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
-
+            // Create a new table row to be inserted or replace the current one
+            var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
+            var name_td = $('<td />', {'data-pk': item.id, 'data-title': 'Domain: '});
+            name_td.text(item.name);
+            var action_td = $('<td />', {'data-title': 'Action: '}).append(
+                // Create the anchor inside the column
+                $('<a />', {'href': '#', 'data-pk': item.id, 'data-toggle': 'modal', 'data-target': '#deleteModal'}).text('Delete')
+            );
+            // Add the new columns to the new table row
+            newTableRow.append(name_td).append(action_td);
+            // If the table row exists, then replace it, otherwise insert it
+            if (tableRow.length > 0) {
+                tableRow.replaceWith(newTableRow);
+            }
+            else {
+                insertTableRow(newTableRow);
+            }
             i++;
         });
 

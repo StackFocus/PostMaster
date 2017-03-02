@@ -18,7 +18,7 @@ function newAdmin(username, password, name) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -37,7 +37,7 @@ function deleteAdmin(id) {
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 }
@@ -46,16 +46,16 @@ function deleteAdmin(id) {
 function unlockAdmin(id, targetLink) {
 
     $.ajax({
-        url: '/api/v1/admins/' + id + 'unlock/',
+        url: '/api/v1/admins/' + id + '/unlock',
         type: 'put',
 
         success: function (response) {
             addStatusMessage('success', 'The administrator was unlocked successfully');
-            targetLink.parent('td').html('Unlocked');
+            targetLink.parent('td').text('Unlocked');
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         }
     });
 
@@ -64,21 +64,21 @@ function unlockAdmin(id, targetLink) {
 // Sets the event listeners for x-editable
 function editableAdminEventListeners() {
 
-    var adminUsername = $('a.adminUsername');
+    var adminEmail = $('a.adminEmail');
     var adminPassword = $('a.adminPassword');
     var adminName = $('a.adminName');
     var adminLocked = $('a.adminLocked')
 
-    adminUsername.unbind();
+    adminEmail.unbind();
     adminPassword.unbind();
     adminName.unbind();
     adminLocked.unbind();
-    adminUsername.tooltip();
+    adminEmail.tooltip();
     adminPassword.tooltip();
     adminName.tooltip();
     adminLocked.tooltip();
 
-    adminUsername.editable({
+    adminEmail.editable({
         type: 'text',
         mode: 'inline',
         anim: 100,
@@ -94,11 +94,11 @@ function editableAdminEventListeners() {
         },
 
         display: function (value) {
-            $(this).html(filterText(value.toLowerCase()));
+            $(this).text(value.toLowerCase());
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {
@@ -122,11 +122,11 @@ function editableAdminEventListeners() {
         },
 
         display: function () {
-            $(this).html('●●●●●●●●');
+            $(this).text('●●●●●●●●');
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {
@@ -150,11 +150,11 @@ function editableAdminEventListeners() {
         },
 
         display: function (value) {
-            $(this).html(filterText(value));
+            $(this).text(value);
         },
 
         error: function (response) {
-            addStatusMessage('error', filterText(jQuery.parseJSON(response.responseText).message));
+            addStatusMessage('error', jQuery.parseJSON(response.responseText).message);
         },
 
         success: function () {
@@ -272,17 +272,46 @@ function fillInTable () {
         var i = 1;
         // For each item, add a row, but if the row exists, just change the value
         $.each(result['items'], function (j, item) {
+            // Query the existing table row
             var tableRow = $('#dynamicTableRow' + String(i));
-            var html = '';
-
-            tableRow.length == 0 ? html += '<tr id="dynamicTableRow' + String(i) + '">' : null;
-            html += '<td data-title="Username: "><a href="#" class="adminUsername" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the username">' + filterText(item.username) + '</a></td>\
-                    <td data-title="Password: "><a href="#" class="adminPassword" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the password">●●●●●●●●</a></td>\
-                    <td data-title="Name: "><a href="#" class="adminName" data-pk="' + item.id + '" data-url="/api/v1/admins/' + item.id + '" title="Click to change the name">' + filterText(item.name) + '</a></td>\
-                    <td data-title="Locked: ">' + (item.locked ? ('<a href="#" class="adminLocked" data-pk="' + item.id + '" title="Click to unlock the administrator">Locked</a>') : 'Unlocked') + '</td>\
-                    <td data-title="Action: "><a href="#" class="deleteAnchor" data-pk="' + item.id + '" data-toggle="modal" data-target="#deleteModal">Delete</a></td>';
-            tableRow.length == 0 ? html += '</tr>' : null;
-            tableRow.length == 0 ? insertTableRow(html) : tableRow.html(html);
+            // Create a new table row to be inserted or replace the current one
+            var newTableRow = $('<tr />', {'id': 'dynamicTableRow' + String(i)});
+            var columnDataUrl = '/api/v1/admins/' + item.id;
+            var email_td = $('<td />', {'data-title': 'Email: '}).append(
+                $('<a />', {'href': '#', 'class': 'adminEmail', 'data-pk': item.id, 'data-url': columnDataUrl,
+                            'title': 'Click to change the username'}).text(item.username)
+            );
+            var password_td = $('<td />', {'data-title': 'Password: '}).append(
+                $('<a />', {'href': '#', 'class': 'adminPassword', 'data-pk': item.id, 'data-url': columnDataUrl,
+                            'title': 'Click to change the password'}).text('●●●●●●●●')
+            );
+            var name_td = $('<td />', {'data-title': 'Name: '}).append(
+                $('<a />', {'href': '#', 'class': 'adminName', 'data-pk': item.id, 'data-url': columnDataUrl,
+                            'title': 'Click to change the name'}).text(item.name)
+            );
+            var locked_td = $('<td />', {'data-title': 'Locked: '});
+            if (item.locked) {
+                locked_td.append(
+                    $('<a />', {'href': '#', 'class': 'adminLocked', 'data-pk': item.id,
+                                'title': 'Click to unlock the administrator'}).text('Locked')
+                );
+            }
+            else {
+                locked_td.text('Unlocked');
+            }
+            var action_td = $('<td />', {'data-title': 'Action: '}).append(
+                $('<a />', {'href': '#', 'class': 'deleteAnchor', 'data-pk': item.id, 'data-toggle': 'modal',
+                            'data-target': '#deleteModal'}).text('Delete')
+            );
+            // Add the new columns to the new table row
+            newTableRow.append(email_td).append(password_td).append(name_td).append(locked_td).append(action_td);
+            // If the table row exists, then replace it, otherwise insert it
+            if (tableRow.length > 0) {
+                tableRow.replaceWith(newTableRow);
+            }
+            else {
+                insertTableRow(newTableRow);
+            }
 
             i++;
         });
