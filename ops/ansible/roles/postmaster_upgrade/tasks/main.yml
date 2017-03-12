@@ -5,6 +5,9 @@
   args:
     chdir: /opt/postmaster/git
 
+- name: Upgrade python dependencies
+  pip: requirements=/opt/postmaster/git/requirements.txt virtualenv=/opt/postmaster/env
+
 - name: Ensure apache is reloaded
   become: yes
   service: name=apache2 state=reloaded
