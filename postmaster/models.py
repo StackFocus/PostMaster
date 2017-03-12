@@ -9,8 +9,7 @@ from postmaster.errors import ValidationError
 from re import search, match
 from os import urandom
 import base64
-from passlib.hash import sha512_crypt as sha512  # pylint: disable=no-name-in-module
-from hashlib import sha1
+import passlib.hash
 import onetimepass
 
 
@@ -119,12 +118,7 @@ class VirtualUsers(db.Model):
 
     @staticmethod
     def encrypt_password(password):
-        salt = (sha1(urandom(16)).hexdigest())[:16]
-        protectedPassword = sha512.encrypt(password,
-                                           rounds=5000,
-                                           salt=salt,
-                                           implicit_rounds=True)
-        return protectedPassword
+        return passlib.hash.sha512_crypt.hash(password, rounds=5000)
 
 
 class VirtualAliases(db.Model):

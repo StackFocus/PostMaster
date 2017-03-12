@@ -4,14 +4,14 @@ File: forms.py
 Purpose: form definitions for the app
 """
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Optional
 from postmaster import models
 from postmaster.utils import validate_wtforms_password
 
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     """ Class for login form on /login
     """
     username = StringField(label='Username', validators=[DataRequired()])
