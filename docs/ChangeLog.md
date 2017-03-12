@@ -1,11 +1,11 @@
-### Unreleased
+### v1.2.0 - Rubber Soul
 
 BACKWARDS INCOMPATIBILITIES / NOTES:
 
 * The default MySQL Python connector of "mysqlclient" has been replaced with "pymysql" for a pure Python replacement.
 Upgrades will be unaffected by this, but please note that reinstalls will require you to either install "mysqlclient"
 ([Ubuntu Instructions](https://github.com/PyMySQL/mysqlclient-python#install) or change the start of your database URI
-with "mysql+pymysql://" instead of "mysql://" [GH-170].
+with "mysql+pymysql://" instead of "mysql://" [GH-170]
 
 Features:
 
@@ -13,8 +13,9 @@ Features:
 
 Improvements:
 
-* Replaced GIF spinner with a pure CSS spinner using CSS3 animations [GH-177].
+* Replaced GIF spinner with a pure CSS spinner using CSS3 animations [GH-177]
 * Adds Python 3.5 support [GH-179] [GH-180]
+* Update Python dependencies when updating PostMaster using the deb package (apt-get) [GH-185]
 
 Bug Fixes:
 

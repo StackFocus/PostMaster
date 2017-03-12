@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 
-__version__ = 'v1.1.0.0'
+__version__ = 'v1.2.0.0'
 app = Flask(__name__)
 
 if environ.get('POSTMASTER_DEV') == 'TRUE':
