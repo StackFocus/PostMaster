@@ -161,6 +161,9 @@
         
             <ul>
             
+                <li class="toctree-l3"><a href="#v120-rubber-soul">v1.2.0 - Rubber Soul</a></li>
+                
+            
                 <li class="toctree-l3"><a href="#v110-a-hard-days-night">v1.1.0 - A Hard Day's Night</a></li>
                 
             
@@ -215,7 +218,30 @@
           <div role="main">
             <div class="section">
               
-                <h3 id="v110-a-hard-days-night">v1.1.0 - A Hard Day's Night</h3>
+                <h3 id="v120-rubber-soul">v1.2.0 - Rubber Soul</h3>
+<p>BACKWARDS INCOMPATIBILITIES / NOTES:</p>
+<ul>
+<li>The default MySQL Python connector of "mysqlclient" has been replaced with "pymysql" for a pure Python replacement.
+Upgrades will be unaffected by this, but please note that reinstalls will require you to either install "mysqlclient"
+(<a href="https://github.com/PyMySQL/mysqlclient-python#install">Ubuntu Instructions</a> or change the start of your database URI
+with "mysql+pymysql://" instead of "mysql://" [GH-170]</li>
+</ul>
+<p>Features:</p>
+<ul>
+<li>Supports Two-Factor Authentication on the backend [GH-169]</li>
+</ul>
+<p>Improvements:</p>
+<ul>
+<li>Replaced GIF spinner with a pure CSS spinner using CSS3 animations [GH-177]</li>
+<li>Adds Python 3.5 support [GH-179] [GH-180]</li>
+<li>Update Python dependencies when updating PostMaster using the deb package (apt-get) [GH-185]</li>
+</ul>
+<p>Bug Fixes:</p>
+<ul>
+<li><code>manage.py version</code> command now returns a zero exit code [GH-182]</li>
+<li><code>manage.py version</code> now returns a version that matches the GitHub releases [GH-182]</li>
+</ul>
+<h3 id="v110-a-hard-days-night">v1.1.0 - A Hard Day's Night</h3>
 <p>BACKWARDS INCOMPATIBILITIES / NOTES:</p>
 <ul>
 <li>The 'Log File' config option is now baked into the application config and cannot be set in the API/UI/database. Use <code>python manage.py setlogfile &lt;path&gt;</code> or edit config.py to change the log file location. [GH-128]</li>
@@ -272,7 +298,7 @@ This is so that config.py is not overwritten during package upgrades [GH-157].</
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-09-04 15:43:28.529008<p>
+    <p>Documentation generated on 2017-03-15 23:30:56.399478<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>

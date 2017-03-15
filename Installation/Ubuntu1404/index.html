@@ -277,7 +277,7 @@ bind-address is set 0.0.0.0 and not 127.0.0.1 in:</p>
 Make sure to replace "password_changeme" with the actual password supplied in step 2 of MySQL Preparation, and if needed,
 replace '127.0.0.1' with the IP address or DNS specified in step 2 of MySQL Preparation:</p>
 <pre><code>cd /opt/postmaster/git
-python manage.py setdburi 'mysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
+python manage.py setdburi 'mysql+pymysql://postmasteruser:password_changeme@127.0.0.1:3306/servermail'
 </code></pre>
 </li>
 <li>
@@ -316,7 +316,7 @@ You can change your username and password from Manage -&gt; Administrators.</p>
 </li>
 <li>
 <p>Install the required packages for PostMaster:</p>
-<pre><code>apt-get install python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server libmysqlclient-dev
+<pre><code>apt-get install python python-pip python-dev libldap2-dev libssl-dev libsasl2-dev libffi-dev apache2 libapache2-mod-wsgi mysql-server
 </code></pre>
 </li>
 <li>
@@ -453,7 +453,7 @@ You can change your username and password from Manage -&gt; Administrators.</p>
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-09-04 15:43:28.450304<p>
+    <p>Documentation generated on 2017-03-15 23:30:56.316482<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>

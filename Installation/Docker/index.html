@@ -285,7 +285,7 @@ The -v parameter specifies that the /opt/postmaster_data/logs should be mounted 
 Make sure to replace 'password_changeme' and 'docker.postmaster.local' with what you configured in step 2 of MySQL Preparation:</p>
 <pre><code>docker run \
      -p 0.0.0.0:80:8082 \
-     -e DB_URI=mysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail \
+     -e DB_URI=mysql+pymysql://postmasteruser:password_changeme@docker.postmaster.local:3306/servermail \
      -v /opt/postmaster_data/logs:/opt/postmaster/logs \
      -d postmaster
 </code></pre>
@@ -318,7 +318,7 @@ You can change your username and password from Manage -&gt; Administrators.</p>
   <div role="contentinfo">
     <!-- Copyright etc -->
     
-    <p>Documentation generated on 2016-09-04 15:43:28.436162<p>
+    <p>Documentation generated on 2017-03-15 23:30:56.301475<p>
   </div>
   Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
 </footer>
