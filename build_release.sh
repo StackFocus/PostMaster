@@ -1,5 +1,5 @@
 #!/bin/bash
-REVISION=1.1.0
+REVISION=1.2.0.0
 fpm -s dir -t deb -n "postmaster" -v $REVISION \
 --prefix /opt/postmaster/git \
 --description 'PostMaster is a beautiful web application to manage domains, users, and aliases on a Linux mail server' \
@@ -15,6 +15,5 @@ fpm -s dir -t deb -n "postmaster" -v $REVISION \
 --exclude .vagrant \
 --deb-no-default-config-files \
 -d git -d python -d python-pip -d python-dev -d python-virtualenv \
--d libldap2-dev -d libssl-dev -d libsasl2-dev -d libffi-dev \
 -d apache2 -d libapache2-mod-wsgi -d libmysqlclient-dev ./
 ls -la | grep *.deb
