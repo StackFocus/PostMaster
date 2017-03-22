@@ -1,0 +1,4 @@
+---
+- src: https://github.com/StackFocus/ansible-role-postmaster.git
+  version: master
+  name: StackFocus.postmaster

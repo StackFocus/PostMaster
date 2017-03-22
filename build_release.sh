@@ -8,8 +8,8 @@ fpm -s dir -t deb -n "postmaster" -v $REVISION \
 --vendor 'StackFocus' \
 --license 'AGPL' \
 --deb-changelog './docs/ChangeLog.md' \
---after-install ops/ansible/ansible_install.sh \
---after-upgrade ops/ansible/ansible_upgrade.sh \
+--after-install ops/ansible/ansible_deploy.sh \
+--after-upgrade ops/ansible/ansible_deploy.sh \
 --exclude env \
 --exclude .git \
 --exclude .vagrant \
