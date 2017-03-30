@@ -14,6 +14,6 @@ fpm -s dir -t deb -n "postmaster" -v $REVISION \
 --exclude .git \
 --exclude .vagrant \
 --deb-no-default-config-files \
--d git -d python -d python-pip -d python-dev -d python-virtualenv \
+-d ansible -d git -d python -d python-pip -d python-dev -d python-virtualenv \
 -d apache2 -d libapache2-mod-wsgi -d libmysqlclient-dev ./
 ls -la | grep *.deb
