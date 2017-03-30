@@ -16,6 +16,9 @@ after_success:
 
 before_deploy:
   - python manage.py clean
+  - pip install "ansible>=2.0.0.1"
+  - mkdir ops/ansible/roles
+  - ansible-galaxy install -r ops/ansible/requirements.yml -p ops/ansible/roles/
   - gem install fpm
   - chmod 777 build_release.sh
   - ./build_release.sh

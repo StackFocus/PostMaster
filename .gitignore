@@ -5,6 +5,8 @@ site.retry
 .vagrant
 .idea
 config.py
+ops/ansible/deploy.retry
+ops/ansible/roles/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

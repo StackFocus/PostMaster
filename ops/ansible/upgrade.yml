@@ -1,6 +1,0 @@
-# This playbook upgrades the software stack
-- name: Upgrade postmaster installation
-  hosts: all
-
-  roles:
-    - postmaster_upgrade
