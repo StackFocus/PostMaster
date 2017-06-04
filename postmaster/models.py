@@ -93,7 +93,7 @@ class VirtualUsers(db.Model):
                 'The password must be at least {0} characters long'.format(
                     minPwdLength))
         if self.query.filter_by(
-            email=json['email'].lower()).first() is not None:
+                email=json['email'].lower()).first() is not None:
             raise ValidationError('"{0}" already exists!'.format(
                 json['email'].lower()))
         # Checks if the domain can be extracted and if the email is at least
@@ -156,8 +156,8 @@ class VirtualAliases(db.Model):
         if not json.get('destination', None):
             raise ValidationError('The destination email was not specified')
         if self.query.filter_by(
-            source=json['source'],
-            destination=json['destination']).first() is not None:
+                source=json['source'],
+                destination=json['destination']).first() is not None:
             raise ValidationError('"{0}" to "{1}" already exists!'.format(
                 json['source'], json['destination']))
         if self.validate_source(json['source'].lower()):
@@ -173,15 +173,15 @@ class VirtualAliases(db.Model):
         if match('.*@.*[.].*$', source):
             sourceDomain = search('(?<=@).*$', source).group(0)
             if VirtualAliases.query.filter_by(
-                source=source).first() is not None:
+                    source=source).first() is not None:
                 raise ValidationError(
                     'The source alias "{0}" already exists'.format(source))
             if VirtualUsers.query.filter_by(email=source).first() is not None:
-                raise ValidationError(
-                    'The source alias "{0}" is an existing email address'.format(
-                        source))
+                error_msg = ('The source alias "{0}" is an existing email '
+                             'address'.format(source))
+                raise ValidationError(error_msg)
             if VirtualDomains.query.filter_by(
-                name=sourceDomain).first() is None:
+                    name=sourceDomain).first() is None:
                 raise ValidationError(
                     'The domain "{0}" is not managed by this database'.format(
                         sourceDomain))
@@ -196,17 +196,17 @@ class VirtualAliases(db.Model):
         if match('.*@.*[.].*$', destination):
             destinationDomain = search('(?<=@).*$', destination).group(0)
             if VirtualDomains.query.filter_by(
-                name=destinationDomain).first() is None:
+                    name=destinationDomain).first() is None:
                 raise ValidationError(
                     'The domain "{0}" is not managed by this database'.format(
                         destinationDomain))
             if VirtualUsers.query.filter_by(
-                email=destination).first() is not None:
+                    email=destination).first() is not None:
                 return True
             else:
-                raise ValidationError(
-                    'The destination "{0}" is not a current email address'.format(
-                        destination))
+                error_msg = ('The destination "{0}" is not a current email '
+                             'address'.format(destination))
+                raise ValidationError(error_msg)
         else:
             raise ValidationError(
                 'The destination "{0}" is not in a valid email format'.format(
@@ -258,10 +258,18 @@ class Admins(db.Model):
     def to_json(self):
         """ Leaving password out
         """
-        return {'id': self.id, 'name': self.name, 'username': self.username, 'failed_attempts': self.failed_attempts,
-                'last_failed_date': self.last_failed_date, 'unlock_date': self.unlock_date,
-                'locked': (self.unlock_date is not None and self.unlock_date > datetime.utcnow()),
-                'two_factor': self.otp_active}
+        locked = self.unlock_date is not None \
+            and self.unlock_date > datetime.utcnow()
+        return {
+            'id': self.id,
+            'name': self.name,
+            'username': self.username,
+            'failed_attempts': self.failed_attempts,
+            'last_failed_date': self.last_failed_date,
+            'unlock_date': self.unlock_date,
+            'locked': locked,
+            'two_factor': self.otp_active
+        }
 
     def from_json(self, json):
         if not json.get('username', None):
@@ -273,9 +281,12 @@ class Admins(db.Model):
         if self.query.filter_by(username=json['username']).first() is not None:
             raise ValidationError('"{0}" already exists'.format(
                 json['username'].lower()))
-        min_pwd_length = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        min_pwd_length = int(Configs.query.filter_by(
+            setting='Minimum Password Length').first().value)
         if len(json['password']) < min_pwd_length:
-            raise ValidationError('The password must be at least {0} characters long'.format(min_pwd_length))
+            error_msg = ('The password must be at least {0} characters long'
+                         .format(min_pwd_length))
+            raise ValidationError(error_msg)
 
         self.password = bcrypt.generate_password_hash(json['password'])
         self.username = json['username'].lower()
@@ -310,7 +321,8 @@ class Admins(db.Model):
         return True
 
     def clear_lockout_fields(self):
-        """ Clears the lockout fields (failed_attempts, last_failed_date, unlock_date) on an admin.
+        """ Clears the lockout fields (failed_attempts, last_failed_date,
+        unlock_date) on an admin.
         """
         if not self.id:
             raise ValidationError('An admin is not associated with the object')
@@ -321,35 +333,43 @@ class Admins(db.Model):
             self.last_failed_date = None
             self.unlock_date = None
 
-    def increment_failed_login(self, account_lockout_threshold, reset_account_lockout_counter,
+    def increment_failed_login(self, account_lockout_threshold,
+                               reset_account_lockout_counter,
                                account_lockout_duration):
-        """ Increments the failed_attempts value, updates the last_failed_date value, and sets the unlock_date value
-        if applicable on the admin object.
+        """ Increments the failed_attempts value, updates the last_failed_date
+        value, and sets the unlock_date value if applicable on the admin
+        object.
         """
         now = datetime.utcnow()
 
         if not self.id:
             raise ValidationError('An admin is not associated with the object')
 
-        # Only increment the failed login count if the admin is not an LDAP user
+        # Only increment the failed login count if the admin is not an LDAP
+        # user
         if self.source == 'local':
-            # If the last failed attempt was before the current time minus the minutes configured to reset the
-            # account lockout counter, then the failed attempts should be set to 1 again
+            # If the last failed attempt was before the current time minus the
+            # minutes configured to reset the account lockout counter, then
+            # the failed attempts should be set to 1 again
             if self.last_failed_date and self.last_failed_date < \
                     (now - timedelta(minutes=reset_account_lockout_counter)):
                 self.failed_attempts = 1
                 self.unlock_date = None
             else:
-                # If the admin has never failed a login attempt, the failed_attempts column will be null
+                # If the admin has never failed a login attempt, the failed
+                # attempts column will be null
                 if self.failed_attempts:
                     self.failed_attempts += 1
                 else:
                     self.failed_attempts = 1
 
-                # Only try to lockout the user if the account lockout threshold is greater than 0, otherwise account
-                # lockouts are disabled
-                if account_lockout_threshold != 0 and self.failed_attempts >= account_lockout_threshold:
-                    self.unlock_date = now + timedelta(minutes=account_lockout_duration)
+                # Only try to lockout the user if the account lockout
+                # threshold is greater than 0, otherwise account lockouts are
+                # disabled
+                if account_lockout_threshold != 0 \
+                        and self.failed_attempts >= account_lockout_threshold:
+                    self.unlock_date = now + timedelta(
+                        minutes=account_lockout_duration)
 
             self.last_failed_date = now
 
@@ -359,9 +379,12 @@ class Admins(db.Model):
         if not self.id:
             raise ValidationError('An admin is not associated with the object')
 
-        min_pwd_length = int(Configs.query.filter_by(setting='Minimum Password Length').first().value)
+        min_pwd_length = int(Configs.query.filter_by(
+            setting='Minimum Password Length').first().value)
         if len(new_password) < min_pwd_length:
-            raise ValidationError('The password must be at least {0} characters long'.format(min_pwd_length))
+            error_msg = ('The password must be at least {0} characters long'
+                         .format(min_pwd_length))
+            raise ValidationError(error_msg)
 
         self.password = bcrypt.generate_password_hash(new_password)
 
@@ -370,8 +393,8 @@ class Admins(db.Model):
         self.otp_secret = base64.b32encode(urandom(10)).decode('utf-8')
 
     def get_totp_uri(self):
-        return 'otpauth://totp/PostMaster:{0}?secret={1}&issuer=PostMaster' \
-            .format(self.username, self.otp_secret)
+        return ('otpauth://totp/PostMaster:{0}?secret={1}&issuer=PostMaster'
+                .format(self.username, self.otp_secret))
 
     def verify_totp(self, token):
         return onetimepass.valid_totp(token, self.otp_secret)
@@ -390,7 +413,8 @@ class Configs(db.Model):
     def to_json(self):
         """ Returns the database row in JSON
         """
-        return {'id': self.id, 'setting': self.setting, 'value': self.value, 'regex': self.regex}
+        return {'id': self.id, 'setting': self.setting, 'value': self.value,
+                'regex': self.regex}
 
     def from_json(self, json):
         """ Returns a database row from JSON input
@@ -400,7 +424,8 @@ class Configs(db.Model):
         if not json.get('value', None):
             raise ValidationError('The value of the setting was not specified')
         if not json.get('regex', None):
-            raise ValidationError('The regex for valid setting values was not specified')
+            raise ValidationError(
+                'The regex for valid setting values was not specified')
         if self.query.filter_by(setting=json['setting']).first() is not None:
             raise ValidationError('The setting "{0}" already exists'.format(
                 json['setting']))

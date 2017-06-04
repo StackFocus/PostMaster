@@ -36,7 +36,8 @@ def get_aliases():
 @login_required
 @json_wrap
 def get_alias(alias_id):
-    """ Queries a specific alias based on ID in VirtualAliases, and returns JSON
+    """ Queries a specific alias based on ID in VirtualAliases, and returns
+    JSON
     """
     return VirtualAliases.query.get_or_404(alias_id)
 
@@ -71,7 +72,8 @@ def new_alias():
 @login_required
 @json_wrap
 def delete_alias(alias_id):
-    """ Deletes an alias by ID in VirtualAliases, and returns HTTP 204 on success
+    """ Deletes an alias by ID in VirtualAliases, and returns HTTP 204 on
+    success
     """
     alias = VirtualAliases.query.get_or_404(alias_id)
     db.session.delete(alias)
@@ -97,7 +99,8 @@ def delete_alias(alias_id):
 @login_required
 @json_wrap
 def update_alias(alias_id):
-    """ Updates an alias by ID in VirtualAliases, and returns HTTP 200 on success
+    """ Updates an alias by ID in VirtualAliases, and returns HTTP 200 on
+    success
     """
     alias = VirtualAliases.query.get_or_404(alias_id)
     json = request.get_json(force=True)
@@ -105,15 +108,15 @@ def update_alias(alias_id):
     if 'source' in json:
         newSource = json['source'].lower()
         if VirtualAliases().validate_source(newSource):
-            auditMessage = 'The alias "{0}" had their source changed to "{1}"'.format(
-                alias.source, newSource)
+            auditMessage = ('The alias "{0}" had their source changed to '
+                            '"{1}"'.format(alias.source, newSource))
             alias.source = newSource
             db.session.add(alias)
     elif 'destination' in json:
         newDestination = json['destination'].lower()
         if VirtualAliases().validate_destination(newDestination):
-            auditMessage = 'The alias "{0}" had their destination changed to "{1}"'.format(
-                alias.source, newDestination)
+            auditMessage = ('The alias "{0}" had their destination changed to'
+                            ' "{1}"'.format(alias.source, newDestination))
             alias.destination = newDestination
             db.session.add(alias)
     else:

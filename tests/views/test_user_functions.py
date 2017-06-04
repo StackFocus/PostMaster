@@ -1,6 +1,4 @@
-﻿from postmaster import app
-
-class TestUserFunctions:
+﻿class TestUserFunctions:
 
     def test_user_login(self, loggedin_client):
         rv = loggedin_client.get("/", follow_redirects=True)

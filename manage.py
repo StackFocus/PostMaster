@@ -1,4 +1,3 @@
-﻿#!flask/bin/python
 """
 Author: StackFocus
 File: manage.py
@@ -13,7 +12,9 @@ from re import sub, compile
 from codecs import encode
 from flask_script import Manager
 from postmaster import app, db, models, __version__
-from postmaster.utils import add_default_configuration_settings, clear_lockout_fields_on_user, reset_admin_password
+from postmaster.utils import (
+    add_default_configuration_settings, clear_lockout_fields_on_user,
+    reset_admin_password)
 
 migrate = flask_migrate.Migrate(app, db)
 
@@ -25,17 +26,24 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 def upgradedb():
     """Upgrades the existing database to the latest schema and adds the
     default configuration items if they are missing"""
-    alembic_version_table_exists = db.engine.dialect.has_table(db.session.connection(), 'alembic_version')
+    alembic_version_table_exists = db.engine.dialect.has_table(
+        db.session.connection(), 'alembic_version')
 
     if not alembic_version_table_exists:
-        virtual_domains_table_exists = db.engine.dialect.has_table(db.session.connection(), 'virtual_domains')
-        virtual_users_table_exists = db.engine.dialect.has_table(db.session.connection(), 'virtual_users')
-        virtual_aliases_table_exists = db.engine.dialect.has_table(db.session.connection(), 'virtual_aliases')
+        virtual_domains_table_exists = db.engine.dialect.has_table(
+            db.session.connection(), 'virtual_domains')
+        virtual_users_table_exists = db.engine.dialect.has_table(
+            db.session.connection(), 'virtual_users')
+        virtual_aliases_table_exists = db.engine.dialect.has_table(
+            db.session.connection(), 'virtual_aliases')
 
-        # If the alembic_version table doesn't exist and the virtual_* tables exist, that means the database is
-        # in the default state after following the mail server guide on Linode or DigitalOcean.
-        if virtual_domains_table_exists and virtual_users_table_exists and virtual_aliases_table_exists:
-            # This marks the first revision as complete, which is the revision that creates the virtual_* tables
+        # If the alembic_version table doesn't exist and the virtual_* tables
+        # exist, that means the database is in the default state after
+        # following the mail server guide on Linode or DigitalOcean.
+        if virtual_domains_table_exists and virtual_users_table_exists \
+                and virtual_aliases_table_exists:
+            # This marks the first revision as complete, which is the revision
+            # that creates the virtual_* tables
             flask_migrate.stamp(revision='bcc85aaa7896')
 
     flask_migrate.upgrade()
@@ -58,7 +66,9 @@ def clean():
         tilde_regex = compile('.+~$')
 
         for file_name in file_names:
-            if pyc_regex.match(file_name) or pyo_regex.match(file_name) or tilde_regex.match(file_name) \
+            if pyc_regex.match(file_name) \
+                    or pyo_regex.match(file_name) \
+                    or tilde_regex.match(file_name) \
                     or file_name == 'postmaster.log':
                 remove(path.join(root, file_name))
 
@@ -85,11 +95,14 @@ def setkey(key):
 
 @manager.command
 def setdburi(uri):
-    """Replaces the BaseConfiguration SQLALCHEMY_DATABASE_URI in config.py with one supplied"""
+    """Replaces the BaseConfiguration SQLALCHEMY_DATABASE_URI in config.py with
+    one supplied
+    """
     base_config_set = False
     for line in fileinput.input('config.py', inplace=True, backup='.bak'):
         if not base_config_set and 'SQLALCHEMY_DATABASE_URI' in line:
-            print(sub(r'(?<=SQLALCHEMY_DATABASE_URI = \')(.+)(?=\')', uri, line.rstrip()))
+            db_uri_regex = r'(?<=SQLALCHEMY_DATABASE_URI = \')(.+)(?=\')'
+            print(sub(db_uri_regex, uri, line.rstrip()))
             base_config_set = True
         else:
             print(line.rstrip())
@@ -97,11 +110,14 @@ def setdburi(uri):
 
 @manager.command
 def setlogfile(filepath):
-    """Replaces the BaseConfiguration LOG_LOCATION in config.py with one supplied"""
+    """Replaces the BaseConfiguration LOG_LOCATION in config.py with one
+    supplied
+    """
     base_config_set = False
     for line in fileinput.input('config.py', inplace=True, backup='.bak'):
         if not base_config_set and 'LOG_LOCATION' in line:
-            print(sub(r'(?<=LOG_LOCATION = \')(.+)(?=\')', filepath, line.rstrip()))
+            log_location_regex = r'(?<=LOG_LOCATION = \')(.+)(?=\')'
+            print(sub(log_location_regex, filepath, line.rstrip()))
             base_config_set = True
         else:
             print(line.rstrip())

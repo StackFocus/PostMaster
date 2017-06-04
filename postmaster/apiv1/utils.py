@@ -25,38 +25,57 @@ def is_file_writeable(file):
 
 
 def is_config_update_valid(setting, value, valid_value_regex):
-    """ A helper function for the update_config function on the /configs/<int:config_id> PATCH route.
-    A bool is returned based on if the user's input is valid.
+    """ A helper function for the update_config function on the
+    /configs/<int:config_id> PATCH route. A bool is returned based on if the
+    user's input is valid.
     """
     if match(valid_value_regex, value):
         if setting == 'Login Auditing' or setting == 'Mail Database Auditing':
             log_path = app.config.get('LOG_LOCATION')
             if not log_path or not is_file_writeable(log_path):
-                raise ValidationError('The log could not be written to "{0}". '
-                                      'Verify that the path exists and is writeable.'.format(os.path.abspath(log_path)))
+                error_msg = ('The log could not be written to "{0}". Verify '
+                             'that the path exists and is writeable.'
+                             .format(os.path.abspath(log_path)))
+                raise ValidationError(error_msg)
 
         elif setting == 'Enable LDAP Authentication':
-            ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
-            ad_domain = Configs.query.filter_by(setting='AD Domain').first().value
-            ad_group = Configs.query.filter_by(setting='AD PostMaster Group').first().value
+            ldap_string = Configs.query.filter_by(
+                setting='AD Server LDAP String').first().value
+            ad_domain = Configs.query.filter_by(
+                setting='AD Domain').first().value
+            ad_group = Configs.query.filter_by(
+                setting='AD PostMaster Group').first().value
 
             if not (ldap_string and ad_domain and ad_group):
-                raise ValidationError('The LDAP settings must be configured before LDAP authentication is enabled')
+                error_msg = ('The LDAP settings must be configured before '
+                             'LDAP authentication is enabled')
+                raise ValidationError(error_msg)
 
-        elif setting == 'AD Server LDAP String' or setting == 'AD Domain' or setting == 'AD PostMaster Group':
-            ldap_enabled = Configs.query.filter_by(setting='Enable LDAP Authentication').first().value
+        elif setting == 'AD Server LDAP String' or setting == 'AD Domain' \
+                or setting == 'AD PostMaster Group':
+            ldap_enabled = Configs.query.filter_by(
+                setting='Enable LDAP Authentication').first().value
 
             if ldap_enabled == 'True' and not value:
-                raise ValidationError('LDAP authentication must be disabled when deleting LDAP configuration items')
+                error_msg = ('LDAP authentication must be disabled when '
+                             'deleting LDAP configuration items')
+                raise ValidationError(error_msg)
 
         return True
     else:
-        if setting == 'Minimum Password Length' or setting == 'Account Lockout Threshold':
-            raise ValidationError('An invalid value was supplied. The value must be between 0-25.')
-        elif setting == 'Account Lockout Duration in Minutes' or setting == 'Reset Account Lockout Counter in Minutes':
-            raise ValidationError('An invalid value was supplied. The value must be between 1-99.')
+        if setting in ['Minimum Password Length', 'Account Lockout Threshold']:
+            error_msg = ('An invalid value was supplied. The value must be '
+                         'between 0-25.')
+            raise ValidationError(error_msg)
+        elif setting in ['Account Lockout Duration in Minutes',
+                         'Reset Account Lockout Counter in Minutes']:
+            error_msg = ('An invalid value was supplied. The value must be '
+                         'between 1-99.')
+            raise ValidationError(error_msg)
         elif setting == 'LDAP Authentication Method':
-            raise ValidationError('An invalid value was supplied. The value must be either "NTLM" or "SIMPLE"')
+            error_msg = ('An invalid value was supplied. The value must be '
+                         'either "NTLM" or "SIMPLE"')
+            raise ValidationError(error_msg)
 
         raise ValidationError('An invalid setting value was supplied')
 

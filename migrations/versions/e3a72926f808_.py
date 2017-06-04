@@ -10,13 +10,17 @@ Create Date: 2016-08-10 19:12:49.647496
 revision = 'e3a72926f808'
 down_revision = 'c3803ac9b7dd'
 
-from alembic import op
-import sqlalchemy as sa
+from alembic import op  # noqa: E402
+import sqlalchemy as sa  # noqa: E402
 
 
 def upgrade():
-    op.add_column('postmaster_admins', sa.Column('otp_active', sa.Boolean(), nullable=True))
-    op.add_column('postmaster_admins', sa.Column('otp_secret', sa.String(length=16), nullable=True))
+    op.add_column(
+        'postmaster_admins',
+        sa.Column('otp_active', sa.Boolean(), nullable=True))
+    op.add_column(
+        'postmaster_admins',
+        sa.Column('otp_secret', sa.String(length=16), nullable=True))
 
 
 def downgrade():

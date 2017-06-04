@@ -5,9 +5,14 @@ Purpose: initializes apiv1
 """
 
 from flask import Blueprint
-from postmaster.errors import ValidationError, GenericError, bad_request, not_found
+from postmaster.errors import (
+    ValidationError, GenericError, bad_request, not_found)
 
 apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
+
+# Import the API routes
+from postmaster.apiv1 import (  # noqa: E402, F401
+    domains, users, aliases, admins, configs, logs)
 
 
 @apiv1.errorhandler(ValidationError)
@@ -36,6 +41,3 @@ def not_found_error(e):
     """ Error handler for 404 requests
     """
     return not_found('The item was not found')
-
-
-from postmaster.apiv1 import domains, users, aliases, admins, configs, logs
