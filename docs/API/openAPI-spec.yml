@@ -96,7 +96,7 @@
             description: "The administrator was returned"
           404:
             description: "The administrator was not found"
-      put:
+      patch:
         tags:
           - "admins"
         summary: "Update an existing administrator"
@@ -149,7 +149,7 @@
             description: "The administrator was not found"
 
     /admins/{admin_id}/unlock:
-      put:
+      patch:
           tags:
             - "admins"
           summary: "Unlocks a locked out local administrator"
@@ -239,7 +239,7 @@
             description: "The alias was returned"
           404:
             description: "The alias was not found"
-      put:
+      patch:
         tags:
           - "aliases"
         summary: "Update an existing alias"
@@ -450,7 +450,7 @@
             description: "The user was returned"
           404:
             description: "The user was not found"
-      put:
+      patch:
         tags:
           - "users"
         summary: "Update an existing user"
@@ -537,6 +537,35 @@
         responses:
           200:
             description: "The configuration item was returned"
+          404:
+            description: "The configuration item was not found"
+      patch:
+        tags:
+          - "configs"
+        summary: "Update an existing configuration item"
+        description: ""
+        consumes:
+          - "application/json"
+        produces:
+          - "application/json"
+        parameters:
+          -
+            name: "config_id"
+            in: "path"
+            description: "The ID of the configuration item to return"
+            required: true
+            type: "integer"
+            format: "int64"
+          -
+            in: "body"
+            name: "config"
+            description: "The configuration item value to update"
+            required: true
+            schema:
+              $ref: "#/definitions/config"
+        responses:
+          200:
+            description: "The configuration item was updated"
           404:
             description: "The configuration item was not found"
       put:

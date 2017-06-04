@@ -34,7 +34,7 @@ def get_config(config_id):
     return Configs.query.get_or_404(config_id)
 
 
-@apiv1.route('/configs/<int:config_id>', methods=['PUT'])
+@apiv1.route('/configs/<int:config_id>', methods=['PATCH', 'PUT'])
 @login_required
 @json_wrap
 def update_config(config_id):

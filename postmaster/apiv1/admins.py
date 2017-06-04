@@ -95,7 +95,7 @@ def delete_admin(admin_id):
     return {}, 204
 
 
-@apiv1.route('/admins/<int:admin_id>', methods=['PUT'])
+@apiv1.route('/admins/<int:admin_id>', methods=['PATCH'])
 @login_required
 @json_wrap
 def update_admin(admin_id):
@@ -141,7 +141,7 @@ def update_admin(admin_id):
     return {}, 200
 
 
-@apiv1.route('/admins/<int:admin_id>/unlock', methods=['PUT'])
+@apiv1.route('/admins/<int:admin_id>/unlock', methods=['PATCH'])
 @login_required
 @json_wrap
 def unlock_admin(admin_id):
@@ -165,7 +165,7 @@ def twofactor_status(admin_id):
     return dict(enabled=admin.otp_active)
 
 
-@apiv1.route('/admins/<int:admin_id>/twofactor', methods=['PUT'])
+@apiv1.route('/admins/<int:admin_id>/twofactor', methods=['PATCH'])
 @login_required
 @json_wrap
 def twofactor_disable(admin_id):

@@ -25,7 +25,7 @@ def is_file_writeable(file):
 
 
 def is_config_update_valid(setting, value, valid_value_regex):
-    """ A helper function for the update_config function on the /configs/<int:config_id> PUT route.
+    """ A helper function for the update_config function on the /configs/<int:config_id> PATCH route.
     A bool is returned based on if the user's input is valid.
     """
     if match(valid_value_regex, value):

@@ -93,7 +93,7 @@ def delete_alias(alias_id):
     return {}, 204
 
 
-@apiv1.route('/aliases/<int:alias_id>', methods=['PUT'])
+@apiv1.route('/aliases/<int:alias_id>', methods=['PATCH'])
 @login_required
 @json_wrap
 def update_alias(alias_id):
