@@ -47,7 +47,7 @@ If you are proposing a feature:
  2. Create a branch related to the issue (ex. ft-adds_2factor-123)
  3. Make changes to the code
  4. Write unit tests to test the new code
- 5. Run `$ python pylint-check.py` to verify that you are complying to PEP8 coding standards
+ 5. Run `$ flake8 --exclude=config.py,config.default.py` to verify that you are complying to PEP8 coding standards
  6. Run `$ py.test tests` to verify the unit tests pass
  7. Commit and push the changed files
  8. Open a pull request and describe what was changed (try to squash your commits when possible)
@@ -55,10 +55,9 @@ If you are proposing a feature:
 
 ### Coding Standards
 We use standard [PEP8](https://www.python.org/dev/peps/pep-0008/).
-Our specific exceptions are in the `.pylintrc` file.
 
-Code will not be accepted if it fails the pylint test. To run pylint:
-`$ python pylint-check.py`
+Code will not be accepted if it fails the flake8 test. To run flake8:
+`$ flake8 --exclude=config.py,config.default.py`
 
 There is a paradigm we've been using for Flask:
 
