@@ -94,7 +94,7 @@ def delete_user(user_id):
     return {}, 204
 
 
-@apiv1.route('/users/<int:user_id>', methods=['PUT'])
+@apiv1.route('/users/<int:user_id>', methods=['PATCH'])
 @login_required
 @json_wrap
 def update_user(user_id):

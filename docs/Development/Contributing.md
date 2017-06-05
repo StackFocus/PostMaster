@@ -65,3 +65,13 @@ There is a paradigm we've been using for Flask:
  - Keep the code in the routes as minimal as possible by using decorators and helper functions
  - Use Ajax to an API route for data as much as possible
  - Use modern Flask and SQLAlchemy functions for API routes (ex. get_or_404)
+
+
+### How to Generate an Updated openAPI-spec.html
+
+ 1. Start in the root of the PostMaster git repository
+ 2. Install the required npm packages with `npm install -g bootprint bootprint-openapi html-inline`
+ 3. Create a temporary target for the generated HTML with `mkdir openapi-target`
+ 4. Generate the temporary HTML contents with `bootprint openapi docs/API/openAPI-spec.yml openapi-target`
+ 5. Consolidate the generated HTML folder to a single file with `html-inline openapi-target/index.html > docs/API/openAPI-spec.html`
+ 6. Delete the temporary HTML contents from step 4 with `rm -rf openapi-target`

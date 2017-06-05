@@ -230,7 +230,7 @@ $(document).ready(function () {
     $.fn.editable.defaults.anim = 100;
     $.fn.editable.defaults.type = 'text';
     $.fn.editable.defaults.ajaxOptions = {
-        type: 'PUT',
+        type: 'PATCH',
         dataType: 'JSON',
         contentType: 'application/json'
     };

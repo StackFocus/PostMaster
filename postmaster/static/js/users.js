@@ -55,7 +55,7 @@ function editableUserEventListeners() {
         anim: 100,
 
         ajaxOptions: {
-            type: 'PUT',
+            type: 'PATCH',
             dataType: 'JSON',
             contentType: 'application/json'
         },

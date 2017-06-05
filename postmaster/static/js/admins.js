@@ -47,7 +47,7 @@ function unlockAdmin(id, targetLink) {
 
     $.ajax({
         url: '/api/v1/admins/' + id + '/unlock',
-        type: 'put',
+        type: 'PATCH',
 
         success: function (response) {
             addStatusMessage('success', 'The administrator was unlocked successfully');
@@ -84,7 +84,7 @@ function editableAdminEventListeners() {
         anim: 100,
 
         ajaxOptions: {
-            type: 'PUT',
+            type: 'PATCH',
             dataType: 'JSON',
             contentType: 'application/json'
         },
@@ -112,7 +112,7 @@ function editableAdminEventListeners() {
         anim: 100,
 
         ajaxOptions: {
-            type: 'PUT',
+            type: 'PATCH',
             dataType: 'JSON',
             contentType: 'application/json'
         },
@@ -140,7 +140,7 @@ function editableAdminEventListeners() {
         anim: 100,
 
         ajaxOptions: {
-            type: 'PUT',
+            type: 'PATCH',
             dataType: 'JSON',
             contentType: 'application/json'
         },
