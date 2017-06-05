@@ -13,13 +13,13 @@ from postmaster import app
 from postmaster.models import Configs
 
 
-def is_file_writeable(file):
+def is_file_writeable(file_name):
     """ Returns a bool based on if a file is writable or not
     """
-    if os.path.isfile(file):
-        return os.access(file, os.W_OK)
+    if os.path.isfile(file_name):
+        return os.access(file_name, os.W_OK)
     else:
-        absolute_path = os.path.abspath(file)
+        absolute_path = os.path.abspath(file_name)
         dir_of_file = os.path.dirname(absolute_path)
         return os.access(dir_of_file, os.W_OK)
 
