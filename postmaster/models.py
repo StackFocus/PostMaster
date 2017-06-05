@@ -86,12 +86,12 @@ class VirtualUsers(db.Model):
             raise ValidationError('The email address was not specified')
         if not json.get('password', None):
             raise ValidationError('The password was not specified')
-        minPwdLength = int(Configs.query.filter_by(
+        min_pwd_len = int(Configs.query.filter_by(
             setting='Minimum Password Length').first().value)
-        if len(json['password']) < minPwdLength:
+        if len(json['password']) < min_pwd_len:
             raise ValidationError(
                 'The password must be at least {0} characters long'.format(
-                    minPwdLength))
+                    min_pwd_len))
         if self.query.filter_by(
                 email=json['email'].lower()).first() is not None:
             raise ValidationError('"{0}" already exists!'.format(
@@ -171,7 +171,7 @@ class VirtualAliases(db.Model):
     @staticmethod
     def validate_source(source):
         if match('.*@.*[.].*$', source):
-            sourceDomain = search('(?<=@).*$', source).group(0)
+            source_domain = search('(?<=@).*$', source).group(0)
             if VirtualAliases.query.filter_by(
                     source=source).first() is not None:
                 raise ValidationError(
@@ -181,10 +181,10 @@ class VirtualAliases(db.Model):
                              'address'.format(source))
                 raise ValidationError(error_msg)
             if VirtualDomains.query.filter_by(
-                    name=sourceDomain).first() is None:
+                    name=source_domain).first() is None:
                 raise ValidationError(
                     'The domain "{0}" is not managed by this database'.format(
-                        sourceDomain))
+                        source_domain))
             return True
         else:
             raise ValidationError(
@@ -194,12 +194,12 @@ class VirtualAliases(db.Model):
     @staticmethod
     def validate_destination(destination):
         if match('.*@.*[.].*$', destination):
-            destinationDomain = search('(?<=@).*$', destination).group(0)
+            destination_domain = search('(?<=@).*$', destination).group(0)
             if VirtualDomains.query.filter_by(
-                    name=destinationDomain).first() is None:
+                    name=destination_domain).first() is None:
                 raise ValidationError(
                     'The domain "{0}" is not managed by this database'.format(
-                        destinationDomain))
+                        destination_domain))
             if VirtualUsers.query.filter_by(
                     email=destination).first() is not None:
                 return True

@@ -106,18 +106,18 @@ def update_alias(alias_id):
     json = request.get_json(force=True)
 
     if 'source' in json:
-        newSource = json['source'].lower()
-        if VirtualAliases().validate_source(newSource):
-            auditMessage = ('The alias "{0}" had their source changed to '
-                            '"{1}"'.format(alias.source, newSource))
-            alias.source = newSource
+        new_source = json['source'].lower()
+        if VirtualAliases().validate_source(new_source):
+            audit_msg = ('The alias "{0}" had their source changed to "{1}"'
+                         .format(alias.source, new_source))
+            alias.source = new_source
             db.session.add(alias)
     elif 'destination' in json:
-        newDestination = json['destination'].lower()
-        if VirtualAliases().validate_destination(newDestination):
-            auditMessage = ('The alias "{0}" had their destination changed to'
-                            ' "{1}"'.format(alias.source, newDestination))
-            alias.destination = newDestination
+        new_destination = json['destination'].lower()
+        if VirtualAliases().validate_destination(new_destination):
+            audit_msg = ('The alias "{0}" had their destination changed to'
+                         ' "{1}"'.format(alias.source, new_destination))
+            alias.destination = new_destination
             db.session.add(alias)
     else:
         raise ValidationError(
@@ -125,7 +125,7 @@ def update_alias(alias_id):
 
     try:
         db.session.commit()
-        json_logger('audit', current_user.username, auditMessage)
+        json_logger('audit', current_user.username, audit_msg)
     except ValidationError as e:
         raise e
     except Exception as e:

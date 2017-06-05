@@ -18,7 +18,7 @@ def get_logs():
     in JSON format
     """
 
-    numLines = request.args.get('lines', 50, type=int)
-    reverseOrder = request.args.get('reverse', 0, type=int)
+    num_lines = request.args.get('lines', 50, type=int)
+    reverse_order = request.args.get('reverse', 0, type=int)
 
-    return jsonify(get_logs_dict(numLines, bool(reverseOrder)))
+    return jsonify(get_logs_dict(num_lines, bool(reverse_order)))

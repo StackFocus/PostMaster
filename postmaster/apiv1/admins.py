@@ -102,26 +102,25 @@ def delete_admin(admin_id):
 def update_admin(admin_id):
     """ Updates an admin user by ID in Admins, and returns HTTP 200 on success
     """
-    auditMessage = ''
+    audit_msg = ''
     admin = Admins.query.get_or_404(admin_id)
     json = request.get_json(force=True)
 
     if 'username' in json:
-        newUsername = json['username'].lower()
-        if Admins.query.filter_by(username=newUsername).first() is None:
-            auditMessage = ('The administrator "{0}" had their username '
-                            'changed to "{1}"'.format(
-                                admin.username, newUsername))
-            admin.username = newUsername
+        new_user_name = json['username'].lower()
+        if Admins.query.filter_by(username=new_user_name).first() is None:
+            audit_msg = ('The administrator "{0}" had their username changed '
+                         'to "{1}"'.format(admin.username, new_user_name))
+            admin.username = new_user_name
         else:
             ValidationError('The username supplied already exists')
     elif 'password' in json:
         admin.set_password(json['password'])
-        auditMessage = ('The administrator "{0}" had their password changed'
-                        .format(admin.username))
+        audit_msg = ('The administrator "{0}" had their password changed'
+                     .format(admin.username))
     elif 'name' in json:
-        auditMessage = ('The administrator "{0}" had their name changed to '
-                        '"{1}"'.format(admin.username, admin.name))
+        audit_msg = ('The administrator "{0}" had their name changed to "{1}"'
+                     .format(admin.username, admin.name))
         admin.name = json['name']
     else:
         raise ValidationError(
@@ -130,7 +129,7 @@ def update_admin(admin_id):
     try:
         db.session.add(admin)
         db.session.commit()
-        json_logger('audit', current_user.username, auditMessage)
+        json_logger('audit', current_user.username, audit_msg)
     except ValidationError as e:
         raise e
     except Exception as e:

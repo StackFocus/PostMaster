@@ -80,16 +80,16 @@ def is_config_update_valid(setting, value, valid_value_regex):
         raise ValidationError('An invalid setting value was supplied')
 
 
-def get_logs_dict(numLines=50, reverseOrder=False):
+def get_logs_dict(num_lines=50, reverse_order=False):
     """
     Returns the JSON formatted log file as a dict
     """
-    logPath = app.config.get('LOG_LOCATION')
-    if logPath and os.path.exists(logPath):
-        logFile = open(logPath, mode='r+')
+    log_path = app.config.get('LOG_LOCATION')
+    if log_path and os.path.exists(log_path):
+        log_file = open(log_path, mode='r+')
 
         try:
-            mmapHandler = mmap(logFile.fileno(), 0)
+            mmap_handler = mmap(log_file.fileno(), 0)
         except ValueError as e:
             if str(e) == 'cannot mmap an empty file':
                 # If the file is empty, return empty JSON
@@ -97,40 +97,40 @@ def get_logs_dict(numLines=50, reverseOrder=False):
             else:
                 raise ValidationError(
                     'There was an error opening "{0}"'.format(
-                        os.getcwd().replace('\\', '/') + '/' + logPath))
+                        os.getcwd().replace('\\', '/') + '/' + log_path))
 
-        newLineCount = 0
-        # Assigns currentChar to the last character of the file
-        currentChar = mmapHandler.size() - 1
+        new_line_count = 0
+        # Assigns current_char to the last character of the file
+        current_char = mmap_handler.size() - 1
 
         # If the file ends in a new line, add 1 more line to process
-        # for mmapHandler[currentChar:].splitlines() later on
-        if mmapHandler[currentChar] == '\n':
-            numLines += 1
+        # for mmap_handler[current_char:].splitlines() later on
+        if mmap_handler[current_char] == '\n':
+            num_lines += 1
 
         # While the number of lines iterated is less than numLines
         # and the beginning of the file hasn't been reached
-        while newLineCount < numLines and currentChar > 0:
+        while new_line_count < num_lines and current_char > 0:
             # If a new line character is found, this means
             # the current line has ended
-            if mmapHandler[currentChar] == '\n':
-                newLineCount += 1
+            if mmap_handler[current_char] == '\n':
+                new_line_count += 1
             # Subtract from the charcter count to read the previous character
-            currentChar -= 1
+            current_char -= 1
 
         # If the beginning of the file hasn't been reached,
         # strip the preceeding new line character
-        if currentChar > 0:
-            currentChar += 2
+        if current_char > 0:
+            current_char += 2
 
         # Create the list
-        logs = mmapHandler[currentChar:].splitlines()
+        logs = mmap_handler[current_char:].splitlines()
 
         # Close the log file
-        mmapHandler.close()
-        logFile.close()
+        mmap_handler.close()
+        log_file.close()
 
-        if reverseOrder:
+        if reverse_order:
             logs = list(reversed(logs))
 
         return {'items': [loads(log.decode('utf-8')) for log in logs], }

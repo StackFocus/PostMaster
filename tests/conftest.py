@@ -44,18 +44,18 @@ def initialize():
     db.session.add(domain)
     db.session.add(domain2)
 
-    emailUser = models.VirtualUsers().from_json({
+    email_user = models.VirtualUsers().from_json({
         'email': 'email@postmaster.com',
         'password': 'password'})
-    emailUser2 = models.VirtualUsers().from_json({
+    email_user2 = models.VirtualUsers().from_json({
         'email': 'email2@postmaster.com',
         'password': 'password'})
-    emailUser3 = models.VirtualUsers().from_json({
+    email_user3 = models.VirtualUsers().from_json({
         'email': 'email@postmaster.org',
         'password': 'password'})
-    db.session.add(emailUser)
-    db.session.add(emailUser2)
-    db.session.add(emailUser3)
+    db.session.add(email_user)
+    db.session.add(email_user2)
+    db.session.add(email_user3)
 
     alias = models.VirtualAliases().from_json({
         'domain_id': 1,
