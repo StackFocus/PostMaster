@@ -43,9 +43,10 @@ def update_config(config_id):
     config = Configs.query.get_or_404(config_id)
     json = request.get_json(force=True)
 
-    if 'value' in json and is_config_update_valid(config.setting, json['value'], config.regex):
-        audit_message = 'The setting "{0}" was set from "{1}" to "{2}"'.format(config.setting, config.value,
-                                                                               json['value'])
+    if 'value' in json and is_config_update_valid(
+            config.setting, json['value'], config.regex):
+        audit_message = ('The setting "{0}" was set from "{1}" to "{2}"'
+                         .format(config.setting, config.value, json['value']))
         config.value = json['value']
         db.session.add(config)
     else:
@@ -58,10 +59,9 @@ def update_config(config_id):
         raise e
     except Exception as e:
         db.session.rollback()
-        json_logger(
-            'error', current_user.username,
-            'The following error occurred in update_config: {0}'.format(str(
-                e)))
+        log_msg = ('The following error occurred in update_config: {0}'
+                   .format(str(e)))
+        json_logger('error', current_user.username, log_msg)
         raise GenericError('The configuration could not be updated')
     finally:
         db.session.close()

@@ -65,15 +65,15 @@ def login():
         return redirect(url_for('common.index'))
     else:
         if request.method == 'GET':
-            return render_template('login.html', title='PostMaster Login', loginForm=login_form)
+            return render_template('login.html', title='PostMaster Login',
+                                   loginForm=login_form)
         elif login_form.validate_on_submit():
             username = login_form.admin.username
             login_user(login_form.admin, remember=False)
             clear_lockout_fields_on_user(username)
-            json_logger(
-                'auth', username,
-                'The administrator "{0}" logged in successfully'.format(
-                    username))
+            log_msg = ('The administrator "{0}" logged in successfully'
+                       .format(username))
+            json_logger('auth', username, log_msg)
             return redirect(request.args.get('next') or url_for(
                 'common.index'))
         else:

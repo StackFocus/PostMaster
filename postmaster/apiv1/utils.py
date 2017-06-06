@@ -13,64 +13,83 @@ from postmaster import app
 from postmaster.models import Configs
 
 
-def is_file_writeable(file):
+def is_file_writeable(file_name):
     """ Returns a bool based on if a file is writable or not
     """
-    if os.path.isfile(file):
-        return os.access(file, os.W_OK)
+    if os.path.isfile(file_name):
+        return os.access(file_name, os.W_OK)
     else:
-        absolute_path = os.path.abspath(file)
+        absolute_path = os.path.abspath(file_name)
         dir_of_file = os.path.dirname(absolute_path)
         return os.access(dir_of_file, os.W_OK)
 
 
 def is_config_update_valid(setting, value, valid_value_regex):
-    """ A helper function for the update_config function on the /configs/<int:config_id> PATCH route.
-    A bool is returned based on if the user's input is valid.
+    """ A helper function for the update_config function on the
+    /configs/<int:config_id> PATCH route. A bool is returned based on if the
+    user's input is valid.
     """
     if match(valid_value_regex, value):
         if setting == 'Login Auditing' or setting == 'Mail Database Auditing':
             log_path = app.config.get('LOG_LOCATION')
             if not log_path or not is_file_writeable(log_path):
-                raise ValidationError('The log could not be written to "{0}". '
-                                      'Verify that the path exists and is writeable.'.format(os.path.abspath(log_path)))
+                error_msg = ('The log could not be written to "{0}". Verify '
+                             'that the path exists and is writeable.'
+                             .format(os.path.abspath(log_path)))
+                raise ValidationError(error_msg)
 
         elif setting == 'Enable LDAP Authentication':
-            ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first().value
-            ad_domain = Configs.query.filter_by(setting='AD Domain').first().value
-            ad_group = Configs.query.filter_by(setting='AD PostMaster Group').first().value
+            ldap_string = Configs.query.filter_by(
+                setting='AD Server LDAP String').first().value
+            ad_domain = Configs.query.filter_by(
+                setting='AD Domain').first().value
+            ad_group = Configs.query.filter_by(
+                setting='AD PostMaster Group').first().value
 
             if not (ldap_string and ad_domain and ad_group):
-                raise ValidationError('The LDAP settings must be configured before LDAP authentication is enabled')
+                error_msg = ('The LDAP settings must be configured before '
+                             'LDAP authentication is enabled')
+                raise ValidationError(error_msg)
 
-        elif setting == 'AD Server LDAP String' or setting == 'AD Domain' or setting == 'AD PostMaster Group':
-            ldap_enabled = Configs.query.filter_by(setting='Enable LDAP Authentication').first().value
+        elif setting == 'AD Server LDAP String' or setting == 'AD Domain' \
+                or setting == 'AD PostMaster Group':
+            ldap_enabled = Configs.query.filter_by(
+                setting='Enable LDAP Authentication').first().value
 
             if ldap_enabled == 'True' and not value:
-                raise ValidationError('LDAP authentication must be disabled when deleting LDAP configuration items')
+                error_msg = ('LDAP authentication must be disabled when '
+                             'deleting LDAP configuration items')
+                raise ValidationError(error_msg)
 
         return True
     else:
-        if setting == 'Minimum Password Length' or setting == 'Account Lockout Threshold':
-            raise ValidationError('An invalid value was supplied. The value must be between 0-25.')
-        elif setting == 'Account Lockout Duration in Minutes' or setting == 'Reset Account Lockout Counter in Minutes':
-            raise ValidationError('An invalid value was supplied. The value must be between 1-99.')
+        if setting in ['Minimum Password Length', 'Account Lockout Threshold']:
+            error_msg = ('An invalid value was supplied. The value must be '
+                         'between 0-25.')
+            raise ValidationError(error_msg)
+        elif setting in ['Account Lockout Duration in Minutes',
+                         'Reset Account Lockout Counter in Minutes']:
+            error_msg = ('An invalid value was supplied. The value must be '
+                         'between 1-99.')
+            raise ValidationError(error_msg)
         elif setting == 'LDAP Authentication Method':
-            raise ValidationError('An invalid value was supplied. The value must be either "NTLM" or "SIMPLE"')
+            error_msg = ('An invalid value was supplied. The value must be '
+                         'either "NTLM" or "SIMPLE"')
+            raise ValidationError(error_msg)
 
         raise ValidationError('An invalid setting value was supplied')
 
 
-def get_logs_dict(numLines=50, reverseOrder=False):
+def get_logs_dict(num_lines=50, reverse_order=False):
     """
     Returns the JSON formatted log file as a dict
     """
-    logPath = app.config.get('LOG_LOCATION')
-    if logPath and os.path.exists(logPath):
-        logFile = open(logPath, mode='r+')
+    log_path = app.config.get('LOG_LOCATION')
+    if log_path and os.path.exists(log_path):
+        log_file = open(log_path, mode='r+')
 
         try:
-            mmapHandler = mmap(logFile.fileno(), 0)
+            mmap_handler = mmap(log_file.fileno(), 0)
         except ValueError as e:
             if str(e) == 'cannot mmap an empty file':
                 # If the file is empty, return empty JSON
@@ -78,40 +97,40 @@ def get_logs_dict(numLines=50, reverseOrder=False):
             else:
                 raise ValidationError(
                     'There was an error opening "{0}"'.format(
-                        os.getcwd().replace('\\', '/') + '/' + logPath))
+                        os.getcwd().replace('\\', '/') + '/' + log_path))
 
-        newLineCount = 0
-        # Assigns currentChar to the last character of the file
-        currentChar = mmapHandler.size() - 1
+        new_line_count = 0
+        # Assigns current_char to the last character of the file
+        current_char = mmap_handler.size() - 1
 
         # If the file ends in a new line, add 1 more line to process
-        # for mmapHandler[currentChar:].splitlines() later on
-        if mmapHandler[currentChar] == '\n':
-            numLines += 1
+        # for mmap_handler[current_char:].splitlines() later on
+        if mmap_handler[current_char] == '\n':
+            num_lines += 1
 
         # While the number of lines iterated is less than numLines
         # and the beginning of the file hasn't been reached
-        while newLineCount < numLines and currentChar > 0:
+        while new_line_count < num_lines and current_char > 0:
             # If a new line character is found, this means
             # the current line has ended
-            if mmapHandler[currentChar] == '\n':
-                newLineCount += 1
+            if mmap_handler[current_char] == '\n':
+                new_line_count += 1
             # Subtract from the charcter count to read the previous character
-            currentChar -= 1
+            current_char -= 1
 
         # If the beginning of the file hasn't been reached,
         # strip the preceeding new line character
-        if currentChar > 0:
-            currentChar += 2
+        if current_char > 0:
+            current_char += 2
 
         # Create the list
-        logs = mmapHandler[currentChar:].splitlines()
+        logs = mmap_handler[current_char:].splitlines()
 
         # Close the log file
-        mmapHandler.close()
-        logFile.close()
+        mmap_handler.close()
+        log_file.close()
 
-        if reverseOrder:
+        if reverse_order:
             logs = list(reversed(logs))
 
         return {'items': [loads(log.decode('utf-8')) for log in logs], }

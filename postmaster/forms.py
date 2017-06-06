@@ -15,7 +15,8 @@ class LoginForm(FlaskForm):
     """ Class for login form on /login
     """
     username = StringField(label='Username', validators=[DataRequired()])
-    password = PasswordField(label='Password', validators=[DataRequired(), validate_wtforms_password])
+    password = PasswordField(label='Password', validators=[
+        DataRequired(), validate_wtforms_password])
     two_factor = IntegerField(label='Two Factor', validators=(Optional(),))
     auth_source = SelectField('PostMaster User', validators=[DataRequired()])
 
@@ -26,13 +27,17 @@ class LoginForm(FlaskForm):
         # Set the default auth_source to local
         form.auth_source.choices = [('PostMaster User', 'PostMaster User')]
         # Check if LDAP is enabled
-        ldap_enabled = models.Configs.query.filter_by(setting='Enable LDAP Authentication').first()
+        ldap_enabled = models.Configs.query.filter_by(
+            setting='Enable LDAP Authentication').first()
 
         if ldap_enabled is not None and ldap_enabled.value == 'True':
-            domain = models.Configs.query.filter_by(setting='AD Domain').first()
+            domain = models.Configs.query.filter_by(
+                setting='AD Domain').first()
 
             if domain is not None and domain.value is not None:
                 # Update the auth_source field to include the LDAP Domain
-                form.auth_source.choices = [(domain.value, domain.value), ('PostMaster User', 'PostMaster User')]
+                form.auth_source.choices = [
+                    (domain.value, domain.value),
+                    ('PostMaster User', 'PostMaster User')]
 
         return form

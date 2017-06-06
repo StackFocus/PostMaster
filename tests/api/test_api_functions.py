@@ -1,6 +1,4 @@
-﻿import string
-import random
-import json
+﻿import json
 from mock import patch
 import onetimepass
 from datetime import datetime, timedelta
@@ -19,8 +17,9 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     def test_aliases_add_fail_domain_managed(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "pickles@test123.com", "destination": "rawr@test123.com"}))
+        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps({
+            "source": "pickles@test123.com",
+            "destination": "rawr@test123.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -29,8 +28,9 @@ class TestMailDbFunctions:
         assert "not managed" in rv.data.decode('utf-8')
 
     def test_aliases_add_fail_not_current(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "pickles@postmaster.com", "destination": "rawr@postmaster.com"}))
+        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps({
+            "source": "pickles@postmaster.com",
+            "destination": "rawr@postmaster.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -56,11 +56,13 @@ class TestMailDbFunctions:
         except:
             assert False, "Not json"
         assert rv.status_code == 400
-        assert "The destination email was not specified" in rv.data.decode('utf-8')
+        assert "The destination email was not specified" in \
+               rv.data.decode('utf-8')
 
     def test_aliases_add_pass(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps(
-            {"source": "rawr@postmaster.com", "destination": "email@postmaster.com"}))
+        rv = loggedin_client.post("/api/v1/aliases", data=json.dumps({
+            "source": "rawr@postmaster.com",
+            "destination": "email@postmaster.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -77,7 +79,8 @@ class TestMailDbFunctions:
             {"destination": "email@postmaster.org"}))
         assert rv.status_code == 200
 
-    def test_alias_update_fail_source_or_destination_not_supplied(self, loggedin_client):
+    def test_alias_update_fail_source_or_destination_not_supplied(
+            self, loggedin_client):
         rv = loggedin_client.patch("/api/v1/aliases/2", data=json.dumps(
             {"someotherdata": "aomeotherdata"}))
         try:
@@ -85,7 +88,8 @@ class TestMailDbFunctions:
         except:
             assert False, "Not json"
         assert rv.status_code == 400
-        assert "The source or destination was not supplied in the request" in rv.data.decode('utf-8')
+        assert "The source or destination was not supplied in the request" in \
+               rv.data.decode('utf-8')
 
     def test_aliases_delete_pass(self, loggedin_client):
         rv = loggedin_client.delete("/api/v1/aliases/2", follow_redirects=True)
@@ -147,7 +151,8 @@ class TestMailDbFunctions:
         except:
             assert False, "Not json"
         assert rv.status_code == 400
-        assert "The password was not supplied in the request" in rv.data.decode('utf-8')
+        assert "The password was not supplied in the request" in \
+               rv.data.decode('utf-8')
 
     def test_users_add_pass(self, loggedin_client):
         rv = loggedin_client.post("/api/v1/users", data=json.dumps(
@@ -206,8 +211,8 @@ class TestMailDbFunctions:
         assert "The domain name was not specified" in rv.data.decode('utf-8')
 
     def test_domains_add_pass(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/domains", data=json.dumps(
-            {"name": "".join((random.choice(string.ascii_uppercase + string.digits) for _ in range(6))) + ".com"}))
+        rv = loggedin_client.post("/api/v1/domains", data=json.dumps({
+            "name": "esdasdfds12321.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -235,8 +240,9 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     def test_admins_add_pass(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"username": "user_admin@postmaster.com", "password": "som3passw0rd", "name": "Test Admin"}))
+        rv = loggedin_client.post("/api/v1/admins", data=json.dumps({
+            "username": "user_admin@postmaster.com",
+            "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -244,8 +250,10 @@ class TestMailDbFunctions:
         assert rv.status_code == 201
 
     def test_admins_add_fail_duplicate(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"username": "admin", "password": "som3passw0rd", "name": "Test Admin"}))
+        rv = loggedin_client.post("/api/v1/admins", data=json.dumps({
+            "username": "admin",
+            "password": "som3passw0rd",
+            "name": "Test Admin"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -274,8 +282,9 @@ class TestMailDbFunctions:
         assert "The password was not specified" in rv.data.decode('utf-8')
 
     def test_admins_add_fail_no_name(self, loggedin_client):
-        rv = loggedin_client.post("/api/v1/admins", data=json.dumps(
-            {"username": "user_admin2@postmaster.com", "password": "som3passw0rd"}))
+        rv = loggedin_client.post("/api/v1/admins", data=json.dumps({
+            "username": "user_admin2@postmaster.com",
+            "password": "som3passw0rd"}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -302,7 +311,9 @@ class TestMailDbFunctions:
         rv = loggedin_client.patch("/api/v1/admins/2", data=json.dumps(
             {"randomkey": "random_value"}))
         assert rv.status_code == 400
-        assert "The username, password, or name was not supplied in the request" in rv.data.decode('utf-8')
+        error_msg = ("The username, password, or name was not supplied in "
+                     "the request")
+        assert error_msg in rv.data.decode('utf-8')
 
     def test_admins_delete_pass(self, loggedin_client):
         rv = loggedin_client.delete("/api/v1/admins/2", follow_redirects=True)
@@ -322,11 +333,13 @@ class TestMailDbFunctions:
         db.session.commit()
 
         new_test_admin = Admins.query.filter_by(username='test_admin').one()
-        rv = loggedin_client.patch("/api/v1/admins/{0}/unlock".format(new_test_admin.id), follow_redirects=True)
+        api_url = "/api/v1/admins/{0}/unlock".format(new_test_admin.id)
+        rv = loggedin_client.patch(api_url, follow_redirects=True)
         assert rv.status_code == 200
 
     def test_admins_unlock_not_found(self, loggedin_client):
-        rv = loggedin_client.patch("/api/v1/admins/50/unlock", follow_redirects=True)
+        rv = loggedin_client.patch("/api/v1/admins/50/unlock",
+                                   follow_redirects=True)
         assert rv.status_code == 404
 
     def test_admins_twofactor_qrcode(self, loggedin_client):
@@ -351,7 +364,8 @@ class TestMailDbFunctions:
         assert "invalid request" in rv.data.decode('utf-8')
 
     def test_admins_twofactor_enable_fail(self, loggedin_client):
-        rv = loggedin_client.patch("/api/v1/admins/1/twofactor", data=json.dumps({"enabled": "True"}))
+        payload = json.dumps({"enabled": "True"})
+        rv = loggedin_client.patch("/api/v1/admins/1/twofactor", data=payload)
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -370,7 +384,8 @@ class TestMailDbFunctions:
 
         db.session.add(test_admin)
         db.session.commit()
-        rv = loggedin_client.post("/api/v1/admins/{0}/twofactor/verify".format(test_admin.id), data=json.dumps({"code": 123456}))
+        api_url = "/api/v1/admins/{0}/twofactor/verify".format(test_admin.id)
+        rv = loggedin_client.post(api_url, data=json.dumps({"code": 123456}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -387,7 +402,8 @@ class TestMailDbFunctions:
 
         db.session.add(test_admin)
         db.session.commit()
-        rv = loggedin_client.post("/api/v1/admins/{0}/twofactor/verify".format(test_admin.id), data=json.dumps({"code": 123456}))
+        api_url = "/api/v1/admins/{0}/twofactor/verify".format(test_admin.id)
+        rv = loggedin_client.post(api_url, data=json.dumps({"code": 123456}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -410,7 +426,8 @@ class TestMailDbFunctions:
         secret = test_admin.otp_secret
         token = onetimepass.get_totp(secret)
         assert test_admin.verify_totp(token)
-        rv = loggedin_client.post("/api/v1/admins/{0}/twofactor/verify".format(test_admin.id), data=json.dumps({"code": token}))
+        api_url = "/api/v1/admins/{0}/twofactor/verify".format(test_admin.id)
+        rv = loggedin_client.post(api_url, data=json.dumps({"code": token}))
         try:
             json.loads(rv.data.decode('utf-8'))
         except:
@@ -442,10 +459,12 @@ class TestMailDbFunctions:
         rv = loggedin_client.patch("/api/v1/configs/5", data=json.dumps(
             {"someparameter": "somevalue"}))
         assert rv.status_code == 400
-        assert 'An invalid setting value was supplied' in rv.data.decode('utf-8')
+        assert 'An invalid setting value was supplied' in \
+               rv.data.decode('utf-8')
 
     @patch('os.access', return_value=False)
-    def test_configs_enable_login_auditing_log_write_fail(self, mock_os_access, loggedin_client):
+    def test_configs_enable_login_auditing_log_write_fail(self, mock_os_access,
+                                                          loggedin_client):
         app.config['LOG_LOCATION'] = '/opt/postmaster/logs/postmaster.log'
         rv = loggedin_client.patch("/api/v1/configs/5", data=json.dumps(
             {"value": "True"}))
@@ -453,10 +472,12 @@ class TestMailDbFunctions:
         assert rv.status_code == 400
         assert 'The log could not be written to' in rv.data.decode('utf-8')
 
-    # Since we have to turn on logging to test this, we'll mock the json_logger so we don't actually write anything
+    # Since we have to turn on logging to test this, we'll mock the json
+    # logger so we don't actually write anything
     @patch('postmaster.logger.json_logger', return_value=None)
     @patch('os.access', return_value=True)
-    def test_configs_enable_login_auditing_log_write_pass(self, mock_os_access, mock_json_logger, loggedin_client):
+    def test_configs_enable_login_auditing_log_write_pass(
+            self, mock_os_access, mock_json_logger, loggedin_client):
         app.config['LOG_LOCATION'] = '/opt/postmaster/logs/postmaster.log'
         rv = loggedin_client.patch("/api/v1/configs/5", data=json.dumps(
             {"value": "True"}))
@@ -464,14 +485,16 @@ class TestMailDbFunctions:
         assert rv.status_code == 200
 
     @patch('os.access', return_value=False)
-    def test_configs_enable_maildb_auditing_log_write_fail(self, mock_os_access, loggedin_client):
+    def test_configs_enable_maildb_auditing_log_write_fail(
+            self, mock_os_access, loggedin_client):
         rv = loggedin_client.patch("/api/v1/configs/6", data=json.dumps(
             {"value": "True"}))
         assert rv.status_code == 400
         assert 'The log could not be written to' in rv.data.decode('utf-8')
 
     @patch('os.access', return_value=True)
-    def test_configs_enable_maildb_auditing_log_write_pass(self, mock_os_access, loggedin_client, tmpdir):
+    def test_configs_enable_maildb_auditing_log_write_pass(
+            self, mock_os_access, loggedin_client, tmpdir):
         log_file = tmpdir.join('postmaster.log')
         app.config['LOG_LOCATION'] = str(log_file)
         rv = loggedin_client.patch("/api/v1/configs/6", data=json.dumps(
@@ -489,14 +512,18 @@ class TestMailDbFunctions:
         rv = loggedin_client.patch("/api/v1/configs/1", data=json.dumps(
             {"value": "9999"}))
         assert rv.status_code == 400
-        assert 'An invalid value was supplied. The value must be between 0-25.' in rv.data.decode('utf-8')
+        error_msg = \
+            'An invalid value was supplied. The value must be between 0-25.'
+        assert error_msg in rv.data.decode('utf-8')
 
     def test_configs_update_enable_ldap_no_server(self, loggedin_client):
-        """ Tests the update_config function (PUT route for configs) when LDAP is set to enabled
-        but an LDAP server is not configured. A return value of an error is expected.
+        """ Tests the update_config function (PUT route for configs) when LDAP
+        is set to enabled but an LDAP server is not configured. A return value
+        of an error is expected.
         """
         # Set the AD Server LDAP String to empty
-        ldap_string = Configs.query.filter_by(setting='AD Server LDAP String').first()
+        ldap_string = Configs.query.filter_by(
+            setting='AD Server LDAP String').first()
         old_ldap_string_value = ldap_string.value
         ldap_string.value = None
         db.session.add(ldap_string)
@@ -511,14 +538,19 @@ class TestMailDbFunctions:
         db.session.commit()
 
         assert rv.status_code == 400
-        assert 'The LDAP settings must be configured before LDAP authentication is enabled' in rv.data.decode('utf-8')
+        error_msg = ('The LDAP settings must be configured before LDAP '
+                     'authentication is enabled')
+        assert error_msg in rv.data.decode('utf-8')
 
-    def test_configs_update_empty_ldap_server_when_ldap_enabled(self, loggedin_client):
-        """ Tests the update_config function (PUT route for configs) when the LDAP server is set to empty
-        but LDAP is enabled. A return value of an error is expected.
+    def test_configs_update_empty_ldap_server_when_ldap_enabled(
+            self, loggedin_client):
+        """ Tests the update_config function (PUT route for configs) when the
+        LDAP server is set to empty but LDAP is enabled. A return value of an
+        error is expected.
         """
         # Enables LDAP Authentication
-        ldap_enabled = Configs.query.filter_by(setting='Enable LDAP Authentication').first()
+        ldap_enabled = Configs.query.filter_by(
+            setting='Enable LDAP Authentication').first()
         old_ldap_enabled_value = ldap_enabled.value
         ldap_enabled.value = 'True'
         db.session.add(ldap_enabled)
@@ -533,4 +565,6 @@ class TestMailDbFunctions:
         db.session.commit()
 
         assert rv.status_code == 400
-        assert 'LDAP authentication must be disabled when deleting LDAP configuration items' in rv.data.decode('utf-8')
+        error_msg = ('LDAP authentication must be disabled when deleting LDAP '
+                     'configuration items')
+        assert error_msg in rv.data.decode('utf-8')

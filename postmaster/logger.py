@@ -27,8 +27,9 @@ def login_auditing_enabled():
 
 
 def json_logger(category, admin, message):
-    """ Takes a category (typically error or audit), a log message and the responsible
-    user. It then appends it with an ISO 8601 UTC timestamp to a JSON formatted log file
+    """ Takes a category (typically error or audit), a log message and the
+    responsible user. It then appends it with an ISO 8601 UTC timestamp to a
+    JSON formatted log file
     """
     log_path = app.config.get('LOG_LOCATION')
     if log_path and ((category == 'error') or
@@ -46,5 +47,7 @@ def json_logger(category, admin, message):
                     sort_keys=True)))
                 log_file.close()
         except IOError:
-            raise ValidationError('The log could not be written to "{0}". '
-                                  'Verify that the path exists and is writeable.'.format(path.abspath(log_path)))
+            error_msg = ('The log could not be written to "{0}". Verify that '
+                         'the path exists and is writeable.'
+                         .format(path.abspath(log_path)))
+            raise ValidationError(error_msg)

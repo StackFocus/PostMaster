@@ -26,7 +26,8 @@ def get_admins():
     """
     if request.args.get('search'):
         return Admins.query.filter(Admins.username.ilike(
-            "%{0}%".format(request.args.get('search')))).order_by(Admins.username)
+            "%{0}%".format(request.args.get('search')))).order_by(
+                Admins.username)
     return Admins.query.order_by(Admins.username)
 
 
@@ -101,24 +102,25 @@ def delete_admin(admin_id):
 def update_admin(admin_id):
     """ Updates an admin user by ID in Admins, and returns HTTP 200 on success
     """
-    auditMessage = ''
+    audit_msg = ''
     admin = Admins.query.get_or_404(admin_id)
     json = request.get_json(force=True)
 
     if 'username' in json:
-        newUsername = json['username'].lower()
-        if Admins.query.filter_by(username=newUsername).first() is None:
-            auditMessage = 'The administrator "{0}" had their username changed to "{1}"'.format(
-                admin.username, newUsername)
-            admin.username = newUsername
+        new_user_name = json['username'].lower()
+        if Admins.query.filter_by(username=new_user_name).first() is None:
+            audit_msg = ('The administrator "{0}" had their username changed '
+                         'to "{1}"'.format(admin.username, new_user_name))
+            admin.username = new_user_name
         else:
             ValidationError('The username supplied already exists')
     elif 'password' in json:
         admin.set_password(json['password'])
-        auditMessage = 'The administrator "{0}" had their password changed'.format(
-            admin.username)
+        audit_msg = ('The administrator "{0}" had their password changed'
+                     .format(admin.username))
     elif 'name' in json:
-        auditMessage = 'The administrator "{0}" had their name changed to "{1}"'.format(admin.username, admin.name)
+        audit_msg = ('The administrator "{0}" had their name changed to "{1}"'
+                     .format(admin.username, admin.name))
         admin.name = json['name']
     else:
         raise ValidationError(
@@ -127,7 +129,7 @@ def update_admin(admin_id):
     try:
         db.session.add(admin)
         db.session.commit()
-        json_logger('audit', current_user.username, auditMessage)
+        json_logger('audit', current_user.username, audit_msg)
     except ValidationError as e:
         raise e
     except Exception as e:
@@ -185,27 +187,29 @@ def twofactor_disable(admin_id):
                 raise e
             except Exception as e:
                 db.session.rollback()
-                json_logger(
-                    'error', current_user.username,
-                    'The following error occurred in twofactor_disable: {0}'.format(str(e)))
+                log_msg = ('The following error occurred in twofactor_disable:'
+                           ' {0}'.format(str(e)))
+                json_logger('error', current_user.username, log_msg)
                 raise GenericError('The administrator could not be updated')
             return {}, 200
-        elif status.lower() == "true":
-            raise GenericError("Cannot enable 2 factor from this route - see docs")
-    raise GenericError("An invalid parameter was supplied")
+        elif status.lower() == 'true':
+            raise GenericError(
+                'Cannot enable 2 factor from this route - see docs')
+    raise GenericError('An invalid parameter was supplied')
 
 
 @apiv1.route('/admins/<int:admin_id>/twofactor/qrcode', methods=['GET'])
 @login_required
 def qrcode(admin_id):
-    """ Presents the user with a QR code to scan to setup 2 factor authentication
+    """ Presents the user with a QR code to scan to setup 2 factor
+    authentication
     """
     # render qrcode for FreeTOTP
     admin = Admins.query.get_or_404(admin_id)
     if admin.id != current_user.id:
         raise GenericError('You may not view other admin\'s QR codes')
     if admin.otp_active:
-        return ('', 204)
+        return '', 204
     admin.generate_otp_secret()
     try:
         db.session.add(admin)
@@ -239,11 +243,12 @@ def verify_qrcode(admin_id):
     admin = Admins.query.get_or_404(admin_id)
     if request.get_json(force=True).get('code'):
         if not admin.otp_secret:
-            raise GenericError("The 2 Factor Secret has not been generated yet")
+            raise GenericError(
+                "The 2 Factor Secret has not been generated yet")
         if admin.verify_totp(request.get_json(force=True).get('code')):
             if not admin.otp_active:
-                audit_message = 'The administrator "{0}" enabled 2 factor'.format(
-                    admin.username)
+                audit_message = ('The administrator "{0}" enabled 2 '
+                                 'factor'.format(admin.username))
                 admin.otp_active = True
                 try:
                     db.session.add(admin)
@@ -253,10 +258,11 @@ def verify_qrcode(admin_id):
                     raise e
                 except Exception as e:
                     db.session.rollback()
-                    json_logger(
-                        'error', current_user.username,
-                        'The following error occurred in verify_qrcode: {0}'.format(str(e)))
-                    raise GenericError('The administrator could not be updated')
+                    log_msg = ('The following error occurred in verify_qrcode:'
+                               ' {0}'.format(str(e)))
+                    json_logger('error', current_user.username, log_msg)
+                    raise GenericError(
+                        'The administrator could not be updated')
             return {}, 200
         else:
             raise GenericError("An invalid code was supplied")

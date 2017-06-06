@@ -23,9 +23,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 bcrypt = Bcrypt(app)
 
-from postmaster.apiv1 import apiv1
-from postmaster.views.common import common
+from postmaster.apiv1 import apiv1  # noqa: E402
+from postmaster.views.common import common  # noqa: E402
 app.register_blueprint(apiv1)
 app.register_blueprint(common)
-
-from postmaster import models

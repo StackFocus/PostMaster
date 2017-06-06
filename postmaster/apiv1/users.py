@@ -104,21 +104,21 @@ def update_user(user_id):
     json = request.get_json(force=True)
 
     if 'password' in json:
-        minPwdLength = int(Configs.query.filter_by(
+        min_pwd_length = int(Configs.query.filter_by(
             setting='Minimum Password Length').first().value)
-        if len(json['password']) < minPwdLength:
+        if len(json['password']) < min_pwd_length:
             raise ValidationError(
                 'The password must be at least {0} characters long'.format(
-                    minPwdLength))
+                    min_pwd_length))
         user.password = VirtualUsers().encrypt_password(json['password'])
-        auditMessage = 'The user "{0}" had their password changed'.format(
+        audit_msg = 'The user "{0}" had their password changed'.format(
             user.email)
         db.session.add(user)
     else:
         raise ValidationError('The password was not supplied in the request')
     try:
         db.session.commit()
-        json_logger('audit', current_user.username, auditMessage)
+        json_logger('audit', current_user.username, audit_msg)
     except ValidationError as e:
         raise e
     except Exception as e:

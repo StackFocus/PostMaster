@@ -32,7 +32,8 @@ def get_domains():
 @login_required
 @json_wrap
 def get_domain(domain_id):
-    """ Queries a specific domain based on ID in VirtualDomains, and returns JSON
+    """ Queries a specific domain based on ID in VirtualDomains, and returns
+    JSON
     """
     return VirtualDomains.query.get_or_404(domain_id)
 
@@ -67,7 +68,8 @@ def new_domain():
 @login_required
 @json_wrap
 def delete_domain(domain_id):
-    """ Deletes a domain by ID in VirtualDomains, and returns HTTP 204 on success
+    """ Deletes a domain by ID in VirtualDomains, and returns HTTP 204 on
+    success
     """
     domain = VirtualDomains.query.get_or_404(domain_id)
     db.session.delete(domain)

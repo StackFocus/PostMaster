@@ -11,20 +11,27 @@ def initialize():
     db.create_all()
     add_default_configuration_settings()
 
-    admin2 = models.Admins().from_json(
-        {'username': 'admin2', 'password': 'PostMaster2', 'name': 'Some Admin'})
+    admin2 = models.Admins().from_json({
+        'username': 'admin2',
+        'password': 'PostMaster2',
+        'name': 'Some Admin'})
     db.session.add(admin2)
 
-    enable_ldap_auth = models.Configs.query.filter_by(setting='Enable LDAP Authentication').first()
+    enable_ldap_auth = models.Configs.query.filter_by(
+        setting='Enable LDAP Authentication').first()
     enable_ldap_auth.value = 'True'
-    ldap_server = models.Configs.query.filter_by(setting='AD Server LDAP String').first()
+    ldap_server = models.Configs.query.filter_by(
+        setting='AD Server LDAP String').first()
     ldap_server.value = 'LDAPS://postmaster.local:636'
     domain = models.Configs.query.filter_by(setting='AD Domain').first()
     domain.value = 'postmaster.local'
-    ldap_admin_group = models.Configs.query.filter_by(setting='AD PostMaster Group').first()
+    ldap_admin_group = models.Configs.query.filter_by(
+        setting='AD PostMaster Group').first()
     ldap_admin_group.value = 'PostMaster Admins'
-    ldap_auth_method = models.Configs.query.filter_by(setting='LDAP Authentication Method').first()
-    # Use SIMPLE auth because ldap3 testing only allows this authentication method
+    ldap_auth_method = models.Configs.query.filter_by(
+        setting='LDAP Authentication Method').first()
+    # Use SIMPLE auth because ldap3 testing only allows this authentication
+    # method
     ldap_auth_method.value = 'SIMPLE'
     db.session.add(enable_ldap_auth)
     db.session.add(ldap_server)
@@ -37,16 +44,31 @@ def initialize():
     db.session.add(domain)
     db.session.add(domain2)
 
-    emailUser = models.VirtualUsers().from_json({'email': 'email@postmaster.com', 'password': 'password'})
-    emailUser2 = models.VirtualUsers().from_json({'email': 'email2@postmaster.com', 'password': 'password'})
-    emailUser3 = models.VirtualUsers().from_json({'email': 'email@postmaster.org', 'password': 'password'})
-    db.session.add(emailUser)
-    db.session.add(emailUser2)
-    db.session.add(emailUser3)
+    email_user = models.VirtualUsers().from_json({
+        'email': 'email@postmaster.com',
+        'password': 'password'})
+    email_user2 = models.VirtualUsers().from_json({
+        'email': 'email2@postmaster.com',
+        'password': 'password'})
+    email_user3 = models.VirtualUsers().from_json({
+        'email': 'email@postmaster.org',
+        'password': 'password'})
+    db.session.add(email_user)
+    db.session.add(email_user2)
+    db.session.add(email_user3)
 
-    alias = models.VirtualAliases().from_json({'domain_id': 1, 'source': 'aliasemail@postmaster.com', 'destination': 'email@postmaster.com'})
-    alias2 = models.VirtualAliases().from_json({'domain_id': 1, 'source': 'aliasemail2@postmaster.com', 'destination': 'email2@postmaster.com'})
-    alias3 = models.VirtualAliases().from_json({'domain_id': 1, 'source': 'aliasemail3@postmaster.com', 'destination': 'email@postmaster.org'})
+    alias = models.VirtualAliases().from_json({
+        'domain_id': 1,
+        'source': 'aliasemail@postmaster.com',
+        'destination': 'email@postmaster.com'})
+    alias2 = models.VirtualAliases().from_json({
+        'domain_id': 1,
+        'source': 'aliasemail2@postmaster.com',
+        'destination': 'email2@postmaster.com'})
+    alias3 = models.VirtualAliases().from_json({
+        'domain_id': 1,
+        'source': 'aliasemail3@postmaster.com',
+        'destination': 'email@postmaster.org'})
     db.session.add(alias)
     db.session.add(alias2)
     db.session.add(alias3)
