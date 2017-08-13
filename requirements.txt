@@ -17,12 +17,12 @@ flask-wtf==0.14.2
 flask==0.12
 itsdangerous==0.24        # via flask
 jinja2==2.9.5             # via flask
-ldap3==2.2.1
+ldap3==2.3
 mako==1.0.6               # via alembic
 markupsafe==1.0           # via jinja2, mako
 onetimepass==1.0.1
 passlib==1.7.1
-pyasn1==0.2.3             # via ldap3
+pyasn1==0.3.2             # via ldap3
 pycparser==2.17           # via cffi
 pymysql==0.7.10
 pyqrcode==1.2.1
