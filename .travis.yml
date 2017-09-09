@@ -7,6 +7,8 @@ install:
   - cp config.default.py config.py
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
+  # Temporary fix for https://github.com/cannatag/ldap3/issues/396
+  - pip install https://github.com/cannatag/ldap3/archive/c5fdc97.zip
 before_script:
   - flake8 --exclude=config.py,config.default.py
 script:
