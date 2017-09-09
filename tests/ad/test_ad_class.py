@@ -1,4 +1,5 @@
 import functools
+import sys
 import ldap3
 import pytest
 from mock import patch, Mock
@@ -36,6 +37,17 @@ def manage_mock_ldap(f):
         self.ad_obj = None
         return rv
     return wrapped
+
+
+def get_raw_dn(raw_dn_str):
+    """
+    Returns the properly formatted raw_dn that is expected based on the Python
+    version
+    """
+    if sys.version_info[0] >= 3:
+        return raw_dn_str.encode('utf-8')
+    else:
+        return raw_dn_str
 
 
 class TestAdFunctions:
@@ -101,6 +113,8 @@ class TestAdFunctions:
             'attributes': {'name': u'Test User'},
             'dn': user_dn,
             'raw_attributes': {'name': [b'Test User']},
+            'raw_dn': get_raw_dn('CN=Test User,OU=PostMaster,DC=postmaster,'
+                                 'DC=local'),
             'type': 'searchResEntry'
         }]
 
@@ -114,6 +128,8 @@ class TestAdFunctions:
             'attributes': {},
             'dn': user_dn,
             'raw_attributes': {},
+            'raw_dn': get_raw_dn('CN=Test User,OU=PostMaster,DC=postmaster,'
+                                 'DC=local'),
             'type': 'searchResEntry'
         }]
 
@@ -127,6 +143,8 @@ class TestAdFunctions:
             'attributes': {},
             'dn': 'CN=Domain Users,CN=Users,DC=postmaster,DC=local',
             'raw_attributes': {},
+            'raw_dn': get_raw_dn('CN=Domain Users,CN=Users,DC=postmaster,'
+                                 'DC=local'),
             'type': 'searchResEntry'
         }
 
