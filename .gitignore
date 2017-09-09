@@ -4,6 +4,7 @@ site.retry
 
 .vagrant
 .idea
+.vscode
 config.py
 ops/ansible/deploy.retry
 ops/ansible/roles/
