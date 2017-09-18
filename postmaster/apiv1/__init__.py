@@ -11,7 +11,7 @@ from postmaster.errors import (
 apiv1 = Blueprint('apiv1', __name__, url_prefix='/api/v1')
 
 # Import the API routes
-from postmaster.apiv1 import (  # noqa: E402, F401
+from postmaster.apiv1 import (  # noqa: F401
     domains, users, aliases, admins, configs, logs)
 
 
