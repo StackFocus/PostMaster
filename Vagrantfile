@@ -3,6 +3,9 @@
 
 Vagrant.configure(2) do |config|
     config.vm.box = "boxcutter/ubuntu1604"
+    config.vm.provider "libvirt" do |v, override|
+        override.vm.box = "elastic/ubuntu-16.04-x86_64"
+    end
     config.vm.network "forwarded_port", guest: 8082, host: 8080
     config.vm.synced_folder "./", "/opt/postmaster/git"
     config.vm.provision "shell", inline: "apt-get update && apt-get install -y git"
