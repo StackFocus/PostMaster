@@ -8,6 +8,8 @@ site.retry
 config.py
 ops/ansible/deploy.retry
 ops/ansible/roles/
+postmaster.db
+.pytest_cache/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

@@ -5,6 +5,8 @@ Purpose: config for the app
 """
 from os import path
 
+basedir = path.abspath(path.dirname(__file__))
+
 
 class BaseConfiguration(object):
     # We disable CSRF because it interferes with logging in
@@ -15,7 +17,6 @@ class BaseConfiguration(object):
     SECRET_KEY = '123456789abcdef123456789'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:vagrant@localhost:3306/servermail'
-    basedir = path.abspath(path.dirname(__file__))
     LOG_LOCATION = '/opt/postmaster/logs/postmaster.log'
 
 
@@ -27,5 +28,7 @@ class TestConfiguration(BaseConfiguration):
 
 
 class DevConfiguration(BaseConfiguration):
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(
+        path.join(basedir, 'postmaster.db'))
     WTF_CSRF_ENABLED = False
     DEBUG = True
