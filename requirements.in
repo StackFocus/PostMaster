@@ -5,7 +5,8 @@ Flask-Migrate
 Flask-Script
 Flask-SQLAlchemy
 Flask-WTF
-ldap3
+# https://github.com/cannatag/ldap3/issues/533
+ldap3==2.4
 onetimepass
 passlib
 pymysql

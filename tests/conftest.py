@@ -77,15 +77,13 @@ def initialize():
 
 
 # Reinitialize the database before each test
-@pytest.yield_fixture(autouse=True)
+@pytest.fixture(autouse=True)
 def run_before_tests():
     # Code that runs before each test
     initialize()
-    # A test function will be run at this point
-    yield
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='function')
 def loggedin_client():
     client = app.test_client()
     client.post(

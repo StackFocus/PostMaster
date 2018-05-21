@@ -12,7 +12,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/aliases", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -22,7 +22,7 @@ class TestMailDbFunctions:
             "destination": "rawr@test123.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "not managed" in rv.data.decode('utf-8')
@@ -33,7 +33,7 @@ class TestMailDbFunctions:
             "destination": "rawr@postmaster.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "not a current" in rv.data.decode('utf-8')
@@ -43,7 +43,7 @@ class TestMailDbFunctions:
             {"source": "", "destination": "rawr@postmaster.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The source email was not specified" in rv.data.decode('utf-8')
@@ -53,7 +53,7 @@ class TestMailDbFunctions:
             {"source": "rawr@postmaster.com", "destination": ""}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The destination email was not specified" in \
@@ -65,7 +65,7 @@ class TestMailDbFunctions:
             "destination": "email@postmaster.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 201
 
@@ -85,7 +85,7 @@ class TestMailDbFunctions:
             {"someotherdata": "aomeotherdata"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The source or destination was not supplied in the request" in \
@@ -99,7 +99,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/users", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -108,7 +108,7 @@ class TestMailDbFunctions:
             {"email": "picklesasda", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "not a valid" in rv.data.decode('utf-8')
@@ -118,7 +118,7 @@ class TestMailDbFunctions:
             {"email": "pickles@test123.com", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "not managed" in rv.data.decode('utf-8')
@@ -128,7 +128,7 @@ class TestMailDbFunctions:
             {"email": "pickles@test123.com", "password": ""}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The password was not specified" in rv.data.decode('utf-8')
@@ -138,7 +138,7 @@ class TestMailDbFunctions:
             {"email": "", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The email address was not specified" in rv.data.decode('utf-8')
@@ -148,7 +148,7 @@ class TestMailDbFunctions:
             {"someotherdata": "pickles"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The password was not supplied in the request" in \
@@ -159,7 +159,7 @@ class TestMailDbFunctions:
             {"email": "pickles@postmaster.com", "password": "som3passw0rd"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 201
 
@@ -176,7 +176,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/domains", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -185,7 +185,7 @@ class TestMailDbFunctions:
             {"lol": "what"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "not specified" in rv.data.decode('utf-8')
@@ -195,7 +195,7 @@ class TestMailDbFunctions:
             {"name": "postmaster.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "already exists" in rv.data.decode('utf-8')
@@ -205,7 +205,7 @@ class TestMailDbFunctions:
             {"name": ""}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The domain name was not specified" in rv.data.decode('utf-8')
@@ -215,7 +215,7 @@ class TestMailDbFunctions:
             "name": "esdasdfds12321.com"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 201
 
@@ -227,7 +227,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/admins/1", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -235,7 +235,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/admins", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -245,7 +245,7 @@ class TestMailDbFunctions:
             "password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 201
 
@@ -256,7 +256,7 @@ class TestMailDbFunctions:
             "name": "Test Admin"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "already exists" in rv.data.decode('utf-8')
@@ -266,7 +266,7 @@ class TestMailDbFunctions:
             {"password": "som3passw0rd", "name": "Test Admin"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The username was not specified" in rv.data.decode('utf-8')
@@ -276,7 +276,7 @@ class TestMailDbFunctions:
             {"username": "user_admin2@postmaster.com", "name": "Test Admin"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The password was not specified" in rv.data.decode('utf-8')
@@ -287,7 +287,7 @@ class TestMailDbFunctions:
             "password": "som3passw0rd"}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "The name was not specified" in rv.data.decode('utf-8')
@@ -350,7 +350,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/admins/1/twofactor")
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -358,7 +358,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.patch("/api/v1/admins/1/twofactor")
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "invalid request" in rv.data.decode('utf-8')
@@ -368,7 +368,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.patch("/api/v1/admins/1/twofactor", data=payload)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "Cannot enable 2 factor" in rv.data.decode('utf-8')
@@ -388,7 +388,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.post(api_url, data=json.dumps({"code": 123456}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "invalid code" in rv.data.decode('utf-8')
@@ -406,7 +406,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.post(api_url, data=json.dumps({"code": 123456}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 400
         assert "2 Factor Secret" in rv.data.decode('utf-8')
@@ -430,7 +430,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.post(api_url, data=json.dumps({"code": token}))
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -438,7 +438,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/configs/1", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
@@ -446,7 +446,7 @@ class TestMailDbFunctions:
         rv = loggedin_client.get("/api/v1/configs", follow_redirects=True)
         try:
             json.loads(rv.data.decode('utf-8'))
-        except:
+        except json.decoder.JSONDecodeError:
             assert False, "Not json"
         assert rv.status_code == 200
 
